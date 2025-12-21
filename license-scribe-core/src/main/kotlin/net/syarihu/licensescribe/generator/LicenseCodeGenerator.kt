@@ -1,6 +1,7 @@
 package net.syarihu.licensescribe.generator
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -45,30 +46,7 @@ class LicenseCodeGenerator {
     val licenseProviderClassName = ClassName(CORE_PACKAGE, "LicenseProvider")
     val listType = List::class.asClassName().parameterizedBy(licenseInfoClassName)
 
-    val listInitializer =
-      if (licenses.isEmpty()) {
-        "listOf()"
-      } else {
-        buildString {
-          appendLine("listOf(")
-          licenses.sortedBy { it.artifactId.coordinate }.forEachIndexed { index, license ->
-            append("    LicenseInfo(")
-            append("artifactId = ${license.artifactId.coordinate.toKotlinString()}, ")
-            append("artifactName = ${license.artifactName.toKotlinString()}, ")
-            append("artifactUrl = ${license.artifactUrl.toNullableKotlinString()}, ")
-            append("copyrightHolder = ${license.copyrightHolder.toNullableKotlinString()}, ")
-            append("licenseName = ${license.license.name.toKotlinString()}, ")
-            append("licenseUrl = ${license.license.url.toNullableKotlinString()}")
-            append(")")
-            if (index < licenses.size - 1) {
-              appendLine(",")
-            } else {
-              appendLine()
-            }
-          }
-          append(")")
-        }
-      }
+    val listInitializer = buildListInitializer(licenses, licenseInfoClassName)
 
     return TypeSpec
       .objectBuilder(className)
@@ -82,21 +60,65 @@ class LicenseCodeGenerator {
       ).addFunction(
         FunSpec
           .builder("findByArtifactId")
-          .addParameter("artifactId", String::class)
+          .addParameter("id", String::class)
           .returns(licenseInfoClassName.copy(nullable = true))
-          .addStatement("return all.find { it.artifactId == artifactId }")
+          .addStatement("return all.find { it.artifactId == id }")
           .build(),
       ).addFunction(
         FunSpec
           .builder("findByLicenseName")
-          .addParameter("licenseName", String::class)
+          .addParameter("name", String::class)
           .returns(listType)
-          .addStatement("return all.filter { it.licenseName == licenseName }")
+          .addStatement("return all.filter { it.licenseName == name }")
           .build(),
       ).build()
   }
 
-  private fun String.toKotlinString(): String = "\"${this.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n")}\""
+  private fun buildListInitializer(
+    licenses: List<ResolvedLicense>,
+    licenseInfoClassName: ClassName,
+  ): CodeBlock {
+    if (licenses.isEmpty()) {
+      return CodeBlock.of("listOf()")
+    }
 
-  private fun String?.toNullableKotlinString(): String = this?.toKotlinString() ?: "null"
+    val sortedLicenses = licenses.sortedBy { it.artifactId.coordinate }
+
+    return CodeBlock.builder()
+      .add("listOf(\n")
+      .indent()
+      .apply {
+        sortedLicenses.forEachIndexed { index, license ->
+          add("%T(\n", licenseInfoClassName)
+          indent()
+          add("artifactId = %S,\n", license.artifactId.coordinate)
+          add("artifactName = %S,\n", license.artifactName)
+          if (license.artifactUrl != null) {
+            add("artifactUrl = %S,\n", license.artifactUrl)
+          } else {
+            add("artifactUrl = null,\n")
+          }
+          if (license.copyrightHolder != null) {
+            add("copyrightHolder = %S,\n", license.copyrightHolder)
+          } else {
+            add("copyrightHolder = null,\n")
+          }
+          add("licenseName = %S,\n", license.license.name)
+          if (license.license.url != null) {
+            add("licenseUrl = %S,\n", license.license.url)
+          } else {
+            add("licenseUrl = null,\n")
+          }
+          unindent()
+          if (index < sortedLicenses.size - 1) {
+            add("),\n")
+          } else {
+            add("),\n")
+          }
+        }
+      }
+      .unindent()
+      .add(")")
+      .build()
+  }
 }
