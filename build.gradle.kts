@@ -5,9 +5,25 @@ plugins {
   alias(libs.plugins.android.application) apply false
   alias(libs.plugins.android.library) apply false
   alias(libs.plugins.spotless)
+  alias(libs.plugins.nmcp.aggregation)
 }
 
 val ktlintVersion = libs.versions.ktlint.get()
+
+// NMCP aggregation for Central Portal publishing
+nmcpAggregation {
+  centralPortal {
+    username = providers.gradleProperty("centralPortalUsername")
+      .orElse(providers.environmentVariable("CENTRAL_PORTAL_USERNAME"))
+    password = providers.gradleProperty("centralPortalPassword")
+      .orElse(providers.environmentVariable("CENTRAL_PORTAL_PASSWORD"))
+    // USER_MANAGED: Manual release from Central Portal UI
+    // AUTOMATIC: Auto-release after validation
+    publishingType = "USER_MANAGED"
+  }
+  // Include all subprojects that have maven-publish plugin applied
+  publishAllProjectsProbablyBreakingProjectIsolation()
+}
 
 // Check if git repository exists for ratchetFrom
 val isGitRepository = rootDir.resolve(".git").exists()
