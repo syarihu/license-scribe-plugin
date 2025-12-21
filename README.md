@@ -370,8 +370,8 @@ object AppLicenses : LicenseProvider {
     )
 
     // Helper functions
-    fun findByArtifactId(artifactId: String): LicenseInfo?
-    fun findByLicenseName(licenseName: String): List<LicenseInfo>
+    fun findByArtifactId(id: String): LicenseInfo?
+    fun findByLicenseName(name: String): List<LicenseInfo>
 }
 ```
 
