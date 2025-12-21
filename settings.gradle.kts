@@ -17,6 +17,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "license-scribe-plugin"
 
+include(":license-scribe-runtime")
 include(":license-scribe-core")
 include(":license-scribe-gradle-plugin")
 include(":license-scribe-hilt-plugin")

@@ -3,8 +3,5 @@
 # com.example:artifact-name
 # com.example:*
 
-# License Scribe plugin internal dependencies
-net.syarihu:license-scribe-core*
-com.squareup:kotlinpoet*
-org.jetbrains.kotlin:kotlin-reflect*
-org.yaml:snakeyaml*
+# License Scribe runtime (self-reference)
+net.syarihu:license-scribe-runtime*

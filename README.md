@@ -10,12 +10,14 @@ A Gradle plugin for managing and generating license information for Android/Kotl
 - Works with Android (application/library) and pure Kotlin/JVM projects
 - **Multi-module support** with `LicenseProvider` interface for dependency injection
 - **Optional Hilt integration** for seamless DI in feature modules
+- **Minimal runtime footprint** - only `LicenseInfo` and `LicenseProvider` classes are included in your APK
 
 ## Project Structure
 
 ```
 license-scribe-plugin/
-├── license-scribe-core/          # Core library (LicenseInfo, LicenseProvider, parser, generator)
+├── license-scribe-runtime/       # Minimal runtime library (LicenseInfo, LicenseProvider only)
+├── license-scribe-core/          # Core library (parser, generator - build-time only)
 ├── license-scribe-gradle-plugin/ # Main Gradle plugin
 ├── license-scribe-hilt-plugin/   # Optional Hilt integration plugin
 ├── example/                      # Example Android app
@@ -47,8 +49,8 @@ plugins {
 }
 
 dependencies {
-    // Required: Core library provides LicenseInfo and LicenseProvider
-    implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
+    // Required: Runtime library provides LicenseInfo and LicenseProvider
+    implementation("net.syarihu:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
 
 licenseScribe {
@@ -164,7 +166,7 @@ In multi-module projects, you may want to display licenses in a feature module (
 
 ### Using LicenseProvider Interface
 
-The generated code implements `LicenseProvider` from `license-scribe-core`:
+The generated code implements `LicenseProvider` from `license-scribe-runtime`:
 
 ```kotlin
 // Generated in :app module
@@ -175,12 +177,12 @@ object AppLicenses : LicenseProvider {
 
 ### Feature Module Setup
 
-In your feature module, depend only on `license-scribe-core`:
+In your feature module, depend only on `license-scribe-runtime`:
 
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
+    implementation("net.syarihu:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
 ```
 
@@ -232,7 +234,7 @@ object LicenseScribeHiltModule {
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
+    implementation("net.syarihu:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
 
 // ViewModel in feature module
@@ -325,9 +327,9 @@ make publish
 
 ## Generated Code Structure
 
-### Core Library Classes
+### Runtime Library Classes
 
-The `license-scribe-core` library provides:
+The `license-scribe-runtime` library provides:
 
 #### LicenseInfo
 

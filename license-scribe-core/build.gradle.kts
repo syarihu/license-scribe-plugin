@@ -19,6 +19,7 @@ kotlin {
 }
 
 dependencies {
+  api(project(":license-scribe-runtime"))
   implementation(libs.snakeyaml)
   implementation(libs.kotlinpoet)
 

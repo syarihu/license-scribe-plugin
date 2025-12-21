@@ -1,8 +1,8 @@
 .PHONY: publish build clean help
 
-# Publish to Maven Local (core first, then gradle-plugin)
+# Publish to Maven Local (runtime first, then core, then gradle-plugin)
 publish:
-	./gradlew :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal --no-configuration-cache
+	./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal --no-configuration-cache
 
 # Build all modules (requires publish first)
 build:
