@@ -34,14 +34,13 @@ class LicenseCodeGeneratorTest : FunSpec(
           outputDir = tempDir,
         )
 
-        val licenseInfoFile = File(tempDir, "com/test/LicenseInfo.kt")
         val licensesFile = File(tempDir, "com/test/TestLicenses.kt")
 
-        licenseInfoFile.exists() shouldBe true
         licensesFile.exists() shouldBe true
 
         val licensesContent = licensesFile.readText()
         licensesContent shouldContain "object TestLicenses"
+        licensesContent shouldContain "LicenseProvider"
         licensesContent shouldContain "com.example:lib:1.0.0"
         licensesContent shouldContain "MIT License"
       } finally {
