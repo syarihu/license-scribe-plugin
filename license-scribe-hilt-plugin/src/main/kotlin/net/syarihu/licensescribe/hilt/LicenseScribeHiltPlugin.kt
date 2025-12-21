@@ -62,10 +62,11 @@ class LicenseScribeHiltPlugin : Plugin<Project> {
       }
     }
 
-    // Make compile tasks depend on this task
+    // Make compile and KSP tasks depend on this task
     project.tasks.matching {
-      it.name.contains("compile", ignoreCase = true) &&
-        it.name.contains("Kotlin", ignoreCase = true)
+      (it.name.contains("compile", ignoreCase = true) &&
+        it.name.contains("Kotlin", ignoreCase = true)) ||
+        (it.name.startsWith("ksp") && it.name.endsWith("Kotlin"))
     }.configureEach { compileTask ->
       compileTask.dependsOn(taskName)
     }

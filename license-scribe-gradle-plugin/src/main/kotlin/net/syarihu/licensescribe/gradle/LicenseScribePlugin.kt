@@ -126,8 +126,9 @@ class LicenseScribePlugin : Plugin<Project> {
     // Make ALL compile tasks depend on this generate task
     // This is necessary because all variants share the same output directory
     project.tasks.matching {
-      it.name.contains("compile", ignoreCase = true) &&
-        it.name.contains("Kotlin", ignoreCase = true)
+      (it.name.contains("compile", ignoreCase = true) &&
+        it.name.contains("Kotlin", ignoreCase = true)) ||
+        (it.name.startsWith("ksp") && it.name.endsWith("Kotlin"))
     }.configureEach { compileTask ->
       compileTask.dependsOn(generateTask)
     }
@@ -147,11 +148,13 @@ class LicenseScribePlugin : Plugin<Project> {
       val srcDirMethod = kotlinProperty.javaClass.getMethod("srcDir", Any::class.java)
       srcDirMethod.invoke(kotlinProperty, generateTask.flatMap { it.outputDirectory })
 
-      // Make compile task depend on generate task
-      project.tasks.matching { it.name.contains("compile", ignoreCase = true) && it.name.contains("Kotlin", ignoreCase = true) }
-        .configureEach { compileTask ->
-          compileTask.dependsOn(generateTask)
-        }
+      // Make compile and KSP tasks depend on generate task
+      project.tasks.matching {
+        (it.name.contains("compile", ignoreCase = true) && it.name.contains("Kotlin", ignoreCase = true)) ||
+          (it.name.startsWith("ksp") && it.name.endsWith("Kotlin"))
+      }.configureEach { compileTask ->
+        compileTask.dependsOn(generateTask)
+      }
     } catch (e: Exception) {
       project.logger.debug("Could not register Kotlin source directory: ${e.message}")
     }
