@@ -6,7 +6,7 @@ echo "=== Test: generateLicenseCode should generate valid Kotlin code ==="
 # Run generate
 ./gradlew :example:generateDebugLicenseCode --no-configuration-cache
 
-GENERATED_DIR="example/build/generated/source/licenseScribe"
+GENERATED_DIR="example/build/generated/source/licensescribe"
 
 # Find generated files (they are in package subdirectory)
 LICENSES_FILE=$(find "$GENERATED_DIR" -name "AppLicenses.kt" -type f 2>/dev/null | head -1)
