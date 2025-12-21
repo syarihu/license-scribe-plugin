@@ -4,18 +4,22 @@ A Gradle plugin for managing and generating license information for Android/Kotl
 
 ## Features
 
-- Automatically detects project dependencies and their licenses
+- Automatically detects project dependencies and their licenses (including transitive dependencies)
 - Generates Kotlin code for easy access to license information in your app
 - Supports YAML-based configuration for artifact definitions and license catalog
 - Works with Android (application/library) and pure Kotlin/JVM projects
+- **Multi-module support** with `LicenseProvider` interface for dependency injection
+- **Optional Hilt integration** for seamless DI in feature modules
 
 ## Project Structure
 
 ```
 license-scribe-plugin/
-├── license-scribe-core/          # Core library (parser, model, code generator)
-├── license-scribe-gradle-plugin/ # Gradle plugin
+├── license-scribe-core/          # Core library (LicenseInfo, LicenseProvider, parser, generator)
+├── license-scribe-gradle-plugin/ # Main Gradle plugin
+├── license-scribe-hilt-plugin/   # Optional Hilt integration plugin
 ├── example/                      # Example Android app
+├── example-library/              # Example library module (for transitive dependency testing)
 ├── Makefile                      # Development commands
 └── build.gradle.kts              # Root build configuration
 ```
@@ -35,11 +39,16 @@ pluginManagement {
 }
 ```
 
-### build.gradle.kts
+### build.gradle.kts (app module)
 
 ```kotlin
 plugins {
     id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
+}
+
+dependencies {
+    // Required: Core library provides LicenseInfo and LicenseProvider
+    implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
 }
 
 licenseScribe {
@@ -134,7 +143,7 @@ Access license information in your app:
 
 ```kotlin
 import com.example.app.AppLicenses
-import com.example.app.LicenseInfo
+import net.syarihu.licensescribe.LicenseInfo
 
 // Get all licenses
 val licenses: List<LicenseInfo> = AppLicenses.all
@@ -146,6 +155,92 @@ licenses.forEach { license ->
     println("  URL: ${license.artifactUrl}")
     println("  Copyright: ${license.copyrightHolder}")
     println("  License URL: ${license.licenseUrl}")
+}
+```
+
+## Multi-Module Support
+
+In multi-module projects, you may want to display licenses in a feature module (e.g., `:feature:settings`) while the plugin is applied to `:app`. The `LicenseProvider` interface enables this pattern.
+
+### Using LicenseProvider Interface
+
+The generated code implements `LicenseProvider` from `license-scribe-core`:
+
+```kotlin
+// Generated in :app module
+object AppLicenses : LicenseProvider {
+    override val all: List<LicenseInfo> = listOf(...)
+}
+```
+
+### Feature Module Setup
+
+In your feature module, depend only on `license-scribe-core`:
+
+```kotlin
+// feature/settings/build.gradle.kts
+dependencies {
+    implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
+}
+```
+
+Then use `LicenseProvider` via dependency injection:
+
+```kotlin
+// In feature module
+class LicenseScreen(
+    private val licenseProvider: LicenseProvider
+) {
+    fun showLicenses() {
+        licenseProvider.all.forEach { license ->
+            println(license.artifactName)
+        }
+    }
+}
+```
+
+## Hilt Integration (Optional)
+
+For projects using Hilt, the optional `license-scribe-hilt` plugin generates a Hilt module automatically.
+
+### Setup
+
+```kotlin
+// app/build.gradle.kts
+plugins {
+    id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
+    id("net.syarihu.license-scribe-hilt") version "0.1.0-SNAPSHOT"
+}
+```
+
+### Generated Hilt Module
+
+The plugin generates:
+
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+object LicenseScribeHiltModule {
+    @Provides
+    @Singleton
+    fun provideLicenseProvider(): LicenseProvider = AppLicenses
+}
+```
+
+### Usage in Feature Module
+
+```kotlin
+// feature/settings/build.gradle.kts
+dependencies {
+    implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
+}
+
+// ViewModel in feature module
+@HiltViewModel
+class LicenseViewModel @Inject constructor(
+    private val licenseProvider: LicenseProvider
+) : ViewModel() {
+    val licenses: List<LicenseInfo> = licenseProvider.all
 }
 ```
 
@@ -230,28 +325,53 @@ make publish
 
 ## Generated Code Structure
 
-The plugin generates two classes:
+### Core Library Classes
 
-### LicenseInfo
+The `license-scribe-core` library provides:
+
+#### LicenseInfo
 
 ```kotlin
+package net.syarihu.licensescribe
+
 data class LicenseInfo(
-    val artifactId: String,      // e.g., "com.example:library:1.0.0"
-    val artifactName: String,    // e.g., "library"
-    val artifactUrl: String?,    // Project URL
+    val artifactId: String,       // e.g., "com.example:library:1.0.0"
+    val artifactName: String,     // e.g., "library"
+    val artifactUrl: String?,     // Project URL
     val copyrightHolder: String?, // e.g., "Example Inc."
-    val licenseName: String,     // e.g., "The Apache License, Version 2.0"
-    val licenseUrl: String?,     // License URL
+    val licenseName: String,      // e.g., "The Apache License, Version 2.0"
+    val licenseUrl: String?,      // License URL
 )
 ```
 
-### Licenses (or custom class name)
+#### LicenseProvider
 
 ```kotlin
-object AppLicenses {
-    val all: List<LicenseInfo> = listOf(
+package net.syarihu.licensescribe
+
+interface LicenseProvider {
+    val all: List<LicenseInfo>
+}
+```
+
+### Generated Class
+
+The plugin generates one class that implements `LicenseProvider`:
+
+```kotlin
+package com.example.app
+
+import net.syarihu.licensescribe.LicenseInfo
+import net.syarihu.licensescribe.LicenseProvider
+
+object AppLicenses : LicenseProvider {
+    override val all: List<LicenseInfo> = listOf(
         // All license entries
     )
+
+    // Helper functions
+    fun findByArtifactId(artifactId: String): LicenseInfo?
+    fun findByLicenseName(licenseName: String): List<LicenseInfo>
 }
 ```
 
