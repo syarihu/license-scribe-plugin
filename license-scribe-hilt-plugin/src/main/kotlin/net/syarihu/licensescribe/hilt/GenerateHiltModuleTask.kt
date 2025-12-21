@@ -37,7 +37,7 @@ abstract class GenerateHiltModuleTask : DefaultTask() {
       this.licensesClassName.convention("Licenses")
     }
 
-    this.outputDirectory.set(project.layout.buildDirectory.dir("generated/source/licenseScribe"))
+    this.outputDirectory.set(project.layout.buildDirectory.dir("generated/source/licensescribe"))
   }
 
   @TaskAction

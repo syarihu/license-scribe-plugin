@@ -47,7 +47,7 @@ class LicenseScribePlugin : Plugin<Project> {
     project: Project,
     extension: LicenseScribeExtension,
   ) {
-    val outputDir = project.layout.buildDirectory.dir("generated/source/licenseScribe")
+    val outputDir = project.layout.buildDirectory.dir("generated/source/licensescribe")
 
     try {
       val androidExtension = project.extensions.findByName("android")

@@ -38,7 +38,7 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
     this.generatedClassName.set(extension.generatedClassName)
 
     // Use the same output directory for all variants to avoid duplication
-    this.outputDirectory.set(project.layout.buildDirectory.dir("generated/source/licenseScribe"))
+    this.outputDirectory.set(project.layout.buildDirectory.dir("generated/source/licensescribe"))
   }
 
   @TaskAction
