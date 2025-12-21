@@ -289,11 +289,15 @@ make check
 ### Manual Gradle Commands
 
 ```bash
+# Publish runtime module
+./gradlew :license-scribe-runtime:publishToMavenLocal
+
 # Publish core module
 ./gradlew :license-scribe-core:publishToMavenLocal
 
-# Publish plugin
+# Publish plugins
 ./gradlew :license-scribe-gradle-plugin:publishToMavenLocal
+./gradlew :license-scribe-hilt-plugin:publishToMavenLocal
 
 # Build example
 ./gradlew :example:assembleDebug
