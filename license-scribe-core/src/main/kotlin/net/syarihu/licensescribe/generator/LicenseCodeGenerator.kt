@@ -15,81 +15,34 @@ import java.io.File
  * Generates Kotlin code for license information.
  */
 class LicenseCodeGenerator {
+  companion object {
+    private const val CORE_PACKAGE = "net.syarihu.licensescribe"
+  }
+
   fun generate(
     licenses: List<ResolvedLicense>,
     packageName: String,
     className: String,
     outputDir: File,
   ) {
-    val licenseInfoClass = createLicenseInfoDataClass(packageName)
-    val licensesObject = createLicensesObject(licenses, packageName, className)
+    val licensesObject = createLicensesObject(licenses, className)
 
-    // Write LicenseInfo data class
-    FileSpec
-      .builder(packageName, "LicenseInfo")
-      .addType(licenseInfoClass)
-      .build()
-      .writeTo(outputDir)
-
-    // Write Licenses object
+    // Write Licenses object (implements LicenseProvider from core)
     FileSpec
       .builder(packageName, className)
+      .addImport(CORE_PACKAGE, "LicenseInfo")
+      .addImport(CORE_PACKAGE, "LicenseProvider")
       .addType(licensesObject)
       .build()
       .writeTo(outputDir)
   }
 
-  private fun createLicenseInfoDataClass(packageName: String): TypeSpec = TypeSpec
-    .classBuilder("LicenseInfo")
-    .addModifiers(KModifier.DATA)
-    .primaryConstructor(
-      FunSpec
-        .constructorBuilder()
-        .addParameter("artifactId", String::class)
-        .addParameter("artifactName", String::class)
-        .addParameter("artifactUrl", String::class.asClassName().copy(nullable = true))
-        .addParameter("copyrightHolder", String::class.asClassName().copy(nullable = true))
-        .addParameter("licenseName", String::class)
-        .addParameter("licenseUrl", String::class.asClassName().copy(nullable = true))
-        .build(),
-    ).addProperty(
-      PropertySpec
-        .builder("artifactId", String::class)
-        .initializer("artifactId")
-        .build(),
-    ).addProperty(
-      PropertySpec
-        .builder("artifactName", String::class)
-        .initializer("artifactName")
-        .build(),
-    ).addProperty(
-      PropertySpec
-        .builder("artifactUrl", String::class.asClassName().copy(nullable = true))
-        .initializer("artifactUrl")
-        .build(),
-    ).addProperty(
-      PropertySpec
-        .builder("copyrightHolder", String::class.asClassName().copy(nullable = true))
-        .initializer("copyrightHolder")
-        .build(),
-    ).addProperty(
-      PropertySpec
-        .builder("licenseName", String::class)
-        .initializer("licenseName")
-        .build(),
-    ).addProperty(
-      PropertySpec
-        .builder("licenseUrl", String::class.asClassName().copy(nullable = true))
-        .initializer("licenseUrl")
-        .build(),
-    ).build()
-
   private fun createLicensesObject(
     licenses: List<ResolvedLicense>,
-    packageName: String,
     className: String,
   ): TypeSpec {
-    val licenseInfoClassName = ClassName(packageName, "LicenseInfo")
+    val licenseInfoClassName = ClassName(CORE_PACKAGE, "LicenseInfo")
+    val licenseProviderClassName = ClassName(CORE_PACKAGE, "LicenseProvider")
     val listType = List::class.asClassName().parameterizedBy(licenseInfoClassName)
 
     val listInitializer =
@@ -119,9 +72,11 @@ class LicenseCodeGenerator {
 
     return TypeSpec
       .objectBuilder(className)
+      .addSuperinterface(licenseProviderClassName)
       .addProperty(
         PropertySpec
           .builder("all", listType)
+          .addModifiers(KModifier.OVERRIDE)
           .initializer(listInitializer)
           .build(),
       ).addFunction(
