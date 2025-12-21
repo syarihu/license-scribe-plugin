@@ -126,8 +126,10 @@ class LicenseScribePlugin : Plugin<Project> {
     // Make ALL compile tasks depend on this generate task
     // This is necessary because all variants share the same output directory
     project.tasks.matching {
-      (it.name.contains("compile", ignoreCase = true) &&
-        it.name.contains("Kotlin", ignoreCase = true)) ||
+      (
+        it.name.contains("compile", ignoreCase = true) &&
+          it.name.contains("Kotlin", ignoreCase = true)
+        ) ||
         (it.name.startsWith("ksp") && it.name.endsWith("Kotlin"))
     }.configureEach { compileTask ->
       compileTask.dependsOn(generateTask)
