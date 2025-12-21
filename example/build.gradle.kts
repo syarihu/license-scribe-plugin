@@ -40,6 +40,9 @@ kotlin {
 }
 
 dependencies {
+  // License Scribe core (for LicenseProvider and LicenseInfo)
+  implementation("net.syarihu:license-scribe-core:0.1.0-SNAPSHOT")
+
   // Internal library module (to test transitive dependency detection)
   implementation(project(":example-library"))
 

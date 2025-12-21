@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import net.syarihu.licensescribe.LicenseInfo
 import net.syarihu.licensescribe.example.AppLicenses
-import net.syarihu.licensescribe.example.LicenseInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
