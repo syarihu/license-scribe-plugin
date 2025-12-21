@@ -1,0 +1,4 @@
+# Patterns to ignore artifacts
+# Examples:
+# com.example:artifact-name
+# com.example:*
