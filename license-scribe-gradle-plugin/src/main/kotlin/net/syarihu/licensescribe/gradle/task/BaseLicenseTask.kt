@@ -393,11 +393,46 @@ abstract class BaseLicenseTask : DefaultTask() {
       lower.contains("creative commons") && lower.contains("zero") -> "cc0-1.0"
       lower.contains("unlicense") -> "unlicense"
       lower.contains("isc") -> "isc"
+      // Proprietary licenses should be kept separate per vendor
+      lower == "proprietary" -> {
+        val vendorSuffix = extractVendorFromUrl(licenseUrl)
+        if (vendorSuffix != null) "proprietary-$vendorSuffix" else "proprietary"
+      }
       else ->
         licenseName
           .lowercase()
           .replace(Regex("[^a-z0-9]+"), "-")
           .trim('-')
+    }
+  }
+
+  /**
+   * Extracts a vendor identifier from a URL for creating unique license keys.
+   * Returns the domain name or GitHub org/repo as identifier.
+   */
+  private fun extractVendorFromUrl(url: String?): String? {
+    if (url == null) return null
+    return try {
+      val urlLower = url.lowercase()
+      when {
+        // GitHub: extract org name
+        urlLower.contains("github.com") -> {
+          val match = Regex("github\\.com/([^/]+)").find(urlLower)
+          match?.groupValues?.get(1)
+        }
+        // GitLab: extract org name
+        urlLower.contains("gitlab.com") -> {
+          val match = Regex("gitlab\\.com/([^/]+)").find(urlLower)
+          match?.groupValues?.get(1)
+        }
+        // Other URLs: extract domain without TLD
+        else -> {
+          val match = Regex("://(?:www\\.)?([^./]+)").find(urlLower)
+          match?.groupValues?.get(1)
+        }
+      }
+    } catch (_: Exception) {
+      null
     }
   }
 
