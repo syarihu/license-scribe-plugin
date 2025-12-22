@@ -28,7 +28,7 @@ gradlePlugin {
       id = "net.syarihu.license-scribe"
       implementationClass = "net.syarihu.licensescribe.gradle.LicenseScribePlugin"
       displayName = "License Scribe Plugin"
-      description = "A Gradle plugin for managing and generating license information for Android/Kotlin project dependencies"
+      description = "A Gradle plugin that acts as your project's scribe, carefully recording and cataloging license information for Android/Kotlin dependencies into clean, accessible code"
     }
   }
 }
@@ -57,7 +57,7 @@ publishing {
 
       pom {
         name.set("License Scribe Gradle Plugin")
-        description.set("A Gradle plugin for managing and generating license information for Android/Kotlin project dependencies")
+        description.set("A Gradle plugin that acts as your project's scribe, carefully recording and cataloging license information for Android/Kotlin dependencies into clean, accessible code")
         url.set("https://github.com/syarihu/license-scribe-plugin")
 
         licenses {
