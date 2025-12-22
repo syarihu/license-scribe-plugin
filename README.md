@@ -381,6 +381,10 @@ object AppLicenses : LicenseProvider {
 }
 ```
 
+## Acknowledgements
+
+This project was inspired by [license-list-plugin](https://github.com/jmatsu/license-list-plugin).
+
 ## License
 
 ```
