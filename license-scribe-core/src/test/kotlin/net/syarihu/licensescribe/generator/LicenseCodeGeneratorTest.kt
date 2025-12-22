@@ -22,7 +22,7 @@ class LicenseCodeGeneratorTest : FunSpec(
               artifactId = ArtifactId("com.example", "lib", "1.0.0"),
               artifactName = "lib",
               artifactUrl = "https://example.com",
-              copyrightHolder = "Example Inc.",
+              copyrightHolders = listOf("Example Inc."),
               license = License("mit", "MIT License", "https://opensource.org/licenses/MIT"),
             ),
           )
@@ -57,7 +57,7 @@ class LicenseCodeGeneratorTest : FunSpec(
               artifactId = ArtifactId("com.example", "lib", "1.0.0"),
               artifactName = "lib \"with\" quotes",
               artifactUrl = null,
-              copyrightHolder = null,
+              copyrightHolders = emptyList(),
               license = License("custom", "Custom \"License\"", null),
             ),
           )
