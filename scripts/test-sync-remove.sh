@@ -14,7 +14,8 @@ cleanup() {
 trap cleanup EXIT
 
 # Remove gson dependency (not a transitive dependency of example-library's Retrofit)
-sed -i '' '/com.google.code.gson:gson/d' example/build.gradle.kts
+sed -i.sedbak '/com.google.code.gson:gson/d' example/build.gradle.kts
+rm -f example/build.gradle.kts.sedbak
 
 # Run sync
 ./gradlew :example:scribeLicensesDebugSync --no-configuration-cache
