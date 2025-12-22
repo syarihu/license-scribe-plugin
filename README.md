@@ -5,8 +5,9 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 ## Features
 
 - Automatically detects project dependencies and their licenses (including transitive dependencies)
+- **Parent POM resolution** - detects licenses from parent POMs when not specified in the artifact's own POM
+- **License-first YAML structure** - instantly see all licenses used in your project at a glance
 - Generates Kotlin code for easy access to license information in your app
-- Supports YAML-based configuration for artifact definitions and license catalog
 - Works with Android (application/library) and pure Kotlin/JVM projects
 - **Multi-module support** with `LicenseProvider` interface for dependency injection
 - **Optional Hilt integration** for seamless DI in feature modules
@@ -90,7 +91,13 @@ This creates:
 
 ### 2. Review and Edit Definitions
 
-Edit `scribe-licenses.yml` to add missing information. The file uses a **license-first structure** where artifacts are grouped under their license:
+Edit `scribe-licenses.yml` to add missing information. The file uses a **license-first structure** where artifacts are grouped under their license.
+
+**Benefits of license-first structure:**
+- Instantly see all license types used in your project by looking at the top-level keys
+- Easily identify which libraries use specific licenses (e.g., GPL, LGPL)
+- Simplifies license compliance review and auditing
+- Makes it easy to spot libraries that need attention (grouped under `unknown`)
 
 ```yaml
 licenses:
