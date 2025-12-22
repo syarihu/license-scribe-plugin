@@ -65,8 +65,7 @@ licenseScribe {
     generatedClassName.set("AppLicenses")
 
     // File names (optional, with defaults)
-    // recordsFile.set("scribe-records.yml")
-    // catalogFile.set("scribe-catalog.yml")
+    // licensesFile.set("scribe-licenses.yml")
     // ignoreFile.set(".scribeignore")
 }
 ```
@@ -86,33 +85,65 @@ Run the init task to create the initial license management files:
 ```
 
 This creates:
-- `scribe-records.yml` - Defines artifacts and their license information
-- `scribe-catalog.yml` - Catalog of license types
+- `scribe-licenses.yml` - Defines licenses and their artifacts (license-first structure)
 - `.scribeignore` - Patterns for artifacts to ignore
 
 ### 2. Review and Edit Definitions
 
-Edit `scribe-records.yml` to add missing information:
+Edit `scribe-licenses.yml` to add missing information. The file uses a **license-first structure** where artifacts are grouped under their license:
 
 ```yaml
-implementation:
-  com.example:
-  - name: library-name
-    url: https://github.com/example/library
-    copyrightHolder: Example Inc.
-    license: apache-2.0
-    version: 1.0.0
+licenses:
+  apache-2.0:
+    name: The Apache License, Version 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.txt
+    artifacts:
+      com.example:
+      - name: library-name
+        url: https://github.com/example/library
+        copyrightHolders:
+        - Example Inc.
+      com.squareup.okhttp3:
+      - name: okhttp
+        url: https://square.github.io/okhttp/
+        copyrightHolders:
+        - Square, Inc.
+
+  mit:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+    artifacts:
+      org.example:
+      - name: some-lib
+        copyrightHolders:
+        - Some Developer
 ```
 
-Edit `scribe-catalog.yml` to define license types:
+#### Dual Licensing Support
+
+For libraries with dual licensing, you can specify alternative or additional licenses:
 
 ```yaml
-apache-2.0:
-  name: The Apache License, Version 2.0
-  url: http://www.apache.org/licenses/LICENSE-2.0.txt
-mit:
-  name: MIT License
-  url: https://opensource.org/licenses/MIT
+licenses:
+  apache-2.0:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+    artifacts:
+      com.example:
+      - name: dual-licensed-lib
+        copyrightHolders:
+        - Example Inc.
+        alternativeLicenses: [mit]  # OR: user can choose either license
+
+  gpl-2.0:
+    name: GNU General Public License v2.0
+    url: https://www.gnu.org/licenses/gpl-2.0.html
+    artifacts:
+      com.example:
+      - name: classpath-exception-lib
+        copyrightHolders:
+        - Example Inc.
+        additionalLicenses: [classpath-exception]  # AND: both licenses apply
 ```
 
 ### 3. Check Licenses (Optional)
@@ -155,7 +186,7 @@ licenses.forEach { license ->
     println("${license.artifactName} - ${license.licenseName}")
     println("  ID: ${license.artifactId}")
     println("  URL: ${license.artifactUrl}")
-    println("  Copyright: ${license.copyrightHolder}")
+    println("  Copyright: ${license.copyrightHolders.joinToString(", ")}")
     println("  License URL: ${license.licenseUrl}")
 }
 ```
@@ -341,12 +372,24 @@ The `license-scribe-runtime` library provides:
 package net.syarihu.licensescribe
 
 data class LicenseInfo(
-    val artifactId: String,       // e.g., "com.example:library:1.0.0"
-    val artifactName: String,     // e.g., "library"
-    val artifactUrl: String?,     // Project URL
-    val copyrightHolder: String?, // e.g., "Example Inc."
-    val licenseName: String,      // e.g., "The Apache License, Version 2.0"
-    val licenseUrl: String?,      // License URL
+    val artifactId: String,                              // e.g., "com.example:library:1.0.0"
+    val artifactName: String,                            // e.g., "library"
+    val artifactUrl: String?,                            // Project URL
+    val copyrightHolders: List<String>,                  // e.g., ["Example Inc."]
+    val licenseName: String,                             // e.g., "The Apache License, Version 2.0"
+    val licenseUrl: String?,                             // License URL
+    val alternativeLicenses: List<AlternativeLicenseInfo>?,  // OR relationship (dual-licensing)
+    val additionalLicenses: List<AdditionalLicenseInfo>?,    // AND relationship
+)
+
+data class AlternativeLicenseInfo(
+    val licenseName: String,
+    val licenseUrl: String?,
+)
+
+data class AdditionalLicenseInfo(
+    val licenseName: String,
+    val licenseUrl: String?,
 )
 ```
 
