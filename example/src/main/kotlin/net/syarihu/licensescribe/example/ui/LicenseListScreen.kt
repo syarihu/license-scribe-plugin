@@ -81,9 +81,9 @@ private fun LicenseItem(license: LicenseInfo) {
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
       )
-      license.copyrightHolder?.let { holder ->
+      if (license.copyrightHolders.isNotEmpty()) {
         Text(
-          text = holder,
+          text = license.copyrightHolders.joinToString(", "),
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
