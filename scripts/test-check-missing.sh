@@ -4,15 +4,18 @@ set -e
 echo "=== Test: scribeLicensesCheck should fail when definition is missing ==="
 
 # Backup original file
-cp example/licenses/scribe-records.yml example/licenses/scribe-records.yml.bak
+cp example/licenses/scribe-licenses.yml example/licenses/scribe-licenses.yml.bak
 
 cleanup() {
-  mv example/licenses/scribe-records.yml.bak example/licenses/scribe-records.yml
+  mv example/licenses/scribe-licenses.yml.bak example/licenses/scribe-licenses.yml
 }
 trap cleanup EXIT
 
-# Remove one artifact definition
-sed -i '/- name: okhttp/,/license:/d' example/licenses/scribe-records.yml
+# Remove com.squareup.retrofit2 group (5 lines) from the YAML
+# This will cause scribeLicensesCheck to fail because retrofit is a dependency
+awk '/com.squareup.retrofit2:/{skip=5} skip>0{skip--;next} 1' \
+  example/licenses/scribe-licenses.yml > example/licenses/scribe-licenses.yml.tmp \
+  && mv example/licenses/scribe-licenses.yml.tmp example/licenses/scribe-licenses.yml
 
 # scribeLicensesCheck should fail
 if ./gradlew :example:scribeLicensesDebugCheck --no-configuration-cache 2>&1; then
