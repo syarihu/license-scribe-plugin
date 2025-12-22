@@ -1,7 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.compose)
+  kotlin("android")
+  kotlin("plugin.compose")
   id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
 }
 

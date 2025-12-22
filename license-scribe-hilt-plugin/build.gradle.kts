@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.kotlin.jvm)
+  kotlin("jvm")
   alias(libs.plugins.dokka)
   `java-gradle-plugin`
   `maven-publish`
@@ -11,6 +11,10 @@ version = "0.1.0-SNAPSHOT"
 
 kotlin {
   jvmToolchain(17)
+}
+
+java {
+  withSourcesJar()
 }
 
 dependencies {
@@ -36,10 +40,6 @@ gradlePlugin {
 
 tasks.withType<Test>().configureEach {
   useJUnitPlatform()
-}
-
-java {
-  withSourcesJar()
 }
 
 val dokkaJavadocJar by tasks.registering(Jar::class) {

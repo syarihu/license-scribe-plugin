@@ -5,6 +5,11 @@ pluginManagement {
     mavenCentral()
     google()
   }
+  plugins {
+    kotlin("jvm") version embeddedKotlinVersion
+    kotlin("android") version embeddedKotlinVersion
+    kotlin("plugin.compose") version embeddedKotlinVersion
+  }
 }
 
 dependencyResolutionManagement {
@@ -25,6 +30,6 @@ include(":license-scribe-hilt-plugin")
 // example modules require the plugin to be published to Maven Local first
 // Use -PexcludeExample to skip them during initial build
 if (providers.gradleProperty("excludeExample").isPresent.not()) {
-    include(":example")
-    include(":example-library")
+  include(":example")
+  include(":example-library")
 }

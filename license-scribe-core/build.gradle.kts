@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.kotlin.jvm)
+  kotlin("jvm")
   alias(libs.plugins.dokka)
   `maven-publish`
   signing
@@ -13,6 +13,7 @@ kotlin {
 }
 
 dependencies {
+  compileOnly(kotlin("stdlib"))
   api(project(":license-scribe-runtime"))
   implementation(libs.snakeyaml)
   implementation(libs.kotlinpoet)

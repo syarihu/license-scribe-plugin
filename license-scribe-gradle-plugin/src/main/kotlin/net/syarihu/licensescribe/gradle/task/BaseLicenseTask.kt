@@ -162,16 +162,18 @@ abstract class BaseLicenseTask : DefaultTask() {
   private fun resolvePomInfoFromConfiguration(
     config: Configuration,
     artifactId: ArtifactId,
-  ): PomInfo? = try {
-    val version = artifactId.version
-    if (version.isNullOrBlank()) {
-      logger.debug("Cannot resolve POM for ${artifactId.coordinate}: version is missing")
-      return null
+  ): PomInfo? {
+    return try {
+      val version = artifactId.version
+      if (version.isNullOrBlank()) {
+        logger.debug("Cannot resolve POM for ${artifactId.coordinate}: version is missing")
+        return null
+      }
+      resolvePomInfoRecursive(artifactId.group, artifactId.name, version, maxDepth = 5)
+    } catch (e: Exception) {
+      logger.debug("Failed to resolve POM for ${artifactId.coordinate}: ${e.message}")
+      null
     }
-    resolvePomInfoRecursive(artifactId.group, artifactId.name, version, maxDepth = 5)
-  } catch (e: Exception) {
-    logger.debug("Failed to resolve POM for ${artifactId.coordinate}: ${e.message}")
-    null
   }
 
   /**

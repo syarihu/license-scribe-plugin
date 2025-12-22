@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.kotlin.jvm)
+  kotlin("jvm")
   alias(libs.plugins.dokka)
   `maven-publish`
   signing
@@ -12,7 +12,9 @@ kotlin {
   jvmToolchain(17)
 }
 
-// No dependencies - this is a minimal runtime library
+dependencies {
+  compileOnly(kotlin("stdlib"))
+}
 
 java {
   withSourcesJar()
