@@ -100,6 +100,9 @@ abstract class InitLicensesTask : BaseLicenseTask() {
 
     val catalog = LicenseCatalog(licenses)
 
+    // Ensure variant directory exists
+    licensesFile.parentFile?.mkdirs()
+
     // Write licenses file
     if (!licensesFile.exists() || licensesFile.length() == 0L) {
       val content = LicenseCatalogParser().serialize(catalog)

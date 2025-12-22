@@ -34,7 +34,7 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
     variant: String,
     project: Project,
   ) {
-    super.configureWith(extension, configuration)
+    super.configureWith(extension, configuration, variant)
     this.generatedPackageName.set(extension.generatedPackageName)
     this.generatedClassName.set(extension.generatedClassName)
 

@@ -4,11 +4,11 @@ set -e
 echo "=== Test: scribeLicensesSync should add new dependency ==="
 
 # Backup original files
-cp example/licenses/scribe-licenses.yml example/licenses/scribe-licenses.yml.bak
+cp example/licenses/debug/scribe-licenses.yml example/licenses/debug/scribe-licenses.yml.bak
 cp example/build.gradle.kts example/build.gradle.kts.bak
 
 cleanup() {
-  mv example/licenses/scribe-licenses.yml.bak example/licenses/scribe-licenses.yml
+  mv example/licenses/debug/scribe-licenses.yml.bak example/licenses/debug/scribe-licenses.yml
   mv example/build.gradle.kts.bak example/build.gradle.kts
 }
 trap cleanup EXIT
@@ -22,7 +22,7 @@ rm -f example/build.gradle.kts.sedbak
 ./gradlew :example:scribeLicensesDebugSync --no-configuration-cache
 
 # Verify gson was added to definitions
-if grep -q "gson" example/licenses/scribe-licenses.yml; then
+if grep -q "gson" example/licenses/debug/scribe-licenses.yml; then
   echo "SUCCESS: scribeLicensesSync correctly added new dependency"
 else
   echo "ERROR: scribeLicensesSync did not add new dependency"

@@ -35,6 +35,12 @@ abstract class BaseLicenseTask : DefaultTask() {
   abstract val ignoreFileName: Property<String>
 
   /**
+   * Variant name for Android projects (empty for non-Android projects)
+   */
+  @get:Input
+  abstract val variantName: Property<String>
+
+  /**
    * Resolved dependencies as serializable strings "group:name:version"
    */
   @get:Input
@@ -49,10 +55,12 @@ abstract class BaseLicenseTask : DefaultTask() {
   fun configureWith(
     extension: LicenseScribeExtension,
     configuration: Configuration?,
+    variant: String = "",
   ) {
     this.baseDir.set(extension.baseDir)
     this.licensesFileName.set(extension.licensesFile)
     this.ignoreFileName.set(extension.ignoreFile)
+    this.variantName.set(variant)
 
     // Use lazy evaluation to defer dependency resolution until task execution
     // This ensures compatibility with configure-on-demand mode
@@ -82,9 +90,24 @@ abstract class BaseLicenseTask : DefaultTask() {
     }
   }
 
-  protected fun resolveLicensesFile(): File = baseDir.file(licensesFileName).get().asFile
+  /**
+   * Returns the variant-specific directory.
+   * For Android projects: baseDir/variant/ (e.g., licenses/debug/, licenses/release/)
+   * For non-Android projects: baseDir/
+   */
+  protected fun resolveVariantDir(): File {
+    val base = baseDir.get().asFile
+    val variant = variantName.get()
+    return if (variant.isNotEmpty()) {
+      File(base, variant)
+    } else {
+      base
+    }
+  }
 
-  protected fun resolveIgnoreFile(): File = baseDir.file(ignoreFileName).get().asFile
+  protected fun resolveLicensesFile(): File = File(resolveVariantDir(), licensesFileName.get())
+
+  protected fun resolveIgnoreFile(): File = File(resolveVariantDir(), ignoreFileName.get())
 
   protected fun loadLicenseCatalog(): LicenseCatalog = LicenseCatalogParser().parse(resolveLicensesFile())
 

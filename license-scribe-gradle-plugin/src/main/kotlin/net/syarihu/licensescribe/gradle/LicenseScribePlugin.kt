@@ -87,19 +87,19 @@ class LicenseScribePlugin : Plugin<Project> {
     project.tasks.register("scribeLicenses${suffix}Init", InitLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Initialize license management files for $variantName"
-      task.configureWith(extension, configuration)
+      task.configureWith(extension, configuration, variantName)
     }
 
     project.tasks.register("scribeLicenses${suffix}Check", CheckLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Check license definitions for $variantName"
-      task.configureWith(extension, configuration)
+      task.configureWith(extension, configuration, variantName)
     }
 
     project.tasks.register("scribeLicenses${suffix}Sync", SyncLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Sync license definitions with current dependencies for $variantName"
-      task.configureWith(extension, configuration)
+      task.configureWith(extension, configuration, variantName)
     }
 
     val generateTask =

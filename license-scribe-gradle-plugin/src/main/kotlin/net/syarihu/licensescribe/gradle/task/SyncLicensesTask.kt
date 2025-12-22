@@ -128,8 +128,11 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
 
     val catalog = LicenseCatalog(licenses)
 
-    // Write updated file
+    // Ensure variant directory exists
     val licensesFile = resolveLicensesFile()
+    licensesFile.parentFile?.mkdirs()
+
+    // Write updated file
     licensesFile.writeText(LicenseCatalogParser().serialize(catalog))
 
     logger.lifecycle(

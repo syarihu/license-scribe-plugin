@@ -12,15 +12,14 @@ cleanup() {
 }
 trap cleanup EXIT
 
-rm -f example/licenses/scribe-licenses.yml
-rm -f example/licenses/.scribeignore
+rm -rf example/licenses/debug
 
 # Run init
 ./gradlew :example:scribeLicensesDebugInit --no-configuration-cache
 
-# Verify files were created
-if [[ -f example/licenses/scribe-licenses.yml && \
-      -f example/licenses/.scribeignore ]]; then
+# Verify files were created (now in variant subdirectory)
+if [[ -f example/licenses/debug/scribe-licenses.yml && \
+      -f example/licenses/debug/.scribeignore ]]; then
   echo "SUCCESS: scribeLicensesInit created all required files"
 else
   echo "ERROR: scribeLicensesInit did not create all files"
@@ -29,7 +28,7 @@ else
 fi
 
 # Verify scribe-licenses.yml has content
-if [[ -s example/licenses/scribe-licenses.yml ]]; then
+if [[ -s example/licenses/debug/scribe-licenses.yml ]]; then
   echo "SUCCESS: scribe-licenses.yml has content"
 else
   echo "ERROR: scribe-licenses.yml is empty"
