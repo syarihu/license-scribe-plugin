@@ -1,8 +1,8 @@
-.PHONY: publish build clean help
+.PHONY: publish build clean test help
 
-# Publish to Maven Local (runtime first, then core, then gradle-plugin)
+# Publish to Maven Local (runtime first, then core, then plugins)
 publish:
-	./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal --no-configuration-cache
+	./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal :license-scribe-hilt-plugin:publishToMavenLocal --no-configuration-cache
 
 # Build all modules (requires publish first)
 build:
@@ -10,6 +10,15 @@ build:
 
 # Publish and build
 all: publish build
+
+# Run all tests
+test:
+	./scripts/test-init.sh
+	./scripts/test-check-valid.sh
+	./scripts/test-check-missing.sh
+	./scripts/test-sync-add.sh
+	./scripts/test-sync-remove.sh
+	./scripts/test-configuration-cache.sh
 
 # Clean build artifacts
 clean:
@@ -25,9 +34,10 @@ check:
 
 help:
 	@echo "Available targets:"
-	@echo "  make publish  - Publish core and gradle-plugin to Maven Local"
+	@echo "  make publish  - Publish all modules to Maven Local"
 	@echo "  make build    - Build all modules"
 	@echo "  make all      - Publish and build"
+	@echo "  make test     - Run all integration tests"
 	@echo "  make clean    - Clean build artifacts"
 	@echo "  make format   - Apply spotless formatting"
 	@echo "  make check    - Check formatting"

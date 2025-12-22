@@ -359,6 +359,9 @@ make build
 # Publish and build
 make all
 
+# Run all integration tests
+make test
+
 # Clean build artifacts
 make clean
 
@@ -372,15 +375,14 @@ make check
 ### Manual Gradle Commands
 
 ```bash
-# Publish runtime module
+# Publish all modules to Maven Local
 ./gradlew :license-scribe-runtime:publishToMavenLocal
-
-# Publish core module
 ./gradlew :license-scribe-core:publishToMavenLocal
-
-# Publish plugins
 ./gradlew :license-scribe-gradle-plugin:publishToMavenLocal
 ./gradlew :license-scribe-hilt-plugin:publishToMavenLocal
+
+# Or publish all at once
+./gradlew publishToMavenLocal
 
 # Build example
 ./gradlew :example:assembleDebug
