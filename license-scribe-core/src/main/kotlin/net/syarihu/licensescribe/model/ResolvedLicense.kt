@@ -8,6 +8,8 @@ data class ResolvedLicense(
   val artifactId: ArtifactId,
   val artifactName: String,
   val artifactUrl: String?,
-  val copyrightHolder: String?,
+  val copyrightHolders: List<String>,
   val license: License,
+  val alternativeLicenses: List<License>? = null,
+  val additionalLicenses: List<License>? = null,
 )

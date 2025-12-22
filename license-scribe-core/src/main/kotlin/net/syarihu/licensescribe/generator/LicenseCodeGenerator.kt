@@ -33,6 +33,8 @@ class LicenseCodeGenerator {
       .builder(packageName, className)
       .addImport(CORE_PACKAGE, "LicenseInfo")
       .addImport(CORE_PACKAGE, "LicenseProvider")
+      .addImport(CORE_PACKAGE, "AlternativeLicenseInfo")
+      .addImport(CORE_PACKAGE, "AdditionalLicenseInfo")
       .addType(licensesObject)
       .build()
       .writeTo(outputDir)
@@ -83,6 +85,8 @@ class LicenseCodeGenerator {
     }
 
     val sortedLicenses = licenses.sortedBy { it.artifactId.coordinate }
+    val alternativeLicenseInfoClassName = ClassName(CORE_PACKAGE, "AlternativeLicenseInfo")
+    val additionalLicenseInfoClassName = ClassName(CORE_PACKAGE, "AdditionalLicenseInfo")
 
     return CodeBlock.builder()
       .add("listOf(\n")
@@ -98,16 +102,56 @@ class LicenseCodeGenerator {
           } else {
             add("artifactUrl = null,\n")
           }
-          if (license.copyrightHolder != null) {
-            add("copyrightHolder = %S,\n", license.copyrightHolder)
+          // copyrightHolders
+          if (license.copyrightHolders.isEmpty()) {
+            add("copyrightHolders = emptyList(),\n")
           } else {
-            add("copyrightHolder = null,\n")
+            add("copyrightHolders = listOf(")
+            license.copyrightHolders.forEachIndexed { i, holder ->
+              add("%S", holder)
+              if (i < license.copyrightHolders.size - 1) add(", ")
+            }
+            add("),\n")
           }
           add("licenseName = %S,\n", license.license.name)
           if (license.license.url != null) {
             add("licenseUrl = %S,\n", license.license.url)
           } else {
             add("licenseUrl = null,\n")
+          }
+          // alternativeLicenses
+          if (license.alternativeLicenses != null && license.alternativeLicenses.isNotEmpty()) {
+            add("alternativeLicenses = listOf(\n")
+            indent()
+            license.alternativeLicenses.forEachIndexed { i, alt ->
+              add(
+                "%T(licenseName = %S, licenseUrl = %S)",
+                alternativeLicenseInfoClassName,
+                alt.name,
+                alt.url,
+              )
+              if (i < license.alternativeLicenses.size - 1) add(",")
+              add("\n")
+            }
+            unindent()
+            add("),\n")
+          }
+          // additionalLicenses
+          if (license.additionalLicenses != null && license.additionalLicenses.isNotEmpty()) {
+            add("additionalLicenses = listOf(\n")
+            indent()
+            license.additionalLicenses.forEachIndexed { i, add ->
+              add(
+                "%T(licenseName = %S, licenseUrl = %S)",
+                additionalLicenseInfoClassName,
+                add.name,
+                add.url,
+              )
+              if (i < license.additionalLicenses.size - 1) add(",")
+              add("\n")
+            }
+            unindent()
+            add("),\n")
           }
           unindent()
           if (index < sortedLicenses.size - 1) {
