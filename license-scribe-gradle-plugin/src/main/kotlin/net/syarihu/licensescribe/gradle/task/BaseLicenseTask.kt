@@ -421,12 +421,33 @@ abstract class BaseLicenseTask : DefaultTask() {
         val vendorSuffix = extractVendorFromUrl(licenseUrl)
         if (vendorSuffix != null) "proprietary-$vendorSuffix" else "proprietary"
       }
+      // Ambiguous license names should be kept separate per vendor
+      isAmbiguousLicenseName(lower) -> {
+        val vendorSuffix = extractVendorFromUrl(licenseUrl)
+        val baseName = lower.replace(Regex("[^a-z0-9]+"), "-").trim('-').ifEmpty { "unknown" }
+        if (vendorSuffix != null) "$baseName-$vendorSuffix" else baseName
+      }
       else ->
         licenseName
           .lowercase()
           .replace(Regex("[^a-z0-9]+"), "-")
           .trim('-')
     }
+  }
+
+  /**
+   * Checks if a license name is ambiguous and doesn't identify a specific license type.
+   */
+  private fun isAmbiguousLicenseName(lowerName: String): Boolean {
+    val ambiguousNames = setOf(
+      "license",
+      "licence",
+      "the license",
+      "the licence",
+      "see license",
+      "see licence",
+    )
+    return lowerName in ambiguousNames
   }
 
   /**
