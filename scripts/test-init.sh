@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "=== Test: initLicenses should create license files ==="
+echo "=== Test: scribeLicensesInit should create license files ==="
 
 # Backup and remove existing files
 cp -r example/licenses example/licenses.bak
@@ -12,28 +12,28 @@ cleanup() {
 }
 trap cleanup EXIT
 
-rm -f example/licenses/artifact-definitions.yml
-rm -f example/licenses/license-catalog.yml
-rm -f example/licenses/.artifactignore
+rm -f example/licenses/scribe-records.yml
+rm -f example/licenses/scribe-catalog.yml
+rm -f example/licenses/.scribeignore
 
 # Run init
-./gradlew :example:initDebugLicenses --no-configuration-cache
+./gradlew :example:scribeLicensesDebugInit --no-configuration-cache
 
 # Verify files were created
-if [[ -f example/licenses/artifact-definitions.yml && \
-      -f example/licenses/license-catalog.yml && \
-      -f example/licenses/.artifactignore ]]; then
-  echo "SUCCESS: initLicenses created all required files"
+if [[ -f example/licenses/scribe-records.yml && \
+      -f example/licenses/scribe-catalog.yml && \
+      -f example/licenses/.scribeignore ]]; then
+  echo "SUCCESS: scribeLicensesInit created all required files"
 else
-  echo "ERROR: initLicenses did not create all files"
+  echo "ERROR: scribeLicensesInit did not create all files"
   ls -la example/licenses/
   exit 1
 fi
 
-# Verify artifact-definitions.yml has content
-if [[ -s example/licenses/artifact-definitions.yml ]]; then
-  echo "SUCCESS: artifact-definitions.yml has content"
+# Verify scribe-records.yml has content
+if [[ -s example/licenses/scribe-records.yml ]]; then
+  echo "SUCCESS: scribe-records.yml has content"
 else
-  echo "ERROR: artifact-definitions.yml is empty"
+  echo "ERROR: scribe-records.yml is empty"
   exit 1
 fi

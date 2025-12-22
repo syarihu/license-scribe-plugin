@@ -1,23 +1,23 @@
 #!/bin/bash
 set -e
 
-echo "=== Test: checkLicenses should fail when definition is missing ==="
+echo "=== Test: scribeLicensesCheck should fail when definition is missing ==="
 
 # Backup original file
-cp example/licenses/artifact-definitions.yml example/licenses/artifact-definitions.yml.bak
+cp example/licenses/scribe-records.yml example/licenses/scribe-records.yml.bak
 
 cleanup() {
-  mv example/licenses/artifact-definitions.yml.bak example/licenses/artifact-definitions.yml
+  mv example/licenses/scribe-records.yml.bak example/licenses/scribe-records.yml
 }
 trap cleanup EXIT
 
 # Remove one artifact definition
-sed -i '/- name: okhttp/,/license:/d' example/licenses/artifact-definitions.yml
+sed -i '/- name: okhttp/,/license:/d' example/licenses/scribe-records.yml
 
-# checkLicenses should fail
-if ./gradlew :example:checkDebugLicenses --no-configuration-cache 2>&1; then
-  echo "ERROR: checkLicenses should have failed but succeeded"
+# scribeLicensesCheck should fail
+if ./gradlew :example:scribeLicensesDebugCheck --no-configuration-cache 2>&1; then
+  echo "ERROR: scribeLicensesCheck should have failed but succeeded"
   exit 1
 fi
 
-echo "SUCCESS: checkLicenses correctly detected missing definition"
+echo "SUCCESS: scribeLicensesCheck correctly detected missing definition"

@@ -1,13 +1,13 @@
 package net.syarihu.licensescribe.parser
 
+import net.syarihu.licensescribe.model.Catalog
 import net.syarihu.licensescribe.model.License
-import net.syarihu.licensescribe.model.LicenseCatalog
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.Reader
 
 /**
- * Parser for license-catalog.yml files.
+ * Parser for scribe-catalog.yml files.
  *
  * Expected format:
  * ```yaml
@@ -19,18 +19,18 @@ import java.io.Reader
  *   url: https://opensource.org/licenses/MIT
  * ```
  */
-class LicenseCatalogParser {
+class CatalogParser {
   private val yaml = Yaml()
 
-  fun parse(file: File): LicenseCatalog {
+  fun parse(file: File): Catalog {
     if (!file.exists()) {
-      return LicenseCatalog.EMPTY
+      return Catalog.EMPTY
     }
     return file.reader().use { parse(it) }
   }
 
-  fun parse(reader: Reader): LicenseCatalog {
-    val data: Map<String, Any> = yaml.load(reader) ?: return LicenseCatalog.EMPTY
+  fun parse(reader: Reader): Catalog {
+    val data: Map<String, Any> = yaml.load(reader) ?: return Catalog.EMPTY
 
     val licenses =
       data
@@ -38,7 +38,7 @@ class LicenseCatalogParser {
           parseLicense(key, value)?.let { key to it }
         }.toMap()
 
-    return LicenseCatalog(licenses)
+    return Catalog(licenses)
   }
 
   @Suppress("UNCHECKED_CAST")
@@ -58,7 +58,7 @@ class LicenseCatalogParser {
     else -> null
   }
 
-  fun serialize(catalog: LicenseCatalog): String {
+  fun serialize(catalog: Catalog): String {
     val data =
       catalog.licenses.mapValues { (_, license) ->
         buildMap {

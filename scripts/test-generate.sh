@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "=== Test: generateLicenseCode should generate valid Kotlin code ==="
+echo "=== Test: scribeLicensesGenerate should generate valid Kotlin code ==="
 
 # Run generate
-./gradlew :example:generateDebugLicenseCode --no-configuration-cache
+./gradlew :example:scribeLicensesDebugGenerate --no-configuration-cache
 
 GENERATED_DIR="example/build/generated/source/licensescribe"
 

@@ -6,7 +6,7 @@ import java.io.File
 import java.io.Reader
 
 /**
- * Parser for .artifactignore files.
+ * Parser for .scribeignore files.
  *
  * Expected format:
  * ```

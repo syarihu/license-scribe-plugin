@@ -43,29 +43,29 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
 
   @TaskAction
   fun execute() {
-    val definitions = loadArtifactDefinitions()
-    val catalog = loadLicenseCatalog()
+    val records = loadRecords()
+    val catalog = loadCatalog()
 
     val resolvedLicenses =
-      definitions.flatMap { scoped ->
+      records.flatMap { scoped ->
         scoped.groups.flatMap { group ->
-          group.artifacts.mapNotNull { artifact ->
-            val license = catalog.getLicense(artifact.license)
+          group.records.mapNotNull { record ->
+            val license = catalog.getLicense(record.license)
             if (license != null) {
               ResolvedLicense(
                 artifactId =
                 ArtifactId(
                   group = group.groupId,
-                  name = artifact.name,
+                  name = record.name,
                 ),
-                artifactName = artifact.name,
-                artifactUrl = artifact.url,
-                copyrightHolder = artifact.copyrightHolder,
+                artifactName = record.name,
+                artifactUrl = record.url,
+                copyrightHolder = record.copyrightHolder,
                 license = license,
               )
             } else {
               logger.warn(
-                "Unknown license '${artifact.license}' for ${group.groupId}:${artifact.name}",
+                "Unknown license '${record.license}' for ${group.groupId}:${record.name}",
               )
               null
             }

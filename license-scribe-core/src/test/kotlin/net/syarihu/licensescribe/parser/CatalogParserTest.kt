@@ -5,9 +5,9 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import java.io.StringReader
 
-class LicenseCatalogParserTest : FunSpec(
+class CatalogParserTest : FunSpec(
   {
-    val parser = LicenseCatalogParser()
+    val parser = CatalogParser()
 
     test("parse valid yaml") {
       val yaml =
@@ -51,7 +51,7 @@ class LicenseCatalogParserTest : FunSpec(
                 apache-2.0:
                   name: Apache License 2.0
                   url: https://www.apache.org/licenses/LICENSE-2.0
-        """.trimIndent()
+      """.trimIndent()
 
       val catalog = parser.parse(StringReader(yaml))
       val serialized = parser.serialize(catalog)

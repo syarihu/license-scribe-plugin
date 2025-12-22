@@ -1,24 +1,24 @@
 package net.syarihu.licensescribe.gradle.task
 
-import net.syarihu.licensescribe.model.ArtifactDefinition
-import net.syarihu.licensescribe.model.ArtifactGroup
+import net.syarihu.licensescribe.model.Catalog
 import net.syarihu.licensescribe.model.License
-import net.syarihu.licensescribe.model.LicenseCatalog
-import net.syarihu.licensescribe.model.ScopedArtifacts
-import net.syarihu.licensescribe.parser.ArtifactDefinitionsParser
-import net.syarihu.licensescribe.parser.LicenseCatalogParser
+import net.syarihu.licensescribe.model.Record
+import net.syarihu.licensescribe.model.RecordGroup
+import net.syarihu.licensescribe.model.ScopedRecords
+import net.syarihu.licensescribe.parser.CatalogParser
+import net.syarihu.licensescribe.parser.RecordsParser
 import org.gradle.api.tasks.TaskAction
 
 /**
  * Task to initialize license management files.
- * Creates artifact-definitions.yml, license-catalog.yml, and .artifactignore if they don't exist.
+ * Creates scribe-records.yml, scribe-catalog.yml, and .scribeignore if they don't exist.
  */
 abstract class InitLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {
-    val artifactDefinitionsFile = resolveArtifactDefinitionsFile()
-    val licenseCatalogFile = resolveLicenseCatalogFile()
-    val artifactIgnoreFile = resolveArtifactIgnoreFile()
+    val recordsFile = resolveRecordsFile()
+    val catalogFile = resolveCatalogFile()
+    val ignoreFile = resolveIgnoreFile()
 
     val ignoreRules = loadIgnoreRules()
     val dependencies =
@@ -26,12 +26,12 @@ abstract class InitLicensesTask : BaseLicenseTask() {
         .filterNot { ignoreRules.shouldIgnore(it) }
 
     // Group dependencies by scope and group
-    val scopedArtifacts = mutableListOf<ScopedArtifacts>()
+    val scopedRecords = mutableListOf<ScopedRecords>()
     val licenseMap = mutableMapOf<String, License>()
 
     val groups =
       dependencies.groupBy { it.group }.map { (groupId, artifacts) ->
-        val artifactDefs =
+        val records =
           artifacts.map { artifact ->
             val pomInfo = resolvePomInfo(artifact)
 
@@ -50,45 +50,45 @@ abstract class InitLicensesTask : BaseLicenseTask() {
                 key
               } ?: "unknown"
 
-            ArtifactDefinition(
+            Record(
               name = artifact.name,
               url = pomInfo?.url?.let { stripVersionFromUrl(it) },
               copyrightHolder = pomInfo?.developers?.firstOrNull(),
               license = licenseKey,
             )
           }
-        ArtifactGroup(groupId = groupId, artifacts = artifactDefs)
+        RecordGroup(groupId = groupId, records = records)
       }
 
     if (groups.isNotEmpty()) {
-      scopedArtifacts.add(ScopedArtifacts(scope = "implementation", groups = groups))
+      scopedRecords.add(ScopedRecords(scope = "implementation", groups = groups))
     }
 
-    // Write artifact definitions file
-    if (!artifactDefinitionsFile.exists() || artifactDefinitionsFile.length() == 0L) {
-      val content = ArtifactDefinitionsParser().serialize(scopedArtifacts)
-      artifactDefinitionsFile.writeText(content)
-      logger.lifecycle("Created ${artifactDefinitionsFile.name} with ${dependencies.size} artifacts")
+    // Write records file
+    if (!recordsFile.exists() || recordsFile.length() == 0L) {
+      val content = RecordsParser().serialize(scopedRecords)
+      recordsFile.writeText(content)
+      logger.lifecycle("Created ${recordsFile.name} with ${dependencies.size} records")
     } else {
-      logger.lifecycle("${artifactDefinitionsFile.name} already exists, skipping")
+      logger.lifecycle("${recordsFile.name} already exists, skipping")
     }
 
     // Add default licenses if not present
     addDefaultLicenses(licenseMap)
 
-    // Write license catalog file
-    if (!licenseCatalogFile.exists() || licenseCatalogFile.length() == 0L) {
-      val catalog = LicenseCatalog(licenseMap)
-      val content = LicenseCatalogParser().serialize(catalog)
-      licenseCatalogFile.writeText(content)
-      logger.lifecycle("Created ${licenseCatalogFile.name} with ${licenseMap.size} licenses")
+    // Write catalog file
+    if (!catalogFile.exists() || catalogFile.length() == 0L) {
+      val catalog = Catalog(licenseMap)
+      val content = CatalogParser().serialize(catalog)
+      catalogFile.writeText(content)
+      logger.lifecycle("Created ${catalogFile.name} with ${licenseMap.size} licenses")
     } else {
-      logger.lifecycle("${licenseCatalogFile.name} already exists, skipping")
+      logger.lifecycle("${catalogFile.name} already exists, skipping")
     }
 
-    // Write artifact ignore file
-    if (!artifactIgnoreFile.exists()) {
-      artifactIgnoreFile.writeText(
+    // Write ignore file
+    if (!ignoreFile.exists()) {
+      ignoreFile.writeText(
         """
                 # Patterns to ignore artifacts
                 # Examples:
@@ -96,9 +96,9 @@ abstract class InitLicensesTask : BaseLicenseTask() {
                 # com.example:*
         """.trimIndent(),
       )
-      logger.lifecycle("Created ${artifactIgnoreFile.name}")
+      logger.lifecycle("Created ${ignoreFile.name}")
     } else {
-      logger.lifecycle("${artifactIgnoreFile.name} already exists, skipping")
+      logger.lifecycle("${ignoreFile.name} already exists, skipping")
     }
   }
 

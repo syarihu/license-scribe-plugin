@@ -1,31 +1,32 @@
 package net.syarihu.licensescribe.gradle.task
 
-import net.syarihu.licensescribe.model.ArtifactDefinition
-import net.syarihu.licensescribe.model.ArtifactGroup
+import net.syarihu.licensescribe.model.Catalog
 import net.syarihu.licensescribe.model.License
-import net.syarihu.licensescribe.model.ScopedArtifacts
-import net.syarihu.licensescribe.parser.ArtifactDefinitionsParser
-import net.syarihu.licensescribe.parser.LicenseCatalogParser
+import net.syarihu.licensescribe.model.Record
+import net.syarihu.licensescribe.model.RecordGroup
+import net.syarihu.licensescribe.model.ScopedRecords
+import net.syarihu.licensescribe.parser.CatalogParser
+import net.syarihu.licensescribe.parser.RecordsParser
 import org.gradle.api.tasks.TaskAction
 
 /**
- * Task to sync license definitions with current dependencies.
+ * Task to sync license records with current dependencies.
  * Adds new dependencies and removes ones no longer present.
  */
 abstract class SyncLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {
-    val existingDefinitions = loadArtifactDefinitions()
-    val existingCatalog = loadLicenseCatalog()
+    val existingRecords = loadRecords()
+    val existingCatalog = loadCatalog()
     val ignoreRules = loadIgnoreRules()
 
-    // Build lookup map of existing definitions
+    // Build lookup map of existing records
     val existingMap =
-      existingDefinitions
+      existingRecords
         .flatMap { scoped ->
           scoped.groups.flatMap { group ->
-            group.artifacts.map { artifact ->
-              "${group.groupId}:${artifact.name}" to (scoped.scope to artifact)
+            group.records.map { record ->
+              "${group.groupId}:${record.name}" to (scoped.scope to record)
             }
           }
         }.toMap()
@@ -41,14 +42,14 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
       newLicenses[key] = license
     }
 
-    val artifactsByScope = mutableMapOf<String, MutableMap<String, MutableList<ArtifactDefinition>>>()
+    val recordsByScope = mutableMapOf<String, MutableMap<String, MutableList<Record>>>()
 
-    // First, add all existing definitions
-    existingDefinitions.forEach { scoped ->
-      val scopeMap = artifactsByScope.getOrPut(scoped.scope) { mutableMapOf() }
+    // First, add all existing records
+    existingRecords.forEach { scoped ->
+      val scopeMap = recordsByScope.getOrPut(scoped.scope) { mutableMapOf() }
       scoped.groups.forEach { group ->
         val groupList = scopeMap.getOrPut(group.groupId) { mutableListOf() }
-        groupList.addAll(group.artifacts)
+        groupList.addAll(group.records)
       }
     }
 
@@ -60,11 +61,11 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
       val existing = existingMap[coord]
 
       val scope = existing?.first ?: "implementation"
-      val scopeMap = artifactsByScope.getOrPut(scope) { mutableMapOf() }
+      val scopeMap = recordsByScope.getOrPut(scope) { mutableMapOf() }
       val groupList = scopeMap.getOrPut(artifact.group) { mutableListOf() }
 
       if (existing == null) {
-        // Add new artifact
+        // Add new record
         val pomInfo = resolvePomInfo(artifact)
         val licenseKey =
           pomInfo?.licenses?.firstOrNull()?.let { pomLicense ->
@@ -81,7 +82,7 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
           } ?: "unknown"
 
         groupList.add(
-          ArtifactDefinition(
+          Record(
             name = artifact.name,
             url = pomInfo?.url?.let { stripVersionFromUrl(it) },
             copyrightHolder = pomInfo?.developers?.firstOrNull(),
@@ -92,48 +93,45 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
       }
     }
 
-    // Remove artifacts no longer in dependencies
+    // Remove records no longer in dependencies
     val currentCoords = currentDependencies.map { "${it.group}:${it.name}" }.toSet()
     var removedCount = 0
 
-    artifactsByScope.forEach { (_, scopeMap) ->
-      scopeMap.forEach { (groupId, artifacts) ->
-        val toRemove = artifacts.filter { "$groupId:${it.name}" !in currentCoords }
-        artifacts.removeAll(toRemove)
+    recordsByScope.forEach { (_, scopeMap) ->
+      scopeMap.forEach { (groupId, records) ->
+        val toRemove = records.filter { "$groupId:${it.name}" !in currentCoords }
+        records.removeAll(toRemove)
         removedCount += toRemove.size
       }
     }
 
     // Clean up empty groups and scopes
-    artifactsByScope.forEach { (_, scopeMap) ->
+    recordsByScope.forEach { (_, scopeMap) ->
       scopeMap.entries.removeIf { it.value.isEmpty() }
     }
-    artifactsByScope.entries.removeIf { it.value.isEmpty() }
+    recordsByScope.entries.removeIf { it.value.isEmpty() }
 
-    // Convert back to ScopedArtifacts
-    val syncedDefinitions =
-      artifactsByScope
+    // Convert back to ScopedRecords
+    val syncedRecords =
+      recordsByScope
         .map { (scope, scopeMap) ->
-          ScopedArtifacts(
+          ScopedRecords(
             scope = scope,
             groups =
             scopeMap
-              .map { (groupId, artifacts) ->
-                ArtifactGroup(groupId = groupId, artifacts = artifacts.sortedBy { it.name })
+              .map { (groupId, records) ->
+                RecordGroup(groupId = groupId, records = records.sortedBy { it.name })
               }.sortedBy { it.groupId },
           )
         }.sortedBy { it.scope }
 
     // Write updated files
-    val artifactDefinitionsFile = resolveArtifactDefinitionsFile()
-    artifactDefinitionsFile.writeText(ArtifactDefinitionsParser().serialize(syncedDefinitions))
+    val recordsFile = resolveRecordsFile()
+    recordsFile.writeText(RecordsParser().serialize(syncedRecords))
 
-    val licenseCatalogFile = resolveLicenseCatalogFile()
-    licenseCatalogFile.writeText(
-      LicenseCatalogParser().serialize(
-        net.syarihu.licensescribe.model
-          .LicenseCatalog(newLicenses),
-      ),
+    val catalogFile = resolveCatalogFile()
+    catalogFile.writeText(
+      CatalogParser().serialize(Catalog(newLicenses)),
     )
 
     logger.lifecycle(

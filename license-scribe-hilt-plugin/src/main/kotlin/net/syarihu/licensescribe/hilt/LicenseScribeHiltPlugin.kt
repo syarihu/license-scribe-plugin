@@ -48,7 +48,7 @@ class LicenseScribeHiltPlugin : Plugin<Project> {
     variantName: String,
   ) {
     val suffix = variantName.replaceFirstChar { it.uppercaseChar() }
-    val taskName = "generate${suffix}LicenseHiltModule"
+    val taskName = "scribeLicenses${suffix}GenerateHiltModule"
 
     project.tasks.register(taskName, GenerateHiltModuleTask::class.java) { task ->
       task.group = TASK_GROUP
@@ -56,7 +56,7 @@ class LicenseScribeHiltPlugin : Plugin<Project> {
       task.configureWith(project)
 
       // Depend on the base generate task
-      val baseTaskName = "generate${suffix}LicenseCode"
+      val baseTaskName = "scribeLicenses${suffix}Generate"
       project.tasks.findByName(baseTaskName)?.let { baseTask ->
         task.dependsOn(baseTask)
       }

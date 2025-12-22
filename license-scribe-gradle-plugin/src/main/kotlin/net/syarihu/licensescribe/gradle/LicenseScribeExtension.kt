@@ -20,22 +20,22 @@ constructor(
   abstract val baseDir: DirectoryProperty
 
   /**
-   * Name of the artifact definitions file.
-   * Defaults to "artifact-definitions.yml".
+   * Name of the records file that defines artifacts and their license information.
+   * Defaults to "scribe-records.yml".
    */
-  abstract val artifactDefinitionsFile: Property<String>
+  abstract val recordsFile: Property<String>
 
   /**
-   * Name of the license catalog file.
-   * Defaults to "license-catalog.yml".
+   * Name of the catalog file that defines license types.
+   * Defaults to "scribe-catalog.yml".
    */
-  abstract val licenseCatalogFile: Property<String>
+  abstract val catalogFile: Property<String>
 
   /**
-   * Name of the artifact ignore file.
-   * Defaults to ".artifactignore".
+   * Name of the ignore file for excluding artifacts.
+   * Defaults to ".scribeignore".
    */
-  abstract val artifactIgnoreFile: Property<String>
+  abstract val ignoreFile: Property<String>
 
   /**
    * Package name for generated Kotlin code.
@@ -49,9 +49,9 @@ constructor(
   abstract val generatedClassName: Property<String>
 
   init {
-    artifactDefinitionsFile.convention("artifact-definitions.yml")
-    licenseCatalogFile.convention("license-catalog.yml")
-    artifactIgnoreFile.convention(".artifactignore")
+    recordsFile.convention("scribe-records.yml")
+    catalogFile.convention("scribe-catalog.yml")
+    ignoreFile.convention(".scribeignore")
     generatedClassName.convention("Licenses")
   }
 }

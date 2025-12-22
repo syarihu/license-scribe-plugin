@@ -4,9 +4,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import java.io.StringReader
 
-class ArtifactDefinitionsParserTest : FunSpec(
+class RecordsParserTest : FunSpec(
   {
-    val parser = ArtifactDefinitionsParser()
+    val parser = RecordsParser()
 
     test("parse valid yaml") {
       val yaml =
@@ -30,9 +30,9 @@ class ArtifactDefinitionsParserTest : FunSpec(
       result[0].groups.size shouldBe 2
 
       val okhttpGroup = result[0].groups.find { it.groupId == "com.squareup.okhttp3" }
-      okhttpGroup?.artifacts?.size shouldBe 1
-      okhttpGroup?.artifacts?.get(0)?.name shouldBe "okhttp"
-      okhttpGroup?.artifacts?.get(0)?.license shouldBe "apache-2.0"
+      okhttpGroup?.records?.size shouldBe 1
+      okhttpGroup?.records?.get(0)?.name shouldBe "okhttp"
+      okhttpGroup?.records?.get(0)?.license shouldBe "apache-2.0"
     }
 
     test("parse empty yaml") {
@@ -60,7 +60,7 @@ class ArtifactDefinitionsParserTest : FunSpec(
       result.map { it.scope }.toSet() shouldBe setOf("implementation", "testImplementation")
     }
 
-    test("serialize definitions") {
+    test("serialize records") {
       val yaml =
         """
                 implementation:
@@ -69,8 +69,8 @@ class ArtifactDefinitionsParserTest : FunSpec(
                       license: mit
         """.trimIndent()
 
-      val definitions = parser.parse(StringReader(yaml))
-      val serialized = parser.serialize(definitions)
+      val records = parser.parse(StringReader(yaml))
+      val serialized = parser.serialize(records)
 
       serialized.contains("implementation") shouldBe true
       serialized.contains("com.example") shouldBe true

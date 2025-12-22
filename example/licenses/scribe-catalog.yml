@@ -1,4 +1,4 @@
-apache-2.0: {name: 'The Apache License, Version 2.0', url: 'http://www.apache.org/licenses/LICENSE-2.0.txt'}
+apache-2.0: {name: Apache-2.0, url: 'http://www.apache.org/licenses/LICENSE-2.0.txt'}
 mit: {name: MIT License, url: 'https://opensource.org/licenses/MIT'}
 bsd-3-clause: {name: BSD 3-Clause License, url: 'https://opensource.org/licenses/BSD-3-Clause'}
 bsd-2-clause: {name: BSD 2-Clause License, url: 'https://opensource.org/licenses/BSD-2-Clause'}

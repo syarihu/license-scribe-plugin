@@ -4,43 +4,43 @@ import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
 
 /**
- * Task to check license definitions for correctness.
- * Combines validation against current dependencies and inspection of definition quality.
+ * Task to check license records for correctness.
+ * Combines validation against current dependencies and inspection of record quality.
  */
 abstract class CheckLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {
-    val definitions = loadArtifactDefinitions()
-    val catalog = loadLicenseCatalog()
+    val records = loadRecords()
+    val catalog = loadCatalog()
     val ignoreRules = loadIgnoreRules()
 
     val issues = mutableListOf<String>()
 
-    // === Inspection: Check definition quality ===
-    definitions.forEach { scopedArtifacts ->
-      scopedArtifacts.groups.forEach { group ->
-        group.artifacts.forEach { artifact ->
-          val prefix = "${group.groupId}:${artifact.name}"
+    // === Inspection: Check record quality ===
+    records.forEach { scopedRecords ->
+      scopedRecords.groups.forEach { group ->
+        group.records.forEach { record ->
+          val prefix = "${group.groupId}:${record.name}"
 
           // Check for missing name
-          if (artifact.name.isBlank()) {
-            issues.add("$prefix: Missing artifact name")
+          if (record.name.isBlank()) {
+            issues.add("$prefix: Missing record name")
           }
 
           // Check for missing license
-          if (artifact.license.isBlank()) {
+          if (record.license.isBlank()) {
             issues.add("$prefix: Missing license key")
-          } else if (!catalog.containsKey(artifact.license)) {
-            issues.add("$prefix: Unknown license key '${artifact.license}' not in catalog")
+          } else if (!catalog.containsKey(record.license)) {
+            issues.add("$prefix: Unknown license key '${record.license}' not in catalog")
           }
 
           // Check for missing URL (warning)
-          if (artifact.url.isNullOrBlank()) {
+          if (record.url.isNullOrBlank()) {
             logger.warn("$prefix: Missing URL (optional)")
           }
 
           // Check for missing copyright holder (warning)
-          if (artifact.copyrightHolder.isNullOrBlank()) {
+          if (record.copyrightHolder.isNullOrBlank()) {
             logger.warn("$prefix: Missing copyright holder (optional)")
           }
         }
@@ -49,16 +49,16 @@ abstract class CheckLicensesTask : BaseLicenseTask() {
 
     // Check for unused licenses in catalog
     val usedLicenses =
-      definitions
+      records
         .flatMap { scoped ->
           scoped.groups.flatMap { group ->
-            group.artifacts.map { it.license }
+            group.records.map { it.license }
           }
         }.toSet()
 
     catalog.licenses.keys.forEach { key ->
       if (key !in usedLicenses && key != "unknown") {
-        logger.warn("License '$key' is defined but not used by any artifact")
+        logger.warn("License '$key' is defined but not used by any record")
       }
     }
 
@@ -69,27 +69,27 @@ abstract class CheckLicensesTask : BaseLicenseTask() {
         .map { "${it.group}:${it.name}" }
         .toSet()
 
-    val definedArtifacts =
-      definitions
+    val recordedItems =
+      records
         .flatMap { scoped ->
           scoped.groups.flatMap { group ->
-            group.artifacts.map { "${group.groupId}:${it.name}" }
+            group.records.map { "${group.groupId}:${it.name}" }
           }
         }.toSet()
 
-    val missingInDefinitions = currentDependencies - definedArtifacts
-    val extraInDefinitions = definedArtifacts - currentDependencies
+    val missingInRecords = currentDependencies - recordedItems
+    val extraInRecords = recordedItems - currentDependencies
 
-    if (missingInDefinitions.isNotEmpty()) {
-      logger.error("Missing in definitions (${missingInDefinitions.size}):")
-      missingInDefinitions.sorted().forEach { logger.error("  - $it") }
-      issues.add("${missingInDefinitions.size} dependencies not in definitions")
+    if (missingInRecords.isNotEmpty()) {
+      logger.error("Missing in records (${missingInRecords.size}):")
+      missingInRecords.sorted().forEach { logger.error("  - $it") }
+      issues.add("${missingInRecords.size} dependencies not in records")
     }
 
-    if (extraInDefinitions.isNotEmpty()) {
-      logger.error("Extra in definitions (no longer in dependencies) (${extraInDefinitions.size}):")
-      extraInDefinitions.sorted().forEach { logger.error("  - $it") }
-      issues.add("${extraInDefinitions.size} definitions not in dependencies")
+    if (extraInRecords.isNotEmpty()) {
+      logger.error("Extra in records (no longer in dependencies) (${extraInRecords.size}):")
+      extraInRecords.sorted().forEach { logger.error("  - $it") }
+      issues.add("${extraInRecords.size} records not in dependencies")
     }
 
     // === Report results ===
@@ -101,6 +101,6 @@ abstract class CheckLicensesTask : BaseLicenseTask() {
       )
     }
 
-    logger.lifecycle("License check passed: ${definedArtifacts.size} artifacts defined, ${currentDependencies.size} dependencies")
+    logger.lifecycle("License check passed: ${recordedItems.size} records, ${currentDependencies.size} dependencies")
   }
 }

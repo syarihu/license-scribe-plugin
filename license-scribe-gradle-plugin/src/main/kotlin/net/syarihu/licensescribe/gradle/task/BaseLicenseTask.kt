@@ -3,11 +3,11 @@ package net.syarihu.licensescribe.gradle.task
 import net.syarihu.licensescribe.gradle.LicenseScribeExtension
 import net.syarihu.licensescribe.model.ArtifactId
 import net.syarihu.licensescribe.model.IgnoreRules
-import net.syarihu.licensescribe.model.LicenseCatalog
-import net.syarihu.licensescribe.model.ScopedArtifacts
-import net.syarihu.licensescribe.parser.ArtifactDefinitionsParser
+import net.syarihu.licensescribe.model.Catalog
+import net.syarihu.licensescribe.model.ScopedRecords
+import net.syarihu.licensescribe.parser.CatalogParser
 import net.syarihu.licensescribe.parser.IgnoreRulesParser
-import net.syarihu.licensescribe.parser.LicenseCatalogParser
+import net.syarihu.licensescribe.parser.RecordsParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
@@ -31,13 +31,13 @@ abstract class BaseLicenseTask : DefaultTask() {
   abstract val baseDir: DirectoryProperty
 
   @get:Input
-  abstract val artifactDefinitionsFileName: Property<String>
+  abstract val recordsFileName: Property<String>
 
   @get:Input
-  abstract val licenseCatalogFileName: Property<String>
+  abstract val catalogFileName: Property<String>
 
   @get:Input
-  abstract val artifactIgnoreFileName: Property<String>
+  abstract val ignoreFileName: Property<String>
 
   /**
    * Resolved dependencies as serializable strings "group:name:version"
@@ -56,9 +56,9 @@ abstract class BaseLicenseTask : DefaultTask() {
     configuration: Configuration?,
   ) {
     this.baseDir.set(extension.baseDir)
-    this.artifactDefinitionsFileName.set(extension.artifactDefinitionsFile)
-    this.licenseCatalogFileName.set(extension.licenseCatalogFile)
-    this.artifactIgnoreFileName.set(extension.artifactIgnoreFile)
+    this.recordsFileName.set(extension.recordsFile)
+    this.catalogFileName.set(extension.catalogFile)
+    this.ignoreFileName.set(extension.ignoreFile)
 
     // Use lazy evaluation to defer dependency resolution until task execution
     // This ensures compatibility with configure-on-demand mode
@@ -88,30 +88,29 @@ abstract class BaseLicenseTask : DefaultTask() {
     }
   }
 
-  protected fun resolveArtifactDefinitionsFile(): File = baseDir.file(artifactDefinitionsFileName).get().asFile
+  protected fun resolveRecordsFile(): File = baseDir.file(recordsFileName).get().asFile
 
-  protected fun resolveLicenseCatalogFile(): File = baseDir.file(licenseCatalogFileName).get().asFile
+  protected fun resolveCatalogFile(): File = baseDir.file(catalogFileName).get().asFile
 
-  protected fun resolveArtifactIgnoreFile(): File = baseDir.file(artifactIgnoreFileName).get().asFile
+  protected fun resolveIgnoreFile(): File = baseDir.file(ignoreFileName).get().asFile
 
-  protected fun loadArtifactDefinitions(): List<ScopedArtifacts> = ArtifactDefinitionsParser().parse(resolveArtifactDefinitionsFile())
+  protected fun loadRecords(): List<ScopedRecords> = RecordsParser().parse(resolveRecordsFile())
 
-  protected fun loadLicenseCatalog(): LicenseCatalog = LicenseCatalogParser().parse(resolveLicenseCatalogFile())
+  protected fun loadCatalog(): Catalog = CatalogParser().parse(resolveCatalogFile())
 
-  protected fun loadIgnoreRules(): IgnoreRules = IgnoreRulesParser().parse(resolveArtifactIgnoreFile())
+  protected fun loadIgnoreRules(): IgnoreRules = IgnoreRulesParser().parse(resolveIgnoreFile())
 
   /**
    * Get resolved dependencies (from configuration time)
    */
-  protected fun resolveDependencies(): List<ArtifactId> =
-    resolvedDependencies.get().map { coord ->
-      val parts = coord.split(":")
-      ArtifactId(
-        group = parts[0],
-        name = parts[1],
-        version = parts.getOrElse(2) { "" },
-      )
-    }
+  protected fun resolveDependencies(): List<ArtifactId> = resolvedDependencies.get().map { coord ->
+    val parts = coord.split(":")
+    ArtifactId(
+      group = parts[0],
+      name = parts[1],
+      version = parts.getOrElse(2) { "" },
+    )
+  }
 
   /**
    * Get POM info for an artifact (from configuration time)

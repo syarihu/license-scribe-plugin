@@ -3,11 +3,11 @@ package net.syarihu.licensescribe.model
 /**
  * Represents a catalog of licenses.
  */
-data class LicenseCatalog(
+data class Catalog(
   val licenses: Map<String, License>,
 ) {
   companion object {
-    val EMPTY = LicenseCatalog(emptyMap())
+    val EMPTY = Catalog(emptyMap())
   }
 
   fun getLicense(key: String): License? = licenses[key]

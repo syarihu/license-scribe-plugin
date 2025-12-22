@@ -1,6 +1,6 @@
 # License Scribe Plugin
 
-A Gradle plugin for managing and generating license information for Android/Kotlin project dependencies.
+A Gradle plugin that acts as your project's scribe, carefully recording and cataloging license information for Android/Kotlin dependencies into clean, accessible code.
 
 ## Features
 
@@ -65,9 +65,9 @@ licenseScribe {
     generatedClassName.set("AppLicenses")
 
     // File names (optional, with defaults)
-    // artifactDefinitionsFile.set("artifact-definitions.yml")
-    // licenseCatalogFile.set("license-catalog.yml")
-    // artifactIgnoreFile.set(".artifactignore")
+    // recordsFile.set("scribe-records.yml")
+    // catalogFile.set("scribe-catalog.yml")
+    // ignoreFile.set(".scribeignore")
 }
 ```
 
@@ -79,20 +79,20 @@ Run the init task to create the initial license management files:
 
 ```bash
 # For Android projects (with variants)
-./gradlew initDebugLicenses
+./gradlew scribeLicensesDebugInit
 
 # For non-Android projects
-./gradlew initLicenses
+./gradlew scribeLicensesInit
 ```
 
 This creates:
-- `artifact-definitions.yml` - Defines artifacts and their license information
-- `license-catalog.yml` - Catalog of license types
-- `.artifactignore` - Patterns for artifacts to ignore
+- `scribe-records.yml` - Defines artifacts and their license information
+- `scribe-catalog.yml` - Catalog of license types
+- `.scribeignore` - Patterns for artifacts to ignore
 
 ### 2. Review and Edit Definitions
 
-Edit `artifact-definitions.yml` to add missing information:
+Edit `scribe-records.yml` to add missing information:
 
 ```yaml
 implementation:
@@ -104,7 +104,7 @@ implementation:
     version: 1.0.0
 ```
 
-Edit `license-catalog.yml` to define license types:
+Edit `scribe-catalog.yml` to define license types:
 
 ```yaml
 apache-2.0:
@@ -120,7 +120,7 @@ mit:
 Check for missing attributes and validate that all dependencies are covered:
 
 ```bash
-./gradlew checkDebugLicenses
+./gradlew scribeLicensesDebugCheck
 ```
 
 ### 4. Sync Licenses (Optional)
@@ -128,7 +128,7 @@ Check for missing attributes and validate that all dependencies are covered:
 When dependencies change, sync definitions with current dependencies:
 
 ```bash
-./gradlew syncDebugLicenses
+./gradlew scribeLicensesDebugSync
 ```
 
 ### 5. Generate Code
@@ -136,7 +136,7 @@ When dependencies change, sync definitions with current dependencies:
 Generate Kotlin code (automatically runs during build):
 
 ```bash
-./gradlew generateDebugLicenseCode
+./gradlew scribeLicensesDebugGenerate
 ```
 
 ### 6. Use Generated Code
@@ -252,10 +252,10 @@ For Android projects, tasks are created per variant (e.g., `debug`, `release`):
 
 | Task | Description |
 |------|-------------|
-| `init{Variant}Licenses` | Initialize license management files |
-| `check{Variant}Licenses` | Check definitions for missing attributes and validate against dependencies |
-| `sync{Variant}Licenses` | Sync definitions with current dependencies |
-| `generate{Variant}LicenseCode` | Generate Kotlin code for licenses |
+| `scribeLicenses{Variant}Init` | Initialize license management files |
+| `scribeLicenses{Variant}Check` | Check definitions for missing attributes and validate against dependencies |
+| `scribeLicenses{Variant}Sync` | Sync definitions with current dependencies |
+| `scribeLicenses{Variant}Generate` | Generate Kotlin code for licenses |
 
 ## Development
 

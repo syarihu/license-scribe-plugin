@@ -84,26 +84,26 @@ class LicenseScribePlugin : Plugin<Project> {
   ) {
     val suffix = variantName.replaceFirstChar { it.uppercaseChar() }
 
-    project.tasks.register("init${suffix}Licenses", InitLicensesTask::class.java) { task ->
+    project.tasks.register("scribeLicenses${suffix}Init", InitLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Initialize license management files for $variantName"
       task.configureWith(extension, configuration)
     }
 
-    project.tasks.register("check${suffix}Licenses", CheckLicensesTask::class.java) { task ->
+    project.tasks.register("scribeLicenses${suffix}Check", CheckLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Check license definitions for $variantName"
       task.configureWith(extension, configuration)
     }
 
-    project.tasks.register("sync${suffix}Licenses", SyncLicensesTask::class.java) { task ->
+    project.tasks.register("scribeLicenses${suffix}Sync", SyncLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Sync license definitions with current dependencies for $variantName"
       task.configureWith(extension, configuration)
     }
 
     val generateTask =
-      project.tasks.register("generate${suffix}LicenseCode", GenerateLicenseCodeTask::class.java) { task ->
+      project.tasks.register("scribeLicenses${suffix}Generate", GenerateLicenseCodeTask::class.java) { task ->
         task.group = TASK_GROUP
         task.description = "Generate Kotlin code for licenses for $variantName"
         task.configureWith(extension, configuration, variantName, project)

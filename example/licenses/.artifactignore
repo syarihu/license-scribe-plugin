@@ -1,7 +1,0 @@
-# Patterns to ignore artifacts
-# Examples:
-# com.example:artifact-name
-# com.example:*
-
-# License Scribe runtime (self-reference)
-net.syarihu:license-scribe-runtime*
