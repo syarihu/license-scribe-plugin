@@ -1,23 +1,19 @@
 package net.syarihu.licensescribe.gradle.task
 
-import net.syarihu.licensescribe.model.Catalog
-import net.syarihu.licensescribe.model.License
-import net.syarihu.licensescribe.model.Record
-import net.syarihu.licensescribe.model.RecordGroup
-import net.syarihu.licensescribe.model.ScopedRecords
-import net.syarihu.licensescribe.parser.CatalogParser
-import net.syarihu.licensescribe.parser.RecordsParser
+import net.syarihu.licensescribe.model.ArtifactEntry
+import net.syarihu.licensescribe.model.LicenseCatalog
+import net.syarihu.licensescribe.model.LicenseEntry
+import net.syarihu.licensescribe.parser.LicenseCatalogParser
 import org.gradle.api.tasks.TaskAction
 
 /**
  * Task to initialize license management files.
- * Creates scribe-records.yml, scribe-catalog.yml, and .scribeignore if they don't exist.
+ * Creates scribe-licenses.yml and .scribeignore if they don't exist.
  */
 abstract class InitLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {
-    val recordsFile = resolveRecordsFile()
-    val catalogFile = resolveCatalogFile()
+    val licensesFile = resolveLicensesFile()
     val ignoreFile = resolveIgnoreFile()
 
     val ignoreRules = loadIgnoreRules()
@@ -25,65 +21,69 @@ abstract class InitLicensesTask : BaseLicenseTask() {
       resolveDependencies()
         .filterNot { ignoreRules.shouldIgnore(it) }
 
-    // Group dependencies by scope and group
-    val scopedRecords = mutableListOf<ScopedRecords>()
-    val licenseMap = mutableMapOf<String, License>()
+    // Group dependencies by license, then by group
+    // Map: licenseKey -> (groupId -> List<ArtifactEntry>)
+    val licenseToArtifacts = mutableMapOf<String, MutableMap<String, MutableList<ArtifactEntry>>>()
+    val licenseInfoMap = mutableMapOf<String, Pair<String, String?>>() // licenseKey -> (name, url)
 
-    val groups =
-      dependencies.groupBy { it.group }.map { (groupId, artifacts) ->
-        val records =
-          artifacts.map { artifact ->
-            val pomInfo = resolvePomInfo(artifact)
+    dependencies.forEach { artifact ->
+      val pomInfo = resolvePomInfo(artifact)
 
-            // Try to determine license from POM
-            val licenseKey =
-              pomInfo?.licenses?.firstOrNull()?.let { pomLicense ->
-                val key = normalizeLicenseKey(pomLicense.name)
-                if (!licenseMap.containsKey(key)) {
-                  licenseMap[key] =
-                    License(
-                      key = key,
-                      name = pomLicense.name,
-                      url = pomLicense.url,
-                    )
-                }
-                key
-              } ?: "unknown"
+      // Determine license from POM
+      val licenseKey = pomInfo?.licenses?.firstOrNull()?.let { pomLicense ->
+        val key = normalizeLicenseKey(pomLicense.name)
+        if (!licenseInfoMap.containsKey(key)) {
+          licenseInfoMap[key] = pomLicense.name to pomLicense.url
+        }
+        key
+      } ?: "unknown"
 
-            Record(
-              name = artifact.name,
-              url = pomInfo?.url?.let { stripVersionFromUrl(it) },
-              copyrightHolder = pomInfo?.developers?.firstOrNull(),
-              license = licenseKey,
-            )
-          }
-        RecordGroup(groupId = groupId, records = records)
+      // Ensure unknown license is in the map
+      if (!licenseInfoMap.containsKey("unknown")) {
+        licenseInfoMap["unknown"] = "Unknown License" to null
       }
 
-    if (groups.isNotEmpty()) {
-      scopedRecords.add(ScopedRecords(scope = "implementation", groups = groups))
+      val artifactEntry = ArtifactEntry(
+        name = artifact.name,
+        url = pomInfo?.url?.let { stripVersionFromUrl(it) },
+        copyrightHolders = pomInfo?.developers?.takeIf { it.isNotEmpty() } ?: emptyList(),
+      )
+
+      licenseToArtifacts
+        .getOrPut(licenseKey) { mutableMapOf() }
+        .getOrPut(artifact.group) { mutableListOf() }
+        .add(artifactEntry)
     }
 
-    // Write records file
-    if (!recordsFile.exists() || recordsFile.length() == 0L) {
-      val content = RecordsParser().serialize(scopedRecords)
-      recordsFile.writeText(content)
-      logger.lifecycle("Created ${recordsFile.name} with ${dependencies.size} records")
-    } else {
-      logger.lifecycle("${recordsFile.name} already exists, skipping")
-    }
+    // Supplement license info with well-known defaults (name/URL only)
+    supplementLicenseInfo(licenseInfoMap)
 
-    // Add default licenses if not present
-    addDefaultLicenses(licenseMap)
+    // Build LicenseCatalog - only include licenses that have artifacts
+    val licenses = licenseInfoMap
+      .filter { (key, _) -> licenseToArtifacts.containsKey(key) }
+      .map { (key, nameUrl) ->
+        val (name, url) = nameUrl
+        val artifacts = licenseToArtifacts[key]?.mapValues { (_, entries) ->
+          entries.sortedBy { it.name }
+        }?.toSortedMap() ?: emptyMap()
 
-    // Write catalog file
-    if (!catalogFile.exists() || catalogFile.length() == 0L) {
-      val catalog = Catalog(licenseMap)
-      val content = CatalogParser().serialize(catalog)
-      catalogFile.writeText(content)
-      logger.lifecycle("Created ${catalogFile.name} with ${licenseMap.size} licenses")
+        key to LicenseEntry(
+          name = name,
+          url = url,
+          artifacts = artifacts,
+        )
+      }.toMap().toSortedMap()
+
+    val catalog = LicenseCatalog(licenses)
+
+    // Write licenses file
+    if (!licensesFile.exists() || licensesFile.length() == 0L) {
+      val content = LicenseCatalogParser().serialize(catalog)
+      licensesFile.writeText(content)
+      val artifactCount = catalog.getAllArtifactIds().size
+      logger.lifecycle("Created ${licensesFile.name} with $artifactCount artifacts in ${licenses.size} licenses")
     } else {
-      logger.lifecycle("${catalogFile.name} already exists, skipping")
+      logger.lifecycle("${licensesFile.name} already exists, skipping")
     }
 
     // Write ignore file
@@ -131,62 +131,38 @@ abstract class InitLicensesTask : BaseLicenseTask() {
     .replace(Regex("#[\\d.]+$"), "") // Remove #1.7.6 style version anchors
     .replace(Regex("/[\\d.]+/?$"), "") // Remove /1.7.6 style version paths
 
-  private fun addDefaultLicenses(licenseMap: MutableMap<String, License>) {
-    val defaults =
-      mapOf(
-        "apache-2.0" to
-          License(
-            key = "apache-2.0",
-            name = "Apache License 2.0",
-            url = "https://www.apache.org/licenses/LICENSE-2.0",
-          ),
-        "mit" to
-          License(
-            key = "mit",
-            name = "MIT License",
-            url = "https://opensource.org/licenses/MIT",
-          ),
-        "bsd-3-clause" to
-          License(
-            key = "bsd-3-clause",
-            name = "BSD 3-Clause License",
-            url = "https://opensource.org/licenses/BSD-3-Clause",
-          ),
-        "bsd-2-clause" to
-          License(
-            key = "bsd-2-clause",
-            name = "BSD 2-Clause License",
-            url = "https://opensource.org/licenses/BSD-2-Clause",
-          ),
-        "lgpl-2.1" to
-          License(
-            key = "lgpl-2.1",
-            name = "GNU Lesser General Public License v2.1",
-            url = "https://www.gnu.org/licenses/lgpl-2.1.html",
-          ),
-        "lgpl-3.0" to
-          License(
-            key = "lgpl-3.0",
-            name = "GNU Lesser General Public License v3.0",
-            url = "https://www.gnu.org/licenses/lgpl-3.0.html",
-          ),
-        "epl-1.0" to
-          License(
-            key = "epl-1.0",
-            name = "Eclipse Public License 1.0",
-            url = "https://www.eclipse.org/legal/epl-v10.html",
-          ),
-        "unknown" to
-          License(
-            key = "unknown",
-            name = "Unknown License",
-            url = null,
-          ),
-      )
+  /**
+   * Supplements existing license entries with well-known names and URLs.
+   * Only updates licenses that already exist in the map (detected from dependencies).
+   */
+  private fun supplementLicenseInfo(licenseInfoMap: MutableMap<String, Pair<String, String?>>) {
+    val wellKnownLicenses = mapOf(
+      "apache-2.0" to ("Apache License 2.0" to "https://www.apache.org/licenses/LICENSE-2.0"),
+      "mit" to ("MIT License" to "https://opensource.org/licenses/MIT"),
+      "bsd-3-clause" to ("BSD 3-Clause License" to "https://opensource.org/licenses/BSD-3-Clause"),
+      "bsd-2-clause" to ("BSD 2-Clause License" to "https://opensource.org/licenses/BSD-2-Clause"),
+      "lgpl-2.1" to ("GNU Lesser General Public License v2.1" to "https://www.gnu.org/licenses/lgpl-2.1.html"),
+      "lgpl-3.0" to ("GNU Lesser General Public License v3.0" to "https://www.gnu.org/licenses/lgpl-3.0.html"),
+      "epl-1.0" to ("Eclipse Public License 1.0" to "https://www.eclipse.org/legal/epl-v10.html"),
+      "mpl-2.0" to ("Mozilla Public License 2.0" to "https://www.mozilla.org/en-US/MPL/2.0/"),
+      "gpl-2.0" to ("GNU General Public License v2.0" to "https://www.gnu.org/licenses/gpl-2.0.html"),
+      "gpl-3.0" to ("GNU General Public License v3.0" to "https://www.gnu.org/licenses/gpl-3.0.html"),
+      "cc0-1.0" to ("CC0 1.0 Universal" to "https://creativecommons.org/publicdomain/zero/1.0/"),
+      "unlicense" to ("The Unlicense" to "https://unlicense.org/"),
+      "isc" to ("ISC License" to "https://opensource.org/licenses/ISC"),
+      "unknown" to ("Unknown License" to null),
+    )
 
-    defaults.forEach { (key, license) ->
-      if (!licenseMap.containsKey(key)) {
-        licenseMap[key] = license
+    // Only supplement info for licenses that already exist
+    licenseInfoMap.keys.toList().forEach { key ->
+      wellKnownLicenses[key]?.let { (name, url) ->
+        val existing = licenseInfoMap[key]
+        // Use well-known name/url if current one seems auto-generated or missing
+        if (existing != null) {
+          val currentName = existing.first
+          val currentUrl = existing.second
+          licenseInfoMap[key] = (name) to (url ?: currentUrl)
+        }
       }
     }
   }

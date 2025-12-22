@@ -3,11 +3,9 @@ package net.syarihu.licensescribe.gradle.task
 import net.syarihu.licensescribe.gradle.LicenseScribeExtension
 import net.syarihu.licensescribe.model.ArtifactId
 import net.syarihu.licensescribe.model.IgnoreRules
-import net.syarihu.licensescribe.model.Catalog
-import net.syarihu.licensescribe.model.ScopedRecords
-import net.syarihu.licensescribe.parser.CatalogParser
+import net.syarihu.licensescribe.model.LicenseCatalog
 import net.syarihu.licensescribe.parser.IgnoreRulesParser
-import net.syarihu.licensescribe.parser.RecordsParser
+import net.syarihu.licensescribe.parser.LicenseCatalogParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
@@ -31,10 +29,7 @@ abstract class BaseLicenseTask : DefaultTask() {
   abstract val baseDir: DirectoryProperty
 
   @get:Input
-  abstract val recordsFileName: Property<String>
-
-  @get:Input
-  abstract val catalogFileName: Property<String>
+  abstract val licensesFileName: Property<String>
 
   @get:Input
   abstract val ignoreFileName: Property<String>
@@ -56,8 +51,7 @@ abstract class BaseLicenseTask : DefaultTask() {
     configuration: Configuration?,
   ) {
     this.baseDir.set(extension.baseDir)
-    this.recordsFileName.set(extension.recordsFile)
-    this.catalogFileName.set(extension.catalogFile)
+    this.licensesFileName.set(extension.licensesFile)
     this.ignoreFileName.set(extension.ignoreFile)
 
     // Use lazy evaluation to defer dependency resolution until task execution
@@ -88,15 +82,11 @@ abstract class BaseLicenseTask : DefaultTask() {
     }
   }
 
-  protected fun resolveRecordsFile(): File = baseDir.file(recordsFileName).get().asFile
-
-  protected fun resolveCatalogFile(): File = baseDir.file(catalogFileName).get().asFile
+  protected fun resolveLicensesFile(): File = baseDir.file(licensesFileName).get().asFile
 
   protected fun resolveIgnoreFile(): File = baseDir.file(ignoreFileName).get().asFile
 
-  protected fun loadRecords(): List<ScopedRecords> = RecordsParser().parse(resolveRecordsFile())
-
-  protected fun loadCatalog(): Catalog = CatalogParser().parse(resolveCatalogFile())
+  protected fun loadLicenseCatalog(): LicenseCatalog = LicenseCatalogParser().parse(resolveLicensesFile())
 
   protected fun loadIgnoreRules(): IgnoreRules = IgnoreRulesParser().parse(resolveIgnoreFile())
 
@@ -144,43 +134,104 @@ abstract class BaseLicenseTask : DefaultTask() {
   }
 
   /**
-   * Resolve POM info at configuration time
+   * Resolve POM info at configuration time, including parent POM resolution
    */
   private fun resolvePomInfoFromConfiguration(
     config: Configuration,
     artifactId: ArtifactId,
   ): PomInfo? = try {
-    val componentId =
-      config.incoming.resolutionResult.allComponents
-        .map { it.id }
-        .filterIsInstance<ModuleComponentIdentifier>()
-        .find { it.group == artifactId.group && it.module == artifactId.name }
-        ?: return null
-
-    val result =
-      project.dependencies
-        .createArtifactResolutionQuery()
-        .forComponents(componentId)
-        .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
-        .execute()
-
-    val pomArtifact =
-      result.resolvedComponents
-        .flatMap { component ->
-          component.getArtifacts(MavenPomArtifact::class.java)
-        }.filterIsInstance<ResolvedArtifactResult>()
-        .firstOrNull()
-
-    pomArtifact?.file?.let { parsePom(it) }
+    val version = artifactId.version
+    if (version.isNullOrBlank()) {
+      logger.debug("Cannot resolve POM for ${artifactId.coordinate}: version is missing")
+      return null
+    }
+    resolvePomInfoRecursive(artifactId.group, artifactId.name, version, maxDepth = 5)
   } catch (e: Exception) {
     logger.debug("Failed to resolve POM for ${artifactId.coordinate}: ${e.message}")
     null
   }
 
-  private fun parsePom(pomFile: File): PomInfo? = try {
-    val factory =
-      javax.xml.parsers.DocumentBuilderFactory
-        .newInstance()
+  /**
+   * Recursively resolve POM info, following parent POMs if needed
+   */
+  private fun resolvePomInfoRecursive(
+    groupId: String,
+    artifactId: String,
+    version: String,
+    maxDepth: Int,
+  ): PomInfo? {
+    if (maxDepth <= 0) {
+      logger.debug("Max depth reached while resolving parent POM for $groupId:$artifactId:$version")
+      return null
+    }
+
+    val pomFile = resolvePomFile(groupId, artifactId, version) ?: return null
+    val pomData = parsePomWithParentInfo(pomFile) ?: return null
+
+    // If we have licenses, no need to check parent
+    if (pomData.pomInfo.licenses.isNotEmpty()) {
+      return pomData.pomInfo
+    }
+
+    // Try to get info from parent POM
+    val parentInfo = pomData.parentInfo
+    if (parentInfo != null) {
+      val parentPomInfo = resolvePomInfoRecursive(
+        parentInfo.groupId,
+        parentInfo.artifactId,
+        parentInfo.version,
+        maxDepth - 1,
+      )
+
+      if (parentPomInfo != null) {
+        // Merge: child values take precedence, but use parent values for missing fields
+        return PomInfo(
+          name = pomData.pomInfo.name ?: parentPomInfo.name,
+          url = pomData.pomInfo.url ?: parentPomInfo.url,
+          licenses = pomData.pomInfo.licenses.ifEmpty { parentPomInfo.licenses },
+          developers = pomData.pomInfo.developers.ifEmpty { parentPomInfo.developers },
+        )
+      }
+    }
+
+    return pomData.pomInfo
+  }
+
+  /**
+   * Resolve POM file for a given artifact
+   */
+  private fun resolvePomFile(
+    groupId: String,
+    artifactId: String,
+    version: String,
+  ): File? = try {
+    val componentId = org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier.newId(
+      org.gradle.api.internal.artifacts.DefaultModuleIdentifier.newId(groupId, artifactId),
+      version,
+    )
+
+    val result = project.dependencies
+      .createArtifactResolutionQuery()
+      .forComponents(componentId)
+      .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
+      .execute()
+
+    result.resolvedComponents
+      .flatMap { component ->
+        component.getArtifacts(MavenPomArtifact::class.java)
+      }.filterIsInstance<ResolvedArtifactResult>()
+      .firstOrNull()
+      ?.file
+  } catch (e: Exception) {
+    logger.debug("Failed to resolve POM file for $groupId:$artifactId:$version: ${e.message}")
+    null
+  }
+
+  /**
+   * Parse POM file and extract both POM info and parent info
+   */
+  private fun parsePomWithParentInfo(pomFile: File): PomDataWithParent? = try {
+    val factory = javax.xml.parsers.DocumentBuilderFactory.newInstance()
     val builder = factory.newDocumentBuilder()
     val doc = builder.parse(pomFile)
     doc.documentElement.normalize()
@@ -188,51 +239,74 @@ abstract class BaseLicenseTask : DefaultTask() {
     val name = getTextContent(doc, "name")
     val url = getTextContent(doc, "url")
 
-    val licenses =
-      try {
-        val licensesNodes = doc.getElementsByTagName("licenses")
-        if (licensesNodes.length > 0) {
-          val licensesNode = licensesNodes.item(0)
-          val licenseNodes = (licensesNode as? org.w3c.dom.Element)?.getElementsByTagName("license")
-          (0 until (licenseNodes?.length ?: 0)).mapNotNull { i ->
-            val licenseNode = licenseNodes?.item(i) as? org.w3c.dom.Element
-            val licenseName = getChildTextContent(licenseNode, "name")
-            val licenseUrl = getChildTextContent(licenseNode, "url")
-            if (licenseName != null) {
-              PomLicense(licenseName, licenseUrl)
-            } else {
-              null
-            }
+    // Parse licenses
+    val licenses = try {
+      val licensesNodes = doc.getElementsByTagName("licenses")
+      if (licensesNodes.length > 0) {
+        val licensesNode = licensesNodes.item(0)
+        val licenseNodes = (licensesNode as? org.w3c.dom.Element)?.getElementsByTagName("license")
+        (0 until (licenseNodes?.length ?: 0)).mapNotNull { i ->
+          val licenseNode = licenseNodes?.item(i) as? org.w3c.dom.Element
+          val licenseName = getChildTextContent(licenseNode, "name")
+          val licenseUrl = getChildTextContent(licenseNode, "url")
+          if (licenseName != null) {
+            PomLicense(licenseName, licenseUrl)
+          } else {
+            null
           }
-        } else {
-          emptyList()
         }
-      } catch (e: Exception) {
+      } else {
         emptyList()
       }
+    } catch (e: Exception) {
+      emptyList()
+    }
 
-    val developers =
-      try {
-        val developersNodes = doc.getElementsByTagName("developers")
-        if (developersNodes.length > 0) {
-          val developersNode = developersNodes.item(0)
-          val developerNodes = (developersNode as? org.w3c.dom.Element)?.getElementsByTagName("developer")
-          (0 until (developerNodes?.length ?: 0)).mapNotNull { i ->
-            val developerNode = developerNodes?.item(i) as? org.w3c.dom.Element
-            getChildTextContent(developerNode, "name")
-          }
-        } else {
-          emptyList()
+    // Parse developers
+    val developers = try {
+      val developersNodes = doc.getElementsByTagName("developers")
+      if (developersNodes.length > 0) {
+        val developersNode = developersNodes.item(0)
+        val developerNodes = (developersNode as? org.w3c.dom.Element)?.getElementsByTagName("developer")
+        (0 until (developerNodes?.length ?: 0)).mapNotNull { i ->
+          val developerNode = developerNodes?.item(i) as? org.w3c.dom.Element
+          getChildTextContent(developerNode, "name")
         }
-      } catch (e: Exception) {
+      } else {
         emptyList()
       }
+    } catch (e: Exception) {
+      emptyList()
+    }
 
-    PomInfo(
-      name = name,
-      url = url,
-      licenses = licenses,
-      developers = developers,
+    // Parse parent info
+    val parentInfo = try {
+      val parentNodes = doc.getElementsByTagName("parent")
+      if (parentNodes.length > 0) {
+        val parentNode = parentNodes.item(0) as? org.w3c.dom.Element
+        val parentGroupId = getChildTextContent(parentNode, "groupId")
+        val parentArtifactId = getChildTextContent(parentNode, "artifactId")
+        val parentVersion = getChildTextContent(parentNode, "version")
+        if (parentGroupId != null && parentArtifactId != null && parentVersion != null) {
+          ParentPomInfo(parentGroupId, parentArtifactId, parentVersion)
+        } else {
+          null
+        }
+      } else {
+        null
+      }
+    } catch (e: Exception) {
+      null
+    }
+
+    PomDataWithParent(
+      pomInfo = PomInfo(
+        name = name,
+        url = url,
+        licenses = licenses,
+        developers = developers,
+      ),
+      parentInfo = parentInfo,
     )
   } catch (e: Exception) {
     logger.debug("Failed to parse POM: ${e.message}")
@@ -311,4 +385,21 @@ data class PomInfo(
 data class PomLicense(
   val name: String,
   val url: String?,
+)
+
+/**
+ * Container for POM data including parent reference
+ */
+data class PomDataWithParent(
+  val pomInfo: PomInfo,
+  val parentInfo: ParentPomInfo?,
+)
+
+/**
+ * Parent POM reference information
+ */
+data class ParentPomInfo(
+  val groupId: String,
+  val artifactId: String,
+  val version: String,
 )

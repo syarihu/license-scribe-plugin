@@ -3,6 +3,7 @@ package net.syarihu.licensescribe.gradle.task
 import net.syarihu.licensescribe.generator.LicenseCodeGenerator
 import net.syarihu.licensescribe.gradle.LicenseScribeExtension
 import net.syarihu.licensescribe.model.ArtifactId
+import net.syarihu.licensescribe.model.License
 import net.syarihu.licensescribe.model.ResolvedLicense
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -43,35 +44,50 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
 
   @TaskAction
   fun execute() {
-    val records = loadRecords()
-    val catalog = loadCatalog()
+    val catalog = loadLicenseCatalog()
 
-    val resolvedLicenses =
-      records.flatMap { scoped ->
-        scoped.groups.flatMap { group ->
-          group.records.mapNotNull { record ->
-            val license = catalog.getLicense(record.license)
-            if (license != null) {
-              ResolvedLicense(
-                artifactId =
-                ArtifactId(
-                  group = group.groupId,
-                  name = record.name,
-                ),
-                artifactName = record.name,
-                artifactUrl = record.url,
-                copyrightHolder = record.copyrightHolder,
-                license = license,
-              )
-            } else {
-              logger.warn(
-                "Unknown license '${record.license}' for ${group.groupId}:${record.name}",
-              )
-              null
+    val resolvedLicenses = mutableListOf<ResolvedLicense>()
+
+    catalog.licenses.forEach { (licenseKey, licenseEntry) ->
+      val mainLicense = License(
+        key = licenseKey,
+        name = licenseEntry.name,
+        url = licenseEntry.url,
+      )
+
+      licenseEntry.artifacts.forEach { (groupId, artifacts) ->
+        artifacts.forEach { artifact ->
+          // Resolve alternative licenses
+          val alternativeLicenses = artifact.alternativeLicenses?.mapNotNull { altKey ->
+            catalog.licenses[altKey]?.let { altEntry ->
+              License(key = altKey, name = altEntry.name, url = altEntry.url)
             }
           }
+
+          // Resolve additional licenses
+          val additionalLicenses = artifact.additionalLicenses?.mapNotNull { addKey ->
+            catalog.licenses[addKey]?.let { addEntry ->
+              License(key = addKey, name = addEntry.name, url = addEntry.url)
+            }
+          }
+
+          resolvedLicenses.add(
+            ResolvedLicense(
+              artifactId = ArtifactId(
+                group = groupId,
+                name = artifact.name,
+              ),
+              artifactName = artifact.name,
+              artifactUrl = artifact.url,
+              copyrightHolders = artifact.copyrightHolders,
+              license = mainLicense,
+              alternativeLicenses = alternativeLicenses?.takeIf { it.isNotEmpty() },
+              additionalLicenses = additionalLicenses?.takeIf { it.isNotEmpty() },
+            ),
+          )
         }
       }
+    }
 
     val outputDir = outputDirectory.get().asFile
     outputDir.mkdirs()

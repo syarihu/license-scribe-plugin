@@ -20,16 +20,10 @@ constructor(
   abstract val baseDir: DirectoryProperty
 
   /**
-   * Name of the records file that defines artifacts and their license information.
-   * Defaults to "scribe-records.yml".
+   * Name of the licenses file that defines licenses and their artifacts.
+   * Defaults to "scribe-licenses.yml".
    */
-  abstract val recordsFile: Property<String>
-
-  /**
-   * Name of the catalog file that defines license types.
-   * Defaults to "scribe-catalog.yml".
-   */
-  abstract val catalogFile: Property<String>
+  abstract val licensesFile: Property<String>
 
   /**
    * Name of the ignore file for excluding artifacts.
@@ -49,8 +43,7 @@ constructor(
   abstract val generatedClassName: Property<String>
 
   init {
-    recordsFile.convention("scribe-records.yml")
-    catalogFile.convention("scribe-catalog.yml")
+    licensesFile.convention("scribe-licenses.yml")
     ignoreFile.convention(".scribeignore")
     generatedClassName.convention("Licenses")
   }
