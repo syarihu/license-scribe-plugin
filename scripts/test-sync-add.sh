@@ -14,7 +14,9 @@ cleanup() {
 trap cleanup EXIT
 
 # Add a new dependency
-sed -i '' 's/implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")/implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")\n  implementation("com.google.code.gson:gson:2.11.0")/' example/build.gradle.kts
+sed -i.sedbak 's/implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")/implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")\
+    implementation("com.google.code.gson:gson:2.11.0")/' example/build.gradle.kts
+rm -f example/build.gradle.kts.sedbak
 
 # Run sync
 ./gradlew :example:scribeLicensesDebugSync --no-configuration-cache
