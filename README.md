@@ -7,6 +7,9 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 - Automatically detects project dependencies and their licenses (including transitive dependencies)
 - **Parent POM resolution** - detects licenses from parent POMs when not specified in the artifact's own POM
 - **License-first YAML structure** - instantly see all licenses used in your project at a glance
+- **Variant-aware** - generates separate license files per build variant (debug, release, etc.)
+- **Smart license detection** - URL-based license identification for more accurate classification
+- **Vendor separation** - proprietary and ambiguous licenses are kept separate per vendor
 - Generates Kotlin code for easy access to license information in your app
 - Works with Android (application/library) and pure Kotlin/JVM projects
 - **Multi-module support** with `LicenseProvider` interface for dependency injection
@@ -85,9 +88,22 @@ Run the init task to create the initial license management files:
 ./gradlew scribeLicensesInit
 ```
 
-This creates:
-- `scribe-licenses.yml` - Defines licenses and their artifacts (license-first structure)
-- `.scribeignore` - Patterns for artifacts to ignore
+This creates (in variant subdirectory for Android projects):
+- `licenses/{variant}/scribe-licenses.yml` - Defines licenses and their artifacts (license-first structure)
+- `licenses/{variant}/.scribeignore` - Patterns for artifacts to ignore
+
+For example, running `scribeLicensesDebugInit` with `baseDir.set(layout.projectDirectory.dir("licenses"))` creates:
+```
+licenses/
+├── debug/
+│   ├── scribe-licenses.yml
+│   └── .scribeignore
+└── release/
+    ├── scribe-licenses.yml
+    └── .scribeignore
+```
+
+This allows tracking different dependencies per build variant (e.g., `debugImplementation` vs `releaseImplementation`).
 
 ### 2. Review and Edit Definitions
 
@@ -151,6 +167,35 @@ licenses:
         copyrightHolders:
         - Example Inc.
         additionalLicenses: [classpath-exception]  # AND: both licenses apply
+```
+
+#### License Detection and Normalization
+
+The plugin automatically normalizes license names to standard keys (e.g., `apache-2.0`, `mit`, `bsd-3-clause`). Detection is performed in this order:
+
+1. **URL-based detection** (most reliable) - checks license URL for known patterns
+2. **Name-based detection** - matches common license name patterns
+
+**Vendor-specific keys for proprietary/ambiguous licenses:**
+
+Some POM files declare non-standard or ambiguous license names. The plugin handles these by creating vendor-specific keys:
+
+| POM License Name | Generated Key | Example |
+|------------------|---------------|---------|
+| `Proprietary` | `proprietary-{vendor}` | `proprietary-adjust`, `proprietary-appsflyer` |
+| `LICENSE` | `license-{vendor}` | `license-braze-inc` |
+
+This prevents unrelated artifacts from being incorrectly grouped together.
+
+**Ambiguous license warnings:**
+
+When artifacts have ambiguous license names that don't identify a specific license type, the plugin shows a warning:
+
+```
+WARNING: Found 3 artifact(s) with ambiguous license names.
+Please verify these licenses manually and update scribe-licenses.yml if needed:
+  - com.braze:android-sdk-base: "LICENSE" (https://github.com/braze-inc/...)
+  - com.adjust.signature:adjust-android-signature: "Proprietary" (https://github.com/adjust/...)
 ```
 
 ### 3. Check Licenses (Optional)
