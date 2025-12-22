@@ -339,7 +339,167 @@ abstract class BaseLicenseTask : DefaultTask() {
       null
     }
   }
+
+  /**
+   * Normalizes a license name and URL to a standard license key (e.g., "apache-2.0", "mit").
+   * First tries to identify the license from the URL (more reliable), then from the name.
+   */
+  protected fun normalizeLicenseKey(
+    licenseName: String,
+    licenseUrl: String? = null,
+  ): String {
+    // First, try to identify license from URL (more reliable)
+    licenseUrl?.let { url ->
+      val urlLower = url.lowercase()
+      when {
+        urlLower.contains("apache.org/licenses/license-2.0") ||
+          urlLower.contains("apache-2.0") -> return "apache-2.0"
+        urlLower.contains("opensource.org/licenses/mit") ||
+          urlLower.contains("mit-license") -> return "mit"
+        urlLower.contains("opensource.org/licenses/bsd-3-clause") ||
+          urlLower.contains("bsd-3-clause") -> return "bsd-3-clause"
+        urlLower.contains("opensource.org/licenses/bsd-2-clause") ||
+          urlLower.contains("bsd-2-clause") -> return "bsd-2-clause"
+        urlLower.contains("gnu.org/licenses/lgpl-3") ||
+          urlLower.contains("lgpl-3.0") -> return "lgpl-3.0"
+        urlLower.contains("gnu.org/licenses/lgpl-2.1") ||
+          urlLower.contains("lgpl-2.1") -> return "lgpl-2.1"
+        urlLower.contains("gnu.org/licenses/gpl-3") ||
+          urlLower.contains("gpl-3.0") -> return "gpl-3.0"
+        urlLower.contains("gnu.org/licenses/gpl-2") ||
+          urlLower.contains("gpl-2.0") -> return "gpl-2.0"
+        urlLower.contains("eclipse.org/legal/epl") -> return "epl-1.0"
+        urlLower.contains("mozilla.org") && urlLower.contains("mpl") -> return "mpl-2.0"
+        urlLower.contains("creativecommons.org/publicdomain/zero") -> return "cc0-1.0"
+        urlLower.contains("unlicense.org") -> return "unlicense"
+        urlLower.contains("opensource.org/licenses/isc") -> return "isc"
+      }
+    }
+
+    // Then, try to identify from license name
+    val lower = licenseName.lowercase()
+    return when {
+      lower.contains("apache") && lower.contains("2") -> "apache-2.0"
+      lower.contains("mit") -> "mit"
+      lower.contains("bsd") && lower.contains("3") -> "bsd-3-clause"
+      lower.contains("bsd") && lower.contains("2") -> "bsd-2-clause"
+      lower.contains("bsd") -> "bsd"
+      lower.contains("lgpl") && lower.contains("3") -> "lgpl-3.0"
+      lower.contains("lgpl") && lower.contains("2.1") -> "lgpl-2.1"
+      lower.contains("gpl") && lower.contains("3") -> "gpl-3.0"
+      lower.contains("gpl") && lower.contains("2") -> "gpl-2.0"
+      lower.contains("eclipse") || lower.contains("epl") -> "epl-1.0"
+      lower.contains("mozilla") || lower.contains("mpl") -> "mpl-2.0"
+      lower.contains("creative commons") && lower.contains("zero") -> "cc0-1.0"
+      lower.contains("unlicense") -> "unlicense"
+      lower.contains("isc") -> "isc"
+      else ->
+        licenseName
+          .lowercase()
+          .replace(Regex("[^a-z0-9]+"), "-")
+          .trim('-')
+    }
+  }
+
+  /**
+   * Checks if a license name/URL combination is ambiguous and requires manual verification.
+   * Returns true for licenses like "LICENSE", "LICENCE", or URLs pointing to repository LICENSE files.
+   */
+  protected fun isAmbiguousLicense(
+    licenseName: String,
+    licenseUrl: String?,
+  ): Boolean {
+    val nameLower = licenseName.lowercase().trim()
+
+    // Check for generic license names that don't identify the actual license type
+    val ambiguousNames = setOf(
+      "license",
+      "licence",
+      "the license",
+      "the licence",
+      "see license",
+      "see licence",
+    )
+    if (nameLower in ambiguousNames) {
+      return true
+    }
+
+    // Check if URL points to a repository LICENSE file (not a known license URL)
+    licenseUrl?.let { url ->
+      val urlLower = url.lowercase()
+      // GitHub/GitLab/Bitbucket LICENSE file patterns
+      if (urlLower.contains("/license") &&
+        (urlLower.contains("github.com") || urlLower.contains("gitlab.com") || urlLower.contains("bitbucket.org"))
+      ) {
+        // But not if it's a well-known license URL pattern
+        val wellKnownPatterns = listOf(
+          "apache.org/licenses",
+          "opensource.org/licenses",
+          "gnu.org/licenses",
+          "eclipse.org/legal",
+          "mozilla.org",
+          "creativecommons.org",
+          "unlicense.org",
+        )
+        if (wellKnownPatterns.none { urlLower.contains(it) }) {
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
+  /**
+   * Strips version information from a URL (e.g., version anchors or path segments).
+   */
+  protected fun stripVersionFromUrl(url: String): String = url
+    .replace(Regex("#[\\d.]+$"), "") // Remove #1.7.6 style version anchors
+    .replace(Regex("/[\\d.]+/?$"), "") // Remove /1.7.6 style version paths
+
+  /**
+   * Supplements existing license entries with well-known names and URLs.
+   * Only updates licenses that already exist in the map (detected from dependencies).
+   */
+  protected fun supplementLicenseInfo(licenseInfoMap: MutableMap<String, Pair<String, String?>>) {
+    val wellKnownLicenses = mapOf(
+      "apache-2.0" to ("Apache License 2.0" to "https://www.apache.org/licenses/LICENSE-2.0"),
+      "mit" to ("MIT License" to "https://opensource.org/licenses/MIT"),
+      "bsd-3-clause" to ("BSD 3-Clause License" to "https://opensource.org/licenses/BSD-3-Clause"),
+      "bsd-2-clause" to ("BSD 2-Clause License" to "https://opensource.org/licenses/BSD-2-Clause"),
+      "lgpl-2.1" to ("GNU Lesser General Public License v2.1" to "https://www.gnu.org/licenses/lgpl-2.1.html"),
+      "lgpl-3.0" to ("GNU Lesser General Public License v3.0" to "https://www.gnu.org/licenses/lgpl-3.0.html"),
+      "epl-1.0" to ("Eclipse Public License 1.0" to "https://www.eclipse.org/legal/epl-v10.html"),
+      "mpl-2.0" to ("Mozilla Public License 2.0" to "https://www.mozilla.org/en-US/MPL/2.0/"),
+      "gpl-2.0" to ("GNU General Public License v2.0" to "https://www.gnu.org/licenses/gpl-2.0.html"),
+      "gpl-3.0" to ("GNU General Public License v3.0" to "https://www.gnu.org/licenses/gpl-3.0.html"),
+      "cc0-1.0" to ("CC0 1.0 Universal" to "https://creativecommons.org/publicdomain/zero/1.0/"),
+      "unlicense" to ("The Unlicense" to "https://unlicense.org/"),
+      "isc" to ("ISC License" to "https://opensource.org/licenses/ISC"),
+      "unknown" to ("Unknown License" to null),
+    )
+
+    // Only supplement info for licenses that already exist
+    licenseInfoMap.keys.toList().forEach { key ->
+      wellKnownLicenses[key]?.let { (name, url) ->
+        val existing = licenseInfoMap[key]
+        if (existing != null) {
+          val currentUrl = existing.second
+          licenseInfoMap[key] = name to (url ?: currentUrl)
+        }
+      }
+    }
+  }
 }
+
+/**
+ * Data class to hold information about artifacts with ambiguous licenses.
+ */
+data class AmbiguousLicenseInfo(
+  val coordinate: String,
+  val licenseName: String,
+  val licenseUrl: String?,
+)
 
 /**
  * Serializable version of PomInfo for Configuration Cache compatibility
