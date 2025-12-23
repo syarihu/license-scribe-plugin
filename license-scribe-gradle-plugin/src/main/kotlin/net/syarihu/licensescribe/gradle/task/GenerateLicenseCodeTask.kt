@@ -38,8 +38,9 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
     this.generatedPackageName.set(extension.generatedPackageName)
     this.generatedClassName.set(extension.generatedClassName)
 
-    // Use the same output directory for all variants to avoid duplication
-    this.outputDirectory.set(project.layout.buildDirectory.dir("generated/source/licensescribe"))
+    // Use variant-specific output directory to avoid conflicts between variants
+    val variantDir = if (variant.isNotEmpty()) "generated/source/licensescribe/$variant" else "generated/source/licensescribe"
+    this.outputDirectory.set(project.layout.buildDirectory.dir(variantDir))
   }
 
   @TaskAction
