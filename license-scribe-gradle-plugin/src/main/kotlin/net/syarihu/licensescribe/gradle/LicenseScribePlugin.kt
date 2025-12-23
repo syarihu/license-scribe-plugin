@@ -34,7 +34,7 @@ class LicenseScribePlugin : Plugin<Project> {
     val androidComponentsExtension = project.extensions.findByType(AndroidComponentsExtension::class.java)
     if (androidComponentsExtension != null) {
       // Register source directories early for Kotlin compiler compatibility
-      registerBuildTypeSourceDirectoriesEarly(project)
+      registerVariantSourceDirectoriesEarly(project)
       setupAndroidTasks(project, extension, androidComponentsExtension)
     } else {
       // Non-Android project
@@ -44,7 +44,7 @@ class LicenseScribePlugin : Plugin<Project> {
     }
   }
 
-  private fun registerBuildTypeSourceDirectoriesEarly(project: Project) {
+  private fun registerVariantSourceDirectoriesEarly(project: Project) {
     try {
       val androidExtension = project.extensions.findByName("android") ?: return
       val sourceSetsMethod = androidExtension.javaClass.getMethod("getSourceSets")
@@ -53,21 +53,58 @@ class LicenseScribePlugin : Plugin<Project> {
       // Get build types from android extension
       val buildTypesMethod = androidExtension.javaClass.getMethod("getBuildTypes")
       val buildTypes = buildTypesMethod.invoke(androidExtension) as Iterable<*>
-
-      for (buildType in buildTypes) {
+      val buildTypeNames = buildTypes.mapNotNull { buildType ->
         val nameMethod = buildType?.javaClass?.getMethod("getName")
-        val buildTypeName = nameMethod?.invoke(buildType) as? String ?: continue
+        nameMethod?.invoke(buildType) as? String
+      }
 
-        val outputDir = project.layout.buildDirectory.dir("generated/source/licensescribe/$buildTypeName")
+      // Get product flavors from android extension
+      val productFlavorsMethod = androidExtension.javaClass.getMethod("getProductFlavors")
+      val productFlavors = productFlavorsMethod.invoke(androidExtension) as Iterable<*>
+      val flavorNames = productFlavors.mapNotNull { flavor ->
+        val nameMethod = flavor?.javaClass?.getMethod("getName")
+        nameMethod?.invoke(flavor) as? String
+      }
 
-        val getByNameMethod = sourceSets.javaClass.getMethod("getByName", String::class.java)
-        val sourceSet = getByNameMethod.invoke(sourceSets, buildTypeName)
-        val kotlinProperty = sourceSet.javaClass.getMethod("getKotlin").invoke(sourceSet)
-        val srcDirMethod = kotlinProperty.javaClass.getMethod("srcDir", Any::class.java)
-        srcDirMethod.invoke(kotlinProperty, outputDir)
+      // Generate variant names (flavor + buildType combinations)
+      val variantNames = if (flavorNames.isEmpty()) {
+        // No flavors: variant names are just build type names
+        buildTypeNames
+      } else {
+        // With flavors: variant names are flavor + BuildType (e.g., stagingDebug)
+        flavorNames.flatMap { flavor ->
+          buildTypeNames.map { buildType ->
+            "$flavor${buildType.replaceFirstChar { it.uppercaseChar() }}"
+          }
+        }
+      }
+
+      val getByNameMethod = sourceSets.javaClass.getMethod("getByName", String::class.java)
+
+      for (variantName in variantNames) {
+        val outputDir = project.layout.buildDirectory.dir("generated/source/licensescribe/$variantName")
+
+        // Try to register to variant-specific source set first, fall back to buildType source set
+        val sourceSetName = if (flavorNames.isEmpty()) {
+          variantName // No flavors: use buildType name (debug, release)
+        } else {
+          // With flavors: try variant name first, but Android doesn't have variant source sets by default
+          // Fall back to the build type portion
+          val buildTypeName = buildTypeNames.find { variantName.endsWith(it, ignoreCase = true) }
+          buildTypeName ?: variantName
+        }
+
+        try {
+          val sourceSet = getByNameMethod.invoke(sourceSets, sourceSetName)
+          val kotlinProperty = sourceSet.javaClass.getMethod("getKotlin").invoke(sourceSet)
+          val srcDirMethod = kotlinProperty.javaClass.getMethod("srcDir", Any::class.java)
+          srcDirMethod.invoke(kotlinProperty, outputDir)
+        } catch (e: Exception) {
+          project.logger.debug("Could not register source directory for $sourceSetName: ${e.message}")
+        }
       }
     } catch (e: Exception) {
-      project.logger.debug("Could not register buildType source directories early: ${e.message}")
+      project.logger.debug("Could not register variant source directories early: ${e.message}")
     }
   }
 
@@ -78,9 +115,8 @@ class LicenseScribePlugin : Plugin<Project> {
   ) {
     androidComponentsExtension.onVariants { variant ->
       val configuration = getAndroidConfiguration(project, variant.name)
-      // Use buildType name for output directory to match source set registration
-      val buildTypeName = variant.buildType ?: variant.name
-      registerTasksForConfiguration(project, extension, variant.name, buildTypeName, configuration, variant)
+      // Use variant name for output directory to support product flavors
+      registerTasksForConfiguration(project, extension, variant.name, configuration, variant)
     }
   }
 
@@ -88,7 +124,6 @@ class LicenseScribePlugin : Plugin<Project> {
     project: Project,
     extension: LicenseScribeExtension,
     variantName: String,
-    buildTypeName: String,
     configuration: Configuration?,
     variant: Variant,
   ) {
@@ -97,27 +132,27 @@ class LicenseScribePlugin : Plugin<Project> {
     project.tasks.register("scribeLicenses${suffix}Init", InitLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Initialize license management files for $variantName"
-      task.configureWith(extension, configuration, buildTypeName)
+      task.configureWith(extension, configuration, variantName)
     }
 
     project.tasks.register("scribeLicenses${suffix}Check", CheckLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Check license definitions for $variantName"
-      task.configureWith(extension, configuration, buildTypeName)
+      task.configureWith(extension, configuration, variantName)
     }
 
     project.tasks.register("scribeLicenses${suffix}Sync", SyncLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Sync license definitions with current dependencies for $variantName"
-      task.configureWith(extension, configuration, buildTypeName)
+      task.configureWith(extension, configuration, variantName)
     }
 
     val generateTask =
       project.tasks.register("scribeLicenses${suffix}Generate", GenerateLicenseCodeTask::class.java) { task ->
         task.group = TASK_GROUP
         task.description = "Generate Kotlin code for licenses for $variantName"
-        // Use buildType name for output directory to match source set registration
-        task.configureWith(extension, configuration, buildTypeName, project)
+        // Use variant name for output directory to support product flavors
+        task.configureWith(extension, configuration, variantName, project)
       }
 
     // Use AGP Variant API to register source directory for IDE integration
