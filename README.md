@@ -7,7 +7,7 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 - Automatically detects project dependencies and their licenses (including transitive dependencies)
 - **Parent POM resolution** - detects licenses from parent POMs when not specified in the artifact's own POM
 - **License-first YAML structure** - instantly see all licenses used in your project at a glance
-- **Variant-aware** - generates separate license files per build variant (debug, release, etc.)
+- **Variant-aware** - generates separate license files per build variant, including product flavor support (e.g., `debug`, `stagingDebug`, `productionRelease`)
 - **Smart license detection** - URL-based license identification for more accurate classification
 - **Vendor separation** - proprietary and ambiguous licenses are kept separate per vendor
 - Generates Kotlin code for easy access to license information in your app
@@ -103,7 +103,23 @@ licenses/
     └── .scribeignore
 ```
 
-This allows tracking different dependencies per build variant (e.g., `debugImplementation` vs `releaseImplementation`).
+**With Product Flavors:**
+
+If your project uses product flavors, variant names include the flavor (e.g., `stagingDebug`, `productionRelease`):
+```
+licenses/
+├── stagingDebug/
+│   ├── scribe-licenses.yml
+│   └── .scribeignore
+├── stagingRelease/
+│   └── ...
+├── productionDebug/
+│   └── ...
+└── productionRelease/
+    └── ...
+```
+
+This allows tracking different dependencies per build variant (e.g., `debugImplementation` vs `releaseImplementation`, or flavor-specific dependencies).
 
 ### 2. Review and Edit Definitions
 
@@ -331,7 +347,9 @@ class LicenseViewModel @Inject constructor(
 
 ## Available Tasks
 
-For Android projects, tasks are created per variant (e.g., `debug`, `release`):
+For Android projects, tasks are created per variant. The variant name depends on your project configuration:
+- Without product flavors: `Debug`, `Release`, etc.
+- With product flavors: `StagingDebug`, `ProductionRelease`, etc.
 
 | Task | Description |
 |------|-------------|
@@ -339,6 +357,17 @@ For Android projects, tasks are created per variant (e.g., `debug`, `release`):
 | `scribeLicenses{Variant}Check` | Check definitions for missing attributes and validate against dependencies |
 | `scribeLicenses{Variant}Sync` | Sync definitions with current dependencies |
 | `scribeLicenses{Variant}Generate` | Generate Kotlin code for licenses |
+
+Examples:
+```bash
+# Without product flavors
+./gradlew scribeLicensesDebugInit
+./gradlew scribeLicensesReleaseGenerate
+
+# With product flavors
+./gradlew scribeLicensesStagingDebugInit
+./gradlew scribeLicensesProductionReleaseGenerate
+```
 
 ## Development
 
