@@ -433,6 +433,8 @@ The `example/` directory contains a sample Android app demonstrating the plugin 
 - Displays a license list using Jetpack Compose
 - Demonstrates the generated `AppLicenses` and `LicenseInfo` classes
 
+<img src="docs/images/example_sample.png" alt="Example App Screenshot" width="300">
+
 To run the example:
 
 ```bash
