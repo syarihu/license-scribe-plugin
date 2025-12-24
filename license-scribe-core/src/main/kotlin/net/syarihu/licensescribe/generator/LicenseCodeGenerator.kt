@@ -12,14 +12,12 @@ import com.squareup.kotlinpoet.asClassName
 import net.syarihu.licensescribe.model.ResolvedLicense
 import java.io.File
 
+private const val CORE_PACKAGE = "net.syarihu.licensescribe"
+
 /**
  * Generates Kotlin code for license information.
  */
 class LicenseCodeGenerator {
-  companion object {
-    private const val CORE_PACKAGE = "net.syarihu.licensescribe"
-  }
-
   fun generate(
     licenses: List<ResolvedLicense>,
     packageName: String,
