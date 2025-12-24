@@ -46,8 +46,8 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
 
     // Process current dependencies
     currentDependencies.forEach { artifact ->
-      val coord = "${artifact.group}:${artifact.name}"
-      val existing = existingMap[coord]
+      val coordinate = "${artifact.group}:${artifact.name}"
+      val existing = existingMap[coordinate]
 
       if (existing != null) {
         // Keep existing record with its license
@@ -72,7 +72,7 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
         if (pomLicense != null && isAmbiguousLicense(pomLicense.name, pomLicense.url)) {
           ambiguousLicenseArtifacts.add(
             AmbiguousLicenseInfo(
-              coordinate = coord,
+              coordinate = coordinate,
               licenseName = pomLicense.name,
               licenseUrl = pomLicense.url,
             ),
@@ -100,9 +100,9 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
     }
 
     // Count removed artifacts
-    val currentCoords = currentDependencies.map { "${it.group}:${it.name}" }.toSet()
-    existingMap.keys.forEach { coord ->
-      if (coord !in currentCoords) {
+    val currentCoordinates = currentDependencies.map { "${it.group}:${it.name}" }.toSet()
+    existingMap.keys.forEach { coordinate ->
+      if (coordinate !in currentCoordinates) {
         removedCount++
       }
     }

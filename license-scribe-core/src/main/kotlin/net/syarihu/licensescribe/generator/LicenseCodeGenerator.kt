@@ -154,11 +154,7 @@ class LicenseCodeGenerator {
             add("),\n")
           }
           unindent()
-          if (index < sortedLicenses.size - 1) {
-            add("),\n")
-          } else {
-            add("),\n")
-          }
+          add("),\n")
         }
       }
       .unindent()

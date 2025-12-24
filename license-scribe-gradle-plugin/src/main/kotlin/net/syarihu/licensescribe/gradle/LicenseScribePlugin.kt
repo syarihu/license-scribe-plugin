@@ -127,28 +127,28 @@ class LicenseScribePlugin : Plugin<Project> {
     configuration: Configuration?,
     variant: Variant,
   ) {
-    val suffix = variantName.replaceFirstChar { it.uppercaseChar() }
+    val variantSuffix = variantName.replaceFirstChar { it.uppercaseChar() }
 
-    project.tasks.register("scribeLicenses${suffix}Init", InitLicensesTask::class.java) { task ->
+    project.tasks.register("scribeLicenses${variantSuffix}Init", InitLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Initialize license management files for $variantName"
       task.configureWith(extension, configuration, variantName)
     }
 
-    project.tasks.register("scribeLicenses${suffix}Check", CheckLicensesTask::class.java) { task ->
+    project.tasks.register("scribeLicenses${variantSuffix}Check", CheckLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Check license definitions for $variantName"
       task.configureWith(extension, configuration, variantName)
     }
 
-    project.tasks.register("scribeLicenses${suffix}Sync", SyncLicensesTask::class.java) { task ->
+    project.tasks.register("scribeLicenses${variantSuffix}Sync", SyncLicensesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Sync license definitions with current dependencies for $variantName"
       task.configureWith(extension, configuration, variantName)
     }
 
     val generateTask =
-      project.tasks.register("scribeLicenses${suffix}Generate", GenerateLicenseCodeTask::class.java) { task ->
+      project.tasks.register("scribeLicenses${variantSuffix}Generate", GenerateLicenseCodeTask::class.java) { task ->
         task.group = TASK_GROUP
         task.description = "Generate Kotlin code for licenses for $variantName"
         // Use variant name for output directory to support product flavors
@@ -163,7 +163,6 @@ class LicenseScribePlugin : Plugin<Project> {
     )
 
     // Set up variant-specific task dependencies as a safety measure
-    val variantSuffix = variantName.replaceFirstChar { it.uppercaseChar() }
     project.tasks.matching {
       (
         it.name.contains("compile", ignoreCase = true) &&
