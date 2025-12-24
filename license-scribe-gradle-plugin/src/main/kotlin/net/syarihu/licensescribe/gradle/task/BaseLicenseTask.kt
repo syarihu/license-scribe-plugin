@@ -21,21 +21,46 @@ import org.gradle.maven.MavenPomArtifact
 import java.io.File
 import java.io.Serializable
 
+private val AMBIGUOUS_LICENSE_NAMES = setOf(
+  "license",
+  "licence",
+  "the license",
+  "the licence",
+  "see license",
+  "see licence",
+)
+
+private val WELL_KNOWN_LICENSE_URL_PATTERNS = listOf(
+  "apache.org/licenses",
+  "opensource.org/licenses",
+  "gnu.org/licenses",
+  "eclipse.org/legal",
+  "mozilla.org",
+  "creativecommons.org",
+  "unlicense.org",
+)
+
+private val WELL_KNOWN_LICENSES = mapOf(
+  "apache-2.0" to ("Apache License 2.0" to "https://www.apache.org/licenses/LICENSE-2.0"),
+  "mit" to ("MIT License" to "https://opensource.org/licenses/MIT"),
+  "bsd-3-clause" to ("BSD 3-Clause License" to "https://opensource.org/licenses/BSD-3-Clause"),
+  "bsd-2-clause" to ("BSD 2-Clause License" to "https://opensource.org/licenses/BSD-2-Clause"),
+  "lgpl-2.1" to ("GNU Lesser General Public License v2.1" to "https://www.gnu.org/licenses/lgpl-2.1.html"),
+  "lgpl-3.0" to ("GNU Lesser General Public License v3.0" to "https://www.gnu.org/licenses/lgpl-3.0.html"),
+  "epl-1.0" to ("Eclipse Public License 1.0" to "https://www.eclipse.org/legal/epl-v10.html"),
+  "mpl-2.0" to ("Mozilla Public License 2.0" to "https://www.mozilla.org/en-US/MPL/2.0/"),
+  "gpl-2.0" to ("GNU General Public License v2.0" to "https://www.gnu.org/licenses/gpl-2.0.html"),
+  "gpl-3.0" to ("GNU General Public License v3.0" to "https://www.gnu.org/licenses/gpl-3.0.html"),
+  "cc0-1.0" to ("CC0 1.0 Universal" to "https://creativecommons.org/publicdomain/zero/1.0/"),
+  "unlicense" to ("The Unlicense" to "https://unlicense.org/"),
+  "isc" to ("ISC License" to "https://opensource.org/licenses/ISC"),
+  "unknown" to ("Unknown License" to null),
+)
+
 /**
  * Base class for license-related tasks.
  */
 abstract class BaseLicenseTask : DefaultTask() {
-  companion object {
-    private val AMBIGUOUS_LICENSE_NAMES = setOf(
-      "license",
-      "licence",
-      "the license",
-      "the licence",
-      "see license",
-      "see licence",
-    )
-  }
-
   @get:Internal
   abstract val baseDir: DirectoryProperty
 
@@ -509,16 +534,7 @@ abstract class BaseLicenseTask : DefaultTask() {
         (urlLower.contains("github.com") || urlLower.contains("gitlab.com") || urlLower.contains("bitbucket.org"))
       ) {
         // But not if it's a well-known license URL pattern
-        val wellKnownPatterns = listOf(
-          "apache.org/licenses",
-          "opensource.org/licenses",
-          "gnu.org/licenses",
-          "eclipse.org/legal",
-          "mozilla.org",
-          "creativecommons.org",
-          "unlicense.org",
-        )
-        if (wellKnownPatterns.none { urlLower.contains(it) }) {
+        if (WELL_KNOWN_LICENSE_URL_PATTERNS.none { urlLower.contains(it) }) {
           return true
         }
       }
@@ -539,26 +555,9 @@ abstract class BaseLicenseTask : DefaultTask() {
    * Only updates licenses that already exist in the map (detected from dependencies).
    */
   protected fun supplementLicenseInfo(licenseInfoMap: MutableMap<String, Pair<String, String?>>) {
-    val wellKnownLicenses = mapOf(
-      "apache-2.0" to ("Apache License 2.0" to "https://www.apache.org/licenses/LICENSE-2.0"),
-      "mit" to ("MIT License" to "https://opensource.org/licenses/MIT"),
-      "bsd-3-clause" to ("BSD 3-Clause License" to "https://opensource.org/licenses/BSD-3-Clause"),
-      "bsd-2-clause" to ("BSD 2-Clause License" to "https://opensource.org/licenses/BSD-2-Clause"),
-      "lgpl-2.1" to ("GNU Lesser General Public License v2.1" to "https://www.gnu.org/licenses/lgpl-2.1.html"),
-      "lgpl-3.0" to ("GNU Lesser General Public License v3.0" to "https://www.gnu.org/licenses/lgpl-3.0.html"),
-      "epl-1.0" to ("Eclipse Public License 1.0" to "https://www.eclipse.org/legal/epl-v10.html"),
-      "mpl-2.0" to ("Mozilla Public License 2.0" to "https://www.mozilla.org/en-US/MPL/2.0/"),
-      "gpl-2.0" to ("GNU General Public License v2.0" to "https://www.gnu.org/licenses/gpl-2.0.html"),
-      "gpl-3.0" to ("GNU General Public License v3.0" to "https://www.gnu.org/licenses/gpl-3.0.html"),
-      "cc0-1.0" to ("CC0 1.0 Universal" to "https://creativecommons.org/publicdomain/zero/1.0/"),
-      "unlicense" to ("The Unlicense" to "https://unlicense.org/"),
-      "isc" to ("ISC License" to "https://opensource.org/licenses/ISC"),
-      "unknown" to ("Unknown License" to null),
-    )
-
     // Only supplement info for licenses that already exist
     licenseInfoMap.keys.toList().forEach { key ->
-      wellKnownLicenses[key]?.let { (name, url) ->
+      WELL_KNOWN_LICENSES[key]?.let { (name, url) ->
         val existing = licenseInfoMap[key]
         if (existing != null) {
           val currentUrl = existing.second
