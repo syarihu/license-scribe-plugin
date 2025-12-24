@@ -474,7 +474,7 @@ licenses:
         url: https://github.com/square/retrofit
         copyrightHolders:
         - Square, Inc.
-      net.syarihu:
+      net.syarihu.licensescribe:
       - name: license-scribe-runtime
         url: https://github.com/syarihu/license-scribe-plugin
         copyrightHolders:

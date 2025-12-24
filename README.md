@@ -64,7 +64,7 @@ plugins {
 
 dependencies {
     // Required: Runtime library provides LicenseInfo and LicenseProvider
-    implementation("net.syarihu:license-scribe-runtime:0.1.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
 
 licenseScribe {
@@ -343,7 +343,7 @@ In your feature module, depend only on `license-scribe-runtime`:
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu:license-scribe-runtime:0.1.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
 ```
 
@@ -395,7 +395,7 @@ object LicenseScribeHiltModule {
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu:license-scribe-runtime:0.1.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
 
 // ViewModel in feature module

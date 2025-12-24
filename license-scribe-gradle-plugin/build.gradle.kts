@@ -6,7 +6,7 @@ plugins {
   signing
 }
 
-group = "net.syarihu"
+group = "net.syarihu.licensescribe"
 version = "0.1.0-SNAPSHOT"
 
 kotlin {
