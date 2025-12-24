@@ -59,16 +59,16 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
       licenseEntry.artifacts.forEach { (groupId, artifacts) ->
         artifacts.forEach { artifact ->
           // Resolve alternative licenses
-          val alternativeLicenses = artifact.alternativeLicenses?.mapNotNull { altKey ->
-            catalog.licenses[altKey]?.let { altEntry ->
-              License(key = altKey, name = altEntry.name, url = altEntry.url)
+          val alternativeLicenses = artifact.alternativeLicenses?.mapNotNull { alternativeLicenseKey ->
+            catalog.licenses[alternativeLicenseKey]?.let { alternativeLicenseEntry ->
+              License(key = alternativeLicenseKey, name = alternativeLicenseEntry.name, url = alternativeLicenseEntry.url)
             }
           }
 
           // Resolve additional licenses
-          val additionalLicenses = artifact.additionalLicenses?.mapNotNull { addKey ->
-            catalog.licenses[addKey]?.let { addEntry ->
-              License(key = addKey, name = addEntry.name, url = addEntry.url)
+          val additionalLicenses = artifact.additionalLicenses?.mapNotNull { additionalLicenseKey ->
+            catalog.licenses[additionalLicenseKey]?.let { additionalLicenseEntry ->
+              License(key = additionalLicenseKey, name = additionalLicenseEntry.name, url = additionalLicenseEntry.url)
             }
           }
 

@@ -103,13 +103,13 @@ class LicenseCatalogParser {
       else -> emptyList()
     }
 
-    val alternativeLicenses = when (val alt = data["alternativeLicenses"]) {
-      is List<*> -> alt.mapNotNull { it?.toString() }
+    val alternativeLicenses = when (val alternativeLicenseData = data["alternativeLicenses"]) {
+      is List<*> -> alternativeLicenseData.mapNotNull { it?.toString() }
       else -> null
     }
 
-    val additionalLicenses = when (val add = data["additionalLicenses"]) {
-      is List<*> -> add.mapNotNull { it?.toString() }
+    val additionalLicenses = when (val additionalLicenseData = data["additionalLicenses"]) {
+      is List<*> -> additionalLicenseData.mapNotNull { it?.toString() }
       else -> null
     }
 

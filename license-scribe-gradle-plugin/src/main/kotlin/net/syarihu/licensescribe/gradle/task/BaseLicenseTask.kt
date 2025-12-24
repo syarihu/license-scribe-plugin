@@ -114,9 +114,9 @@ abstract class BaseLicenseTask : DefaultTask() {
 
       this.pomInfoMap.set(
         project.provider {
-          val deps = resolveDependenciesFromConfiguration(configuration)
+          val dependencies = resolveDependenciesFromConfiguration(configuration)
           val pomMap = mutableMapOf<String, SerializablePomInfo>()
-          deps.forEach { artifactId ->
+          dependencies.forEach { artifactId ->
             resolvePomInfoFromConfiguration(artifactId)?.let { pomInfo ->
               pomMap["${artifactId.group}:${artifactId.name}"] = pomInfo.toSerializable()
             }

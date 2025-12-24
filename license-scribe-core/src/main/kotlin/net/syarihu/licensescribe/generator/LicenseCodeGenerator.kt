@@ -121,12 +121,12 @@ class LicenseCodeGenerator {
           if (license.alternativeLicenses != null && license.alternativeLicenses.isNotEmpty()) {
             add("alternativeLicenses = listOf(\n")
             indent()
-            license.alternativeLicenses.forEachIndexed { i, alt ->
+            license.alternativeLicenses.forEachIndexed { i, alternativeLicense ->
               add(
                 "%T(licenseName = %S, licenseUrl = %S)",
                 alternativeLicenseInfoClassName,
-                alt.name,
-                alt.url,
+                alternativeLicense.name,
+                alternativeLicense.url,
               )
               if (i < license.alternativeLicenses.size - 1) add(",")
               add("\n")
@@ -138,12 +138,12 @@ class LicenseCodeGenerator {
           if (license.additionalLicenses != null && license.additionalLicenses.isNotEmpty()) {
             add("additionalLicenses = listOf(\n")
             indent()
-            license.additionalLicenses.forEachIndexed { i, add ->
+            license.additionalLicenses.forEachIndexed { i, additionalLicense ->
               add(
                 "%T(licenseName = %S, licenseUrl = %S)",
                 additionalLicenseInfoClassName,
-                add.name,
-                add.url,
+                additionalLicense.name,
+                additionalLicense.url,
               )
               if (i < license.additionalLicenses.size - 1) add(",")
               add("\n")
