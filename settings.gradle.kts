@@ -32,4 +32,5 @@ include(":license-scribe-hilt-plugin")
 if (providers.gradleProperty("excludeExample").isPresent.not()) {
   include(":example")
   include(":example-library")
+  include(":example-hilt")
 }

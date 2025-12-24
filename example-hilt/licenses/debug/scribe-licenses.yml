@@ -1,0 +1,199 @@
+licenses:
+  apache-2.0:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+    artifacts:
+      androidx.activity:
+      - name: activity
+        url: https://developer.android.com/jetpack/androidx/releases/activity
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.annotation:
+      - name: annotation
+        url: https://developer.android.com/jetpack/androidx/releases/annotation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: annotation-experimental
+        url: https://developer.android.com/jetpack/androidx/releases/annotation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: annotation-jvm
+        url: https://developer.android.com/jetpack/androidx/releases/annotation
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.arch.core:
+      - name: core-common
+        url: https://developer.android.com/jetpack/androidx/releases/arch-core
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: core-runtime
+        url: https://developer.android.com/jetpack/androidx/releases/arch-core
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.collection:
+      - name: collection
+        url: https://developer.android.com/jetpack/androidx/releases/collection
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: collection-jvm
+        url: https://developer.android.com/jetpack/androidx/releases/collection
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.concurrent:
+      - name: concurrent-futures
+        url: https://developer.android.com/topic/libraries/architecture/index.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.core:
+      - name: core
+        url: https://developer.android.com/jetpack/androidx/releases/core
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: core-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/core
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: core-viewtree
+        url: https://developer.android.com/jetpack/androidx/releases/core
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.customview:
+      - name: customview
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.fragment:
+      - name: fragment
+        url: https://developer.android.com/jetpack/androidx/releases/fragment
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.interpolator:
+      - name: interpolator
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.lifecycle:
+      - name: lifecycle-common
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-livedata
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-livedata-core
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-runtime
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-viewmodel
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-viewmodel-savedstate
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.loader:
+      - name: loader
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.profileinstaller:
+      - name: profileinstaller
+        url: https://developer.android.com/jetpack/androidx/releases/profileinstaller
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.savedstate:
+      - name: savedstate
+        url: https://developer.android.com/jetpack/androidx/releases/savedstate
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.startup:
+      - name: startup-runtime
+        url: https://developer.android.com/jetpack/androidx/releases/startup
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.tracing:
+      - name: tracing
+        url: https://developer.android.com/jetpack/androidx/releases/tracing
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.versionedparcelable:
+      - name: versionedparcelable
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.viewpager:
+      - name: viewpager
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      com.google.code.findbugs:
+      - name: jsr305
+        url: http://findbugs.sourceforge.net/
+      com.google.dagger:
+      - name: dagger
+        url: https://github.com/google/dagger
+      - name: dagger-lint-aar
+        url: https://github.com/google/dagger
+      - name: hilt-android
+        url: https://github.com/google/dagger
+      - name: hilt-core
+        url: https://github.com/google/dagger
+      com.google.guava:
+      - name: listenablefuture
+        url: https://github.com/google/guava
+        copyrightHolders:
+        - Kevin Bourrillion
+      jakarta.inject:
+      - name: jakarta.inject-api
+        url: https://github.com/eclipse-ee4j/injection-api
+        copyrightHolders:
+        - Antoine Sabot-Durand
+        - Martin Kouba
+        - Tomas Remes
+        - Matej Novotny
+      javax.inject:
+      - name: javax.inject
+        url: http://code.google.com/p/atinject/
+      net.syarihu.licensescribe:
+      - name: license-scribe-runtime
+        url: https://github.com/syarihu/license-scribe-plugin
+        copyrightHolders:
+        - syarihu
+      org.jetbrains:
+      - name: annotations
+        url: https://github.com/JetBrains/java-annotations
+        copyrightHolders:
+        - JetBrains Team
+      org.jetbrains.kotlin:
+      - name: kotlin-stdlib
+        url: https://kotlinlang.org/
+        copyrightHolders:
+        - Kotlin Team
+      org.jetbrains.kotlinx:
+      - name: kotlinx-coroutines-android
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+        - JetBrains Team
+      - name: kotlinx-coroutines-bom
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+        - JetBrains Team
+      - name: kotlinx-coroutines-core
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+        - JetBrains Team
+      - name: kotlinx-coroutines-core-jvm
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+        - JetBrains Team
+      org.jspecify:
+      - name: jspecify
+        url: http://jspecify.org/
+        copyrightHolders:
+        - Kevin Bourrillion

@@ -18,6 +18,8 @@ test:
 	./scripts/test-check-missing.sh
 	./scripts/test-sync-add.sh
 	./scripts/test-sync-remove.sh
+	./scripts/test-generate.sh
+	./scripts/test-generate-hilt.sh
 	./scripts/test-configuration-cache.sh
 
 # Clean build artifacts

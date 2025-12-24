@@ -53,5 +53,8 @@ jobs:
       - name: "Test: generateLicenseCode creates valid Kotlin"
         run: ./scripts/test-generate.sh
 
+      - name: "Test: generateHiltModule creates valid Hilt module"
+        run: ./scripts/test-generate-hilt.sh
+
       - name: "Test: Configuration Cache compatibility"
         run: ./scripts/test-configuration-cache.sh
