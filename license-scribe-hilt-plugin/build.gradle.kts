@@ -19,6 +19,7 @@ java {
 
 dependencies {
   implementation(project(":license-scribe-core"))
+  compileOnly(project(":license-scribe-gradle-plugin"))
   implementation(libs.kotlinpoet)
   compileOnly(libs.android.gradle.plugin)
 
