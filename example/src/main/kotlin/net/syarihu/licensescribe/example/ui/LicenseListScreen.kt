@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.syarihu.licensescribe.LicenseInfo
 import net.syarihu.licensescribe.example.AppLicenses
@@ -96,4 +97,10 @@ private fun LicenseItem(license: LicenseInfo) {
       )
     }
   }
+}
+
+@Preview
+@Composable
+private fun LicenseListScreenPreview() {
+  LicenseListScreen()
 }
