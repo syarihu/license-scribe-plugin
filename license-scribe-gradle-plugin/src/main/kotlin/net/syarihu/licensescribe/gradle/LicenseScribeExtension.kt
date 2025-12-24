@@ -1,18 +1,12 @@
 package net.syarihu.licensescribe.gradle
 
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
-import javax.inject.Inject
 
 /**
  * Extension for configuring the LicenseScribe plugin.
  */
-abstract class LicenseScribeExtension
-@Inject
-constructor(
-  objects: ObjectFactory,
-) {
+abstract class LicenseScribeExtension {
   /**
    * Directory where license management files are stored.
    * Defaults to the project directory.
