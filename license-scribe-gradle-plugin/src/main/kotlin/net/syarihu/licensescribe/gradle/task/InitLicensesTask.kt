@@ -1,5 +1,6 @@
 package net.syarihu.licensescribe.gradle.task
 
+import net.syarihu.licensescribe.gradle.task.model.AmbiguousLicenseInfo
 import net.syarihu.licensescribe.model.ArtifactEntry
 import net.syarihu.licensescribe.model.LicenseCatalog
 import net.syarihu.licensescribe.model.LicenseEntry

@@ -1,6 +1,11 @@
 package net.syarihu.licensescribe.gradle.task
 
 import net.syarihu.licensescribe.gradle.LicenseScribeExtension
+import net.syarihu.licensescribe.gradle.task.model.ParentPomInfo
+import net.syarihu.licensescribe.gradle.task.model.PomDataWithParent
+import net.syarihu.licensescribe.gradle.task.model.PomInfo
+import net.syarihu.licensescribe.gradle.task.model.PomLicense
+import net.syarihu.licensescribe.gradle.task.model.SerializablePomInfo
 import net.syarihu.licensescribe.model.ArtifactId
 import net.syarihu.licensescribe.model.IgnoreRules
 import net.syarihu.licensescribe.model.LicenseCatalog
@@ -19,7 +24,6 @@ import org.gradle.api.tasks.Internal
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
 import java.io.File
-import java.io.Serializable
 
 private val AMBIGUOUS_LICENSE_NAMES = setOf(
   "license",
@@ -567,75 +571,3 @@ abstract class BaseLicenseTask : DefaultTask() {
     }
   }
 }
-
-/**
- * Data class to hold information about artifacts with ambiguous licenses.
- */
-data class AmbiguousLicenseInfo(
-  val coordinate: String,
-  val licenseName: String,
-  val licenseUrl: String?,
-)
-
-/**
- * Serializable version of PomInfo for Configuration Cache compatibility
- */
-@Suppress("serial")
-data class SerializablePomInfo(
-  val name: String?,
-  val url: String?,
-  val licenses: List<SerializablePomLicense>,
-  val developers: List<String>,
-) : Serializable {
-  fun toPomInfo(): PomInfo = PomInfo(
-    name = name,
-    url = url,
-    licenses = licenses.map { PomLicense(it.name, it.url) },
-    developers = developers,
-  )
-}
-
-/**
- * Serializable version of PomLicense for Configuration Cache compatibility
- */
-@Suppress("serial")
-data class SerializablePomLicense(
-  val name: String,
-  val url: String?,
-) : Serializable
-
-data class PomInfo(
-  val name: String?,
-  val url: String?,
-  val licenses: List<PomLicense>,
-  val developers: List<String>,
-) {
-  fun toSerializable(): SerializablePomInfo = SerializablePomInfo(
-    name = name,
-    url = url,
-    licenses = licenses.map { SerializablePomLicense(it.name, it.url) },
-    developers = developers,
-  )
-}
-
-data class PomLicense(
-  val name: String,
-  val url: String?,
-)
-
-/**
- * Container for POM data including parent reference
- */
-data class PomDataWithParent(
-  val pomInfo: PomInfo,
-  val parentInfo: ParentPomInfo?,
-)
-
-/**
- * Parent POM reference information
- */
-data class ParentPomInfo(
-  val groupId: String,
-  val artifactId: String,
-  val version: String,
-)
