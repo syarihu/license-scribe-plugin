@@ -31,15 +31,15 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
   fun configureWith(
     extension: LicenseScribeExtension,
     configuration: Configuration?,
-    variant: String,
+    variantName: String,
     project: Project,
   ) {
-    super.configureWith(extension, configuration, variant)
+    super.configureWith(extension, configuration, variantName)
     this.generatedPackageName.set(extension.generatedPackageName)
     this.generatedClassName.set(extension.generatedClassName)
 
     // Use variant-specific output directory to avoid conflicts between variants
-    val variantDir = if (variant.isNotEmpty()) "generated/source/licensescribe/$variant" else "generated/source/licensescribe"
+    val variantDir = if (variantName.isNotEmpty()) "generated/source/licensescribe/$variantName" else "generated/source/licensescribe"
     this.outputDirectory.set(project.layout.buildDirectory.dir(variantDir))
   }
 

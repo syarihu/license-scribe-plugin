@@ -95,12 +95,12 @@ abstract class BaseLicenseTask : DefaultTask() {
   fun configureWith(
     extension: LicenseScribeExtension,
     configuration: Configuration?,
-    variant: String = "",
+    variantName: String = "",
   ) {
     this.baseDir.set(extension.baseDir)
     this.licensesFileName.set(extension.licensesFile)
     this.ignoreFileName.set(extension.ignoreFile)
-    this.variantName.set(variant)
+    this.variantName.set(variantName)
 
     // Use lazy evaluation to defer dependency resolution until task execution
     // This ensures compatibility with configure-on-demand mode
