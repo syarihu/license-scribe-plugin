@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.syarihu.licensescribe"
-version = "0.1.0-SNAPSHOT"
+version = findProperty("VERSION_NAME") as String
 
 kotlin {
   jvmToolchain(17)
