@@ -1,6 +1,7 @@
 package net.syarihu.licensescribe.hilt
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
@@ -13,7 +14,7 @@ import org.gradle.api.tasks.TaskAction
  */
 abstract class GenerateHiltModuleTask : DefaultTask() {
   @get:Input
-  abstract val packageName: Property<String>
+  abstract val generatedPackageName: Property<String>
 
   @get:Input
   abstract val licensesClassName: Property<String>
@@ -32,11 +33,11 @@ abstract class GenerateHiltModuleTask : DefaultTask() {
       val classNameProp = extension.javaClass.getMethod("getGeneratedClassName").invoke(extension)
 
       @Suppress("UNCHECKED_CAST")
-      this.packageName.set((packageNameProp as Property<String>))
+      this.generatedPackageName.set((packageNameProp as Property<String>))
       @Suppress("UNCHECKED_CAST")
       this.licensesClassName.set((classNameProp as Property<String>))
     } else {
-      this.packageName.convention("licenses")
+      this.generatedPackageName.convention("licenses")
       this.licensesClassName.convention("Licenses")
     }
 
@@ -48,12 +49,23 @@ abstract class GenerateHiltModuleTask : DefaultTask() {
 
   @TaskAction
   fun execute() {
+    val packageName = generatedPackageName.get()
+    if (packageName.isBlank()) {
+      throw GradleException(
+        "licenseScribe.generatedPackageName is required. " +
+          "Please set it in your build.gradle.kts:\n\n" +
+          "licenseScribe {\n" +
+          "    generatedPackageName.set(\"com.example.app\")\n" +
+          "}",
+      )
+    }
+
     val outputDir = outputDirectory.get().asFile
     outputDir.mkdirs()
 
     val generator = HiltModuleGenerator()
     generator.generate(
-      packageName = packageName.get(),
+      packageName = generatedPackageName.get(),
       licensesClassName = licensesClassName.get(),
       outputDir = outputDir,
     )

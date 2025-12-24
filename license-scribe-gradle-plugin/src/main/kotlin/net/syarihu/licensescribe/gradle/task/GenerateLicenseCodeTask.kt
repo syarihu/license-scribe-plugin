@@ -5,6 +5,7 @@ import net.syarihu.licensescribe.gradle.LicenseScribeExtension
 import net.syarihu.licensescribe.model.ArtifactId
 import net.syarihu.licensescribe.model.License
 import net.syarihu.licensescribe.model.ResolvedLicense
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
@@ -45,6 +46,17 @@ abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
 
   @TaskAction
   fun execute() {
+    val packageName = generatedPackageName.get()
+    if (packageName.isBlank()) {
+      throw GradleException(
+        "licenseScribe.generatedPackageName is required. " +
+          "Please set it in your build.gradle.kts:\n\n" +
+          "licenseScribe {\n" +
+          "    generatedPackageName.set(\"com.example.app\")\n" +
+          "}",
+      )
+    }
+
     val catalog = loadLicenseCatalog()
 
     val resolvedLicenses = mutableListOf<ResolvedLicense>()
