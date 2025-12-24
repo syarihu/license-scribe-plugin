@@ -25,6 +25,17 @@ import java.io.Serializable
  * Base class for license-related tasks.
  */
 abstract class BaseLicenseTask : DefaultTask() {
+  companion object {
+    private val AMBIGUOUS_LICENSE_NAMES = setOf(
+      "license",
+      "licence",
+      "the license",
+      "the licence",
+      "see license",
+      "see licence",
+    )
+  }
+
   @get:Internal
   abstract val baseDir: DirectoryProperty
 
@@ -77,7 +88,7 @@ abstract class BaseLicenseTask : DefaultTask() {
           val deps = resolveDependenciesFromConfiguration(configuration)
           val pomMap = mutableMapOf<String, SerializablePomInfo>()
           deps.forEach { artifactId ->
-            resolvePomInfoFromConfiguration(configuration, artifactId)?.let { pomInfo ->
+            resolvePomInfoFromConfiguration(artifactId)?.let { pomInfo ->
               pomMap["${artifactId.group}:${artifactId.name}"] = pomInfo.toSerializable()
             }
           }
@@ -116,8 +127,8 @@ abstract class BaseLicenseTask : DefaultTask() {
   /**
    * Get resolved dependencies (from configuration time)
    */
-  protected fun resolveDependencies(): List<ArtifactId> = resolvedDependencies.get().map { coord ->
-    val parts = coord.split(":")
+  protected fun resolveDependencies(): List<ArtifactId> = resolvedDependencies.get().map { mavenCoordinate ->
+    val parts = mavenCoordinate.split(":")
     ArtifactId(
       group = parts[0],
       name = parts[1],
@@ -149,7 +160,8 @@ abstract class BaseLicenseTask : DefaultTask() {
         } else {
           null
         }
-      }.filter { it.group.isNotBlank() && it.name.isNotBlank() }
+      }
+      .filter { it.group.isNotBlank() && it.name.isNotBlank() }
       .distinctBy { "${it.group}:${it.name}" }
   } catch (e: Exception) {
     logger.warn("Failed to resolve dependencies: ${e.message}")
@@ -159,10 +171,7 @@ abstract class BaseLicenseTask : DefaultTask() {
   /**
    * Resolve POM info at configuration time, including parent POM resolution
    */
-  private fun resolvePomInfoFromConfiguration(
-    config: Configuration,
-    artifactId: ArtifactId,
-  ): PomInfo? {
+  private fun resolvePomInfoFromConfiguration(artifactId: ArtifactId): PomInfo? {
     return try {
       val version = artifactId.version
       if (version.isNullOrBlank()) {
@@ -244,7 +253,8 @@ abstract class BaseLicenseTask : DefaultTask() {
     result.resolvedComponents
       .flatMap { component ->
         component.getArtifacts(MavenPomArtifact::class.java)
-      }.filterIsInstance<ResolvedArtifactResult>()
+      }
+      .filterIsInstance<ResolvedArtifactResult>()
       .firstOrNull()
       ?.file
   } catch (e: Exception) {
@@ -284,6 +294,7 @@ abstract class BaseLicenseTask : DefaultTask() {
         emptyList()
       }
     } catch (e: Exception) {
+      logger.debug("Failed to parse licenses from POM: ${e.message}")
       emptyList()
     }
 
@@ -301,6 +312,7 @@ abstract class BaseLicenseTask : DefaultTask() {
         emptyList()
       }
     } catch (e: Exception) {
+      logger.debug("Failed to parse developers from POM: ${e.message}")
       emptyList()
     }
 
@@ -321,6 +333,7 @@ abstract class BaseLicenseTask : DefaultTask() {
         null
       }
     } catch (e: Exception) {
+      logger.debug("Failed to parse parent info from POM: ${e.message}")
       null
     }
 
@@ -440,17 +453,7 @@ abstract class BaseLicenseTask : DefaultTask() {
   /**
    * Checks if a license name is ambiguous and doesn't identify a specific license type.
    */
-  private fun isAmbiguousLicenseName(lowerName: String): Boolean {
-    val ambiguousNames = setOf(
-      "license",
-      "licence",
-      "the license",
-      "the licence",
-      "see license",
-      "see licence",
-    )
-    return lowerName in ambiguousNames
-  }
+  private fun isAmbiguousLicenseName(lowerName: String): Boolean = lowerName in AMBIGUOUS_LICENSE_NAMES
 
   /**
    * Extracts a vendor identifier from a URL for creating unique license keys.
@@ -478,6 +481,7 @@ abstract class BaseLicenseTask : DefaultTask() {
         }
       }
     } catch (_: Exception) {
+      // Safe to ignore - null triggers fallback in caller
       null
     }
   }
@@ -493,15 +497,7 @@ abstract class BaseLicenseTask : DefaultTask() {
     val nameLower = licenseName.lowercase().trim()
 
     // Check for generic license names that don't identify the actual license type
-    val ambiguousNames = setOf(
-      "license",
-      "licence",
-      "the license",
-      "the licence",
-      "see license",
-      "see licence",
-    )
-    if (nameLower in ambiguousNames) {
+    if (nameLower in AMBIGUOUS_LICENSE_NAMES) {
       return true
     }
 
