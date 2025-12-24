@@ -7,16 +7,14 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
+private const val CORE_PACKAGE = "net.syarihu.licensescribe"
+private const val HILT_PACKAGE = "dagger.hilt"
+private const val DAGGER_PACKAGE = "dagger"
+
 /**
  * Generates Hilt module for providing LicenseProvider.
  */
 class HiltModuleGenerator {
-  companion object {
-    private const val CORE_PACKAGE = "net.syarihu.licensescribe"
-    private const val HILT_PACKAGE = "dagger.hilt"
-    private const val DAGGER_PACKAGE = "dagger"
-  }
-
   fun generate(
     packageName: String,
     licensesClassName: String,
