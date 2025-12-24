@@ -1,5 +1,7 @@
 # License Scribe Plugin
 
+[![Build and Test](https://github.com/syarihu/license-scribe-plugin/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/syarihu/license-scribe-plugin/actions/workflows/build-and-test.yml)
+
 A Gradle plugin that acts as your project's scribe, carefully recording and cataloging license information for Android/Kotlin dependencies into clean, accessible code.
 
 ## Features
@@ -30,7 +32,15 @@ license-scribe-plugin/
 └── build.gradle.kts              # Root build configuration
 ```
 
+## Requirements
+
+- JDK 17+
+- Gradle 8.0+
+- Android Gradle Plugin 8.0+ (for Android projects)
+
 ## Installation
+
+> **Note:** This plugin is currently in development. Use `mavenLocal()` for local builds or configure your own repository.
 
 ### settings.gradle.kts
 
@@ -121,6 +131,38 @@ licenses/
 
 This allows tracking different dependencies per build variant (e.g., `debugImplementation` vs `releaseImplementation`, or flavor-specific dependencies).
 
+### Ignore File (`.scribeignore`)
+
+The `.scribeignore` file allows you to exclude specific artifacts from license tracking. This is useful for:
+- Internal company libraries that don't need license attribution
+- Test-only dependencies
+- Dependencies with bundled licenses that don't require separate attribution
+
+**Supported patterns:**
+
+```
+# Single artifact (exact match)
+com.example:library-name
+
+# All artifacts from a group (wildcard)
+com.example:*
+
+# Comments start with #
+# Lines starting with # are ignored
+```
+
+**Example `.scribeignore`:**
+
+```
+# Internal libraries
+com.mycompany:internal-utils
+com.mycompany:*
+
+# Test utilities
+junit:junit
+org.mockito:*
+```
+
 ### 2. Review and Edit Definitions
 
 Edit `scribe-licenses.yml` to add missing information. The file uses a **license-first structure** where artifacts are grouped under their license.
@@ -202,6 +244,26 @@ Some POM files declare non-standard or ambiguous license names. The plugin handl
 | `LICENSE` | `license-{vendor}` | `license-braze-inc` |
 
 This prevents unrelated artifacts from being incorrectly grouped together.
+
+**Supported license keys:**
+
+The following license keys are automatically recognized and normalized:
+
+| Key | License Name |
+|-----|--------------|
+| `apache-2.0` | Apache License 2.0 |
+| `mit` | MIT License |
+| `bsd-3-clause` | BSD 3-Clause License |
+| `bsd-2-clause` | BSD 2-Clause License |
+| `lgpl-2.1` | GNU Lesser General Public License v2.1 |
+| `lgpl-3.0` | GNU Lesser General Public License v3.0 |
+| `gpl-2.0` | GNU General Public License v2.0 |
+| `gpl-3.0` | GNU General Public License v3.0 |
+| `epl-1.0` | Eclipse Public License 1.0 |
+| `mpl-2.0` | Mozilla Public License 2.0 |
+| `cc0-1.0` | CC0 1.0 Universal |
+| `unlicense` | The Unlicense |
+| `isc` | ISC License |
 
 **Ambiguous license warnings:**
 
@@ -373,8 +435,8 @@ Examples:
 
 ### Prerequisites
 
-- JDK 17+
-- Android SDK (for example project)
+- See [Requirements](#requirements) above
+- Android SDK (required for running the example project)
 
 ### Build Commands
 
