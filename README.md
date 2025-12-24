@@ -481,11 +481,7 @@ make check
 
 ### Configuration Cache
 
-This plugin is compatible with Gradle's Configuration Cache. The Configuration Cache is enabled by default in `gradle.properties`:
-
-```properties
-org.gradle.configuration-cache=true
-```
+This plugin fully supports Gradle's Configuration Cache. If you encounter configuration cache errors, they may be caused by other plugins in your project.
 
 ## Example Project
 
