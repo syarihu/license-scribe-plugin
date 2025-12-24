@@ -23,7 +23,7 @@ abstract class GenerateHiltModuleTask : DefaultTask() {
 
   fun configureWith(
     project: Project,
-    variant: String,
+    variantName: String,
   ) {
     // Get configuration from the base plugin's extension
     val extension = project.extensions.findByName("licenseScribe")
@@ -42,12 +42,12 @@ abstract class GenerateHiltModuleTask : DefaultTask() {
 
     // Use variant-specific output directory to match the base plugin
     val variantDir =
-      if (variant.isNotEmpty()) "generated/source/licensescribe/$variant" else "generated/source/licensescribe"
+      if (variantName.isNotEmpty()) "generated/source/licensescribe/$variantName" else "generated/source/licensescribe"
     this.outputDirectory.set(project.layout.buildDirectory.dir(variantDir))
   }
 
   @TaskAction
-  fun generate() {
+  fun execute() {
     val outputDir = outputDirectory.get().asFile
     outputDir.mkdirs()
 
