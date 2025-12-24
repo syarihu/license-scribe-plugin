@@ -295,7 +295,15 @@ abstract class BaseLicenseTask : DefaultTask() {
    * Parse POM file and extract both POM info and parent info
    */
   private fun parsePomWithParentInfo(pomFile: File): PomDataWithParent? = try {
-    val factory = javax.xml.parsers.DocumentBuilderFactory.newInstance()
+    val factory = javax.xml.parsers.DocumentBuilderFactory.newInstance().apply {
+      // XXE (XML External Entity) attack prevention
+      // See: https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html
+      setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+      setFeature("http://xml.org/sax/features/external-general-entities", false)
+      setFeature("http://xml.org/sax/features/external-parameter-entities", false)
+      setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+      setXIncludeAware(false)
+    }
     val builder = factory.newDocumentBuilder()
     val doc = builder.parse(pomFile)
     doc.documentElement.normalize()

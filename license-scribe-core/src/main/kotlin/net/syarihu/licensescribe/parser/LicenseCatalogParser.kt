@@ -4,7 +4,9 @@ import net.syarihu.licensescribe.model.ArtifactEntry
 import net.syarihu.licensescribe.model.LicenseCatalog
 import net.syarihu.licensescribe.model.LicenseEntry
 import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.constructor.SafeConstructor
 import java.io.File
 import java.io.Reader
 
@@ -37,7 +39,9 @@ import java.io.Reader
  * ```
  */
 class LicenseCatalogParser {
-  private val yaml = Yaml()
+  // Use SafeConstructor to prevent arbitrary object instantiation from YAML
+  // See: https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
+  private val yaml = Yaml(SafeConstructor(LoaderOptions()))
 
   fun parse(file: File): LicenseCatalog {
     if (!file.exists()) {
