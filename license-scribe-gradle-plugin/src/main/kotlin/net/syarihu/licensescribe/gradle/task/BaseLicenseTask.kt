@@ -62,6 +62,14 @@ private val WELL_KNOWN_LICENSES = mapOf(
 )
 
 /**
+ * Default copyright holders for well-known licenses.
+ * Used when POM files don't include developer information.
+ */
+private val WELL_KNOWN_LICENSE_COPYRIGHT_HOLDERS = mapOf(
+  "android-software-development-kit-license" to listOf("Google LLC"),
+)
+
+/**
  * Base class for license-related tasks.
  */
 abstract class BaseLicenseTask : DefaultTask() {
@@ -578,4 +586,11 @@ abstract class BaseLicenseTask : DefaultTask() {
       }
     }
   }
+
+  /**
+   * Returns default copyright holders for a given license key.
+   * Used when POM files don't include developer information.
+   */
+  protected fun getDefaultCopyrightHolders(licenseKey: String): List<String> =
+    WELL_KNOWN_LICENSE_COPYRIGHT_HOLDERS[licenseKey] ?: emptyList()
 }

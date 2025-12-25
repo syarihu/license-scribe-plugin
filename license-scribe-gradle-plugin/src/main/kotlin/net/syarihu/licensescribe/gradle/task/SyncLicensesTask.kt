@@ -85,10 +85,13 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
           licenseInfoMap["unknown"] = "Unknown License" to null
         }
 
+        val copyrightHolders = pomInfo?.developers?.takeIf { it.isNotEmpty() }
+          ?: getDefaultCopyrightHolders(licenseKey)
+
         val artifactEntry = ArtifactEntry(
           name = artifact.name,
           url = pomInfo?.url?.let { stripVersionFromUrl(it) },
-          copyrightHolders = pomInfo?.developers?.takeIf { it.isNotEmpty() } ?: emptyList(),
+          copyrightHolders = copyrightHolders,
         )
 
         licenseToArtifacts
