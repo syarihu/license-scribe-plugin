@@ -147,7 +147,8 @@ class LicenseCatalogParser {
                   put("name", artifact.name)
                   artifact.url?.let { put("url", it) }
                   if (artifact.copyrightHolders.isNotEmpty()) {
-                    put("copyrightHolders", artifact.copyrightHolders)
+                    // Create a new list instance to prevent SnakeYAML from using anchors/aliases
+                    put("copyrightHolders", artifact.copyrightHolders.toList())
                   }
                   artifact.alternativeLicenses?.let { put("alternativeLicenses", it) }
                   artifact.additionalLicenses?.let { put("additionalLicenses", it) }
