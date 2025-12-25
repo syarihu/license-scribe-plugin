@@ -1,4 +1,49 @@
 licenses:
+  android-software-development-kit-license:
+    name: Android Software Development Kit License
+    url: https://developer.android.com/studio/terms.html
+    artifacts:
+      com.google.android.gms:
+      - name: play-services-ads-identifier
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-base
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-basement
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-measurement
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-measurement-api
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-measurement-base
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-measurement-impl
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-measurement-sdk
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-measurement-sdk-api
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-stats
+        copyrightHolders:
+        - Google LLC
+      - name: play-services-tasks
+        copyrightHolders:
+        - Google LLC
+      com.google.firebase:
+      - name: firebase-analytics
+        copyrightHolders:
+        - Google LLC
+      - name: firebase-measurement-connector
+        copyrightHolders:
+        - Google LLC
   apache-2.0:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
@@ -244,8 +289,57 @@ licenses:
         copyrightHolders:
         - The Android Open Source Project
       androidx.customview:
+      - name: customview
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
       - name: customview-poolingcontainer
         url: https://developer.android.com/jetpack/androidx/releases/customview
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.datastore:
+      - name: datastore
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-android
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-core
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-core-android
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-core-okio
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-core-okio-jvm
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-preferences
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-preferences-android
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-preferences-core
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-preferences-core-android
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: datastore-preferences-proto
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
         copyrightHolders:
         - The Android Open Source Project
       androidx.documentfile:
@@ -261,6 +355,11 @@ licenses:
       androidx.emoji2:
       - name: emoji2
         url: https://developer.android.com/jetpack/androidx/releases/emoji2
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.fragment:
+      - name: fragment
+        url: https://developer.android.com/jetpack/androidx
         copyrightHolders:
         - The Android Open Source Project
       androidx.graphics:
@@ -383,6 +482,15 @@ licenses:
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
+      androidx.privacysandbox.ads:
+      - name: ads-adservices
+        url: https://developer.android.com/jetpack/androidx/releases/privacysandbox-ads#1.1.0-beta11
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ads-adservices-java
+        url: https://developer.android.com/jetpack/androidx/releases/privacysandbox-ads#1.1.0-beta11
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.profileinstaller:
       - name: profileinstaller
         url: https://developer.android.com/jetpack/androidx/releases/profileinstaller
@@ -429,6 +537,11 @@ licenses:
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
+      androidx.viewpager:
+      - name: viewpager
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.window:
       - name: window
         url: https://developer.android.com/jetpack/androidx/releases/window
@@ -442,15 +555,36 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/window
         copyrightHolders:
         - The Android Open Source Project
+      com.google.code.findbugs:
+      - name: jsr305
+        url: http://findbugs.sourceforge.net/
       com.google.code.gson:
       - name: gson
       com.google.errorprone:
       - name: error_prone_annotations
+      com.google.firebase:
+      - name: firebase-annotations
+      - name: firebase-bom
+      - name: firebase-common
+      - name: firebase-components
+      - name: firebase-installations
+      - name: firebase-installations-interop
       com.google.guava:
+      - name: failureaccess
+        url: https://github.com/google/guava
+        copyrightHolders:
+        - Kevin Bourrillion
+      - name: guava
+        url: https://github.com/google/guava
+        copyrightHolders:
+        - Kevin Bourrillion
       - name: listenablefuture
         url: https://github.com/google/guava
         copyrightHolders:
         - Kevin Bourrillion
+      com.google.j2objc:
+      - name: j2objc-annotations
+        url: https://github.com/google/j2objc/
       com.squareup.okhttp3:
       - name: okhttp
         url: https://square.github.io/okhttp/
@@ -474,6 +608,9 @@ licenses:
         url: https://github.com/square/retrofit
         copyrightHolders:
         - Square, Inc.
+      javax.inject:
+      - name: javax.inject
+        url: http://code.google.com/p/atinject/
       net.syarihu.licensescribe:
       - name: license-scribe-runtime
         url: https://github.com/syarihu/license-scribe-plugin
@@ -485,6 +622,14 @@ licenses:
         copyrightHolders:
         - JetBrains Team
       org.jetbrains.kotlin:
+      - name: kotlin-android-extensions-runtime
+        url: https://kotlinlang.org/
+        copyrightHolders:
+        - Kotlin Team
+      - name: kotlin-parcelize-runtime
+        url: https://kotlinlang.org/
+        copyrightHolders:
+        - Kotlin Team
       - name: kotlin-stdlib
         url: https://kotlinlang.org/
         copyrightHolders:
@@ -506,6 +651,10 @@ licenses:
         url: https://github.com/Kotlin/kotlinx.coroutines
         copyrightHolders:
         - JetBrains Team
+      - name: kotlinx-coroutines-play-services
+        url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+        - JetBrains Team
       - name: kotlinx-serialization-bom
         url: https://github.com/Kotlin/kotlinx.serialization
         copyrightHolders:
@@ -523,3 +672,22 @@ licenses:
         url: http://jspecify.org/
         copyrightHolders:
         - Kevin Bourrillion
+  bsd-3-clause:
+    name: BSD 3-Clause License
+    url: https://opensource.org/licenses/BSD-3-Clause
+    artifacts:
+      androidx.datastore:
+      - name: datastore-preferences-external-protobuf
+        url: https://developer.android.com/jetpack/androidx/releases/datastore
+        copyrightHolders:
+        - The Android Open Source Project
+  mit:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+    artifacts:
+      org.checkerframework:
+      - name: checker-qual
+        url: https://checkerframework.org
+        copyrightHolders:
+        - Michael Ernst
+        - Suzanne Millstein
