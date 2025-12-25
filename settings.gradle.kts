@@ -1,4 +1,5 @@
 pluginManagement {
+  val versionName = providers.gradleProperty("VERSION_NAME").get()
   repositories {
     mavenLocal()
     gradlePluginPortal()
@@ -9,6 +10,8 @@ pluginManagement {
     kotlin("jvm") version embeddedKotlinVersion
     kotlin("android") version embeddedKotlinVersion
     kotlin("plugin.compose") version embeddedKotlinVersion
+    id("net.syarihu.license-scribe") version versionName
+    id("net.syarihu.license-scribe-hilt") version versionName
   }
 }
 

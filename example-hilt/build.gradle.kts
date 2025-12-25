@@ -1,8 +1,10 @@
+val versionName = findProperty("VERSION_NAME") as String
+
 plugins {
   alias(libs.plugins.android.application)
   kotlin("android")
-  id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
-  id("net.syarihu.license-scribe-hilt") version "0.1.0-SNAPSHOT"
+  id("net.syarihu.license-scribe")
+  id("net.syarihu.license-scribe-hilt")
 }
 
 android {
@@ -37,7 +39,7 @@ kotlin {
 
 dependencies {
   // License Scribe runtime
-  implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
+  implementation("net.syarihu.licensescribe:license-scribe-runtime:$versionName")
 
   // Hilt (for annotations only - we don't use Hilt Gradle plugin due to compatibility issues)
   implementation(libs.hilt.android)

@@ -1,8 +1,10 @@
+val versionName = findProperty("VERSION_NAME") as String
+
 plugins {
   alias(libs.plugins.android.application)
   kotlin("android")
   kotlin("plugin.compose")
-  id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
+  id("net.syarihu.license-scribe")
 }
 
 android {
@@ -41,7 +43,7 @@ kotlin {
 
 dependencies {
   // License Scribe runtime (minimal dependency for LicenseProvider and LicenseInfo)
-  implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
+  implementation("net.syarihu.licensescribe:license-scribe-runtime:$versionName")
 
   // Internal library module (to test transitive dependency detection)
   implementation(project(":example-library"))
