@@ -38,7 +38,7 @@ jobs:
 
       - name: Publish to Central Portal (Release)
         if: github.event_name == 'push' || github.event.inputs.publish_type == 'release'
-        run: ./gradlew publishAggregationToCentralPortal --no-configuration-cache
+        run: ./gradlew publishAggregationToCentralPortal -PexcludeExample --no-configuration-cache
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
@@ -47,7 +47,7 @@ jobs:
 
       - name: Publish to Central Portal (Snapshot)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.publish_type == 'snapshot'
-        run: ./gradlew publishAggregationToCentralPortalSnapshots --no-configuration-cache
+        run: ./gradlew publishAggregationToCentralPortalSnapshots -PexcludeExample --no-configuration-cache
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
