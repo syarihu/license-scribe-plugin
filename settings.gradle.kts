@@ -1,7 +1,11 @@
 pluginManagement {
   val versionName = providers.gradleProperty("VERSION_NAME").get()
   repositories {
-    mavenLocal()
+    mavenLocal {
+      content {
+        includeGroupByRegex("net\\.syarihu\\.license-?scribe.*")
+      }
+    }
     gradlePluginPortal()
     mavenCentral()
     google()
@@ -17,7 +21,11 @@ pluginManagement {
 
 dependencyResolutionManagement {
   repositories {
-    mavenLocal()
+    mavenLocal {
+      content {
+        includeGroupByRegex("net\\.syarihu\\.license-?scribe.*")
+      }
+    }
     mavenCentral()
     google()
   }
