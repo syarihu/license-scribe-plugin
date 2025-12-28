@@ -40,9 +40,40 @@ license-scribe-plugin/
 
 ## Installation
 
-> **Note:** This plugin is currently in development. Use `mavenLocal()` for local builds or configure your own repository.
+[![Maven Central](https://img.shields.io/maven-central/v/net.syarihu.licensescribe/license-scribe-gradle-plugin)](https://central.sonatype.com/namespace/net.syarihu.licensescribe)
+
+This plugin is available on **Maven Central**.
 
 ### settings.gradle.kts
+
+```kotlin
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
+    }
+}
+```
+
+### build.gradle.kts (app module)
+
+```kotlin
+plugins {
+    id("net.syarihu.license-scribe") version "0.1.0"
+}
+
+dependencies {
+    // Required: Runtime library provides LicenseInfo and LicenseProvider
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0")
+}
+```
+
+### For Local Development
+
+> **Note:** Use `mavenLocal()` for local builds when developing or testing unreleased versions.
+
+#### settings.gradle.kts
 
 ```kotlin
 pluginManagement {
@@ -55,7 +86,7 @@ pluginManagement {
 }
 ```
 
-### build.gradle.kts (app module)
+#### build.gradle.kts (app module)
 
 ```kotlin
 plugins {
@@ -66,7 +97,11 @@ dependencies {
     // Required: Runtime library provides LicenseInfo and LicenseProvider
     implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
 }
+```
 
+### Configuration
+
+```kotlin
 licenseScribe {
     // Base directory for license files (default: project directory)
     // Recommended: use a dedicated directory to keep things organized
@@ -343,7 +378,7 @@ In your feature module, depend only on `license-scribe-runtime`:
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0")
 }
 ```
 
@@ -371,8 +406,8 @@ For projects using Hilt, the optional `license-scribe-hilt` plugin generates a H
 ```kotlin
 // app/build.gradle.kts
 plugins {
-    id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
-    id("net.syarihu.license-scribe-hilt") version "0.1.0-SNAPSHOT"
+    id("net.syarihu.license-scribe") version "0.1.0"
+    id("net.syarihu.license-scribe-hilt") version "0.1.0"
 }
 ```
 
@@ -395,7 +430,7 @@ object LicenseScribeHiltModule {
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0")
 }
 
 // ViewModel in feature module
