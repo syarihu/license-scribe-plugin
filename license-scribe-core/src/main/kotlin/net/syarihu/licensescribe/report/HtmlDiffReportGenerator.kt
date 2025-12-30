@@ -89,11 +89,15 @@ class HtmlDiffReportGenerator : DiffReportGenerator {
     if (report.extraInCatalog.isNotEmpty()) {
       appendLine("    <section class=\"extra-section\">")
       appendLine("      <h2>Extra in Catalog (${report.extraInCatalog.size})</h2>")
+      // spotless:off
       appendLine("      <p class=\"section-desc\">These entries exist in <code>scribe-licenses.yml</code> but the dependency was removed:</p>")
+      // spotless:on
       appendLine("      <ul class=\"extra-list\">")
       report.extraInCatalog.sortedBy { it.coordinate }.forEach { entry ->
         val license = entry.licenseName ?: "Unknown"
+        // spotless:off
         appendLine("        <li><span class=\"artifact\">${escapeHtml(entry.coordinate)}</span> - <span class=\"license\">${escapeHtml(license)}</span></li>")
+        // spotless:on
       }
       appendLine("      </ul>")
       appendLine("    </section>")
@@ -127,7 +131,9 @@ class HtmlDiffReportGenerator : DiffReportGenerator {
     }
     val visitedSuffix = if (node.isVisited) " <span class=\"visited\">(*)</span>" else ""
 
+    // spotless:off
     appendLine("$prefix$connector$licenseTag<span class=\"artifact $statusClass\" data-status=\"$statusClass\">${escapeHtml(node.coordinate)}</span>$visitedSuffix")
+    // spotless:on
 
     val childPrefix = prefix + if (isLast) "     " else "|    "
     node.children.forEachIndexed { index, child ->
