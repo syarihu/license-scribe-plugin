@@ -36,6 +36,7 @@ allprojects {
       ratchetFrom("origin/main")
     }
     kotlin {
+      toggleOffOn()
       target("**/*.kt")
       targetExclude("**/build/**/*.kt")
       targetExclude("bin/**/*.kt")

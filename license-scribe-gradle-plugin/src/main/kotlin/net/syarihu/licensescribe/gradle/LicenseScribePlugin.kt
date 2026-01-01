@@ -5,6 +5,7 @@ import com.android.build.api.variant.Variant
 import net.syarihu.licensescribe.gradle.task.CheckLicensesTask
 import net.syarihu.licensescribe.gradle.task.GenerateLicenseCodeTask
 import net.syarihu.licensescribe.gradle.task.InitLicensesTask
+import net.syarihu.licensescribe.gradle.task.ReportLicensesTask
 import net.syarihu.licensescribe.gradle.task.SyncLicensesTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -83,6 +84,12 @@ class LicenseScribePlugin : Plugin<Project> {
       task.configureWith(extension, configuration, variantName)
     }
 
+    project.tasks.register("scribeLicenses${variantSuffix}Report", ReportLicensesTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate license diff report for $variantName"
+      task.configureWith(extension, configuration, variantName, project)
+    }
+
     val generateTask =
       project.tasks.register("scribeLicenses${variantSuffix}Generate", GenerateLicenseCodeTask::class.java) { task ->
         task.group = TASK_GROUP
@@ -132,6 +139,12 @@ class LicenseScribePlugin : Plugin<Project> {
       task.group = TASK_GROUP
       task.description = "Sync license definitions with current dependencies"
       task.configureWith(extension, configuration, "")
+    }
+
+    project.tasks.register("scribeLicensesReport", ReportLicensesTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate license diff report"
+      task.configureWith(extension, configuration, "", project)
     }
 
     val generateTask =
