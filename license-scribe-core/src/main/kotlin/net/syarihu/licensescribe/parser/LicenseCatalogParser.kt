@@ -76,7 +76,7 @@ class LicenseCatalogParser {
     val artifactsData = map["artifacts"] as? Map<String, Any>
 
     val artifacts = artifactsData?.mapNotNull { (groupId, groupData) ->
-      parseArtifactGroup(groupId, groupData)?.let { groupId to it }
+      parseArtifactGroup(groupData)?.let { groupId to it }
     }?.toMap() ?: emptyMap()
 
     return LicenseEntry(
@@ -87,10 +87,7 @@ class LicenseCatalogParser {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun parseArtifactGroup(
-    groupId: String,
-    groupData: Any,
-  ): List<ArtifactEntry>? {
+  private fun parseArtifactGroup(groupData: Any): List<ArtifactEntry>? {
     if (groupData !is List<*>) return null
 
     return (groupData as List<Map<String, Any>>).mapNotNull { parseArtifactEntry(it) }
