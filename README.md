@@ -23,6 +23,7 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 - **Variant-aware** - generates separate license files per build variant, including product flavor support (e.g., `debug`, `stagingDebug`, `productionRelease`)
 - **Smart license detection** - URL-based license identification for more accurate classification
 - **Vendor separation** - proprietary and ambiguous licenses are kept separate per vendor
+- **HTML diff report** - review what the scribe has recorded and identify any missing entries
 - Generates Kotlin code for easy access to license information in your app
 - Works with Android (application/library) and pure Kotlin/JVM projects
 - **Multi-module support** with `LicenseProvider` interface for dependency injection
@@ -356,7 +357,22 @@ Generate Kotlin code (automatically runs during build):
 ./gradlew scribeLicensesDebugGenerate
 ```
 
-### 6. Use Generated Code
+### 6. Generate Diff Report (Optional)
+
+Use this task to review what the scribe has recorded and verify the completeness of the license catalog. This is especially useful when you want to confirm that no dependencies are missing before releasing your app.
+
+```bash
+./gradlew scribeLicensesDebugReport
+```
+
+The report generates an interactive HTML file that displays a dependency tree view with license annotations and status indicators:
+- **Covered**: Dependencies that the scribe has properly recorded in the catalog
+- **Missing**: Dependencies that exist in your project but the scribe has not yet recorded
+- **Removed**: Dependencies that the scribe recorded but are no longer used in the project
+
+<img src="docs/images/diff_report.png" alt="License Diff Report" width="600">
+
+### 7. Use Generated Code
 
 Access license information in your app:
 
@@ -582,6 +598,7 @@ For Android projects, tasks are created per variant. The variant name depends on
 | `scribeLicenses{Variant}Check` | Check definitions for missing attributes and validate against dependencies |
 | `scribeLicenses{Variant}Sync` | Sync definitions with current dependencies |
 | `scribeLicenses{Variant}Generate` | Generate Kotlin code for licenses |
+| `scribeLicenses{Variant}Report` | Generate HTML report to review what the scribe has recorded |
 
 Examples:
 ```bash
