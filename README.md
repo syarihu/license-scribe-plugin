@@ -110,12 +110,12 @@ pluginManagement {
 
 ```kotlin
 plugins {
-    id("net.syarihu.license-scribe") version "0.2.0-SNAPSHOT"
+    id("net.syarihu.license-scribe") version "<latest-version>-SNAPSHOT"
 }
 
 dependencies {
     // Required: Runtime library provides LicenseInfo and LicenseProvider
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.2.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:<latest-version>-SNAPSHOT")
 }
 ```
 
