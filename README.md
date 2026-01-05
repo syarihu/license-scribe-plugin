@@ -1,5 +1,7 @@
 # License Scribe Plugin
 
+<img alt="license-scribe-plugin-logo" src="docs/images/license-scribe-plugin-logo.png" />
+
 [![Build and Test](https://github.com/syarihu/license-scribe-plugin/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/syarihu/license-scribe-plugin/actions/workflows/build-and-test.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/net.syarihu.licensescribe/license-scribe-gradle-plugin)](https://central.sonatype.com/namespace/net.syarihu.licensescribe)
 
