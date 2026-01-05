@@ -33,7 +33,7 @@ private val DefaultAccentColor = Color(0xFF6200EE)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LicenseListScreen() {
+fun OpenSourceLicensesScreen() {
   val uriHandler = LocalUriHandler.current
 
   Scaffold(
@@ -135,6 +135,6 @@ private fun LicenseItem(
 
 @Preview
 @Composable
-private fun LicenseListScreenPreview() {
-  LicenseListScreen()
+private fun OpenSourceLicensesScreenPreview() {
+  OpenSourceLicensesScreen()
 }
