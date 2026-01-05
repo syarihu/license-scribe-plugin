@@ -16,6 +16,7 @@ pluginManagement {
     kotlin("plugin.compose") version embeddedKotlinVersion
     id("net.syarihu.license-scribe") version versionName
     id("net.syarihu.license-scribe-hilt") version versionName
+    id("net.syarihu.license-scribe-screen") version versionName
   }
 }
 
@@ -37,6 +38,7 @@ include(":license-scribe-runtime")
 include(":license-scribe-core")
 include(":license-scribe-gradle-plugin")
 include(":license-scribe-hilt-plugin")
+include(":license-scribe-screen-plugin")
 
 // example modules require the plugin to be published to Maven Local first
 // Use -PexcludeExample to skip them during initial build
@@ -44,4 +46,5 @@ if (providers.gradleProperty("excludeExample").isPresent.not()) {
   include(":example")
   include(":example-library")
   include(":example-hilt")
+  include(":example-screen")
 }

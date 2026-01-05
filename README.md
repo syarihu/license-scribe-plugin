@@ -4,7 +4,17 @@
 
 A Gradle plugin that acts as your project's scribe, carefully recording and cataloging license information for Android/Kotlin dependencies into clean, accessible code.
 
+## Which Plugin Should I Use?
+
+| Plugin | Use Case |
+|--------|----------|
+| `license-scribe-gradle-plugin` | Want to manage license definitions in Git, customize the license screen UI, or need fine-grained control over license information |
+| `license-scribe-screen-plugin` | Want to quickly add an OSS license screen with minimal setup - no YAML management or custom UI needed *(available from 0.2.0)* |
+| `license-scribe-hilt-plugin` | Using `license-scribe-gradle-plugin` and want Hilt DI integration |
+
 ## Features
+
+### license-scribe-gradle-plugin
 
 - Automatically detects project dependencies and their licenses (including transitive dependencies)
 - **Parent POM resolution** - detects licenses from parent POMs when not specified in the artifact's own POM
@@ -18,6 +28,14 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 - **Optional Hilt integration** for seamless DI in feature modules
 - **Minimal runtime footprint** - only `LicenseInfo` and `LicenseProvider` classes are included in your APK
 
+### license-scribe-screen-plugin
+
+- **Zero configuration** - automatically generates a complete license screen Activity
+- **No YAML management** - license information is extracted directly from dependencies
+- **Customizable appearance** - theme color, toolbar title, and title text can be customized at runtime
+- **Edge-to-edge support** - modern Android UI with proper WindowInsets handling
+- **Material Design** - card-based UI with ripple effects
+
 ## Project Structure
 
 ```
@@ -26,8 +44,10 @@ license-scribe-plugin/
 ├── license-scribe-core/          # Core library (parser, generator - build-time only)
 ├── license-scribe-gradle-plugin/ # Main Gradle plugin
 ├── license-scribe-hilt-plugin/   # Optional Hilt integration plugin
+├── license-scribe-screen-plugin/ # Optional plugin for auto-generating license screen
 ├── example/                      # Example Android app
 ├── example-library/              # Example library module (for transitive dependency testing)
+├── example-screen/               # Example app for screen plugin
 ├── Makefile                      # Development commands
 └── build.gradle.kts              # Root build configuration
 ```
@@ -397,9 +417,9 @@ class LicenseScreen(
 }
 ```
 
-## Hilt Integration (Optional)
+## Hilt Integration (Optional for license-scribe-gradle-plugin)
 
-For projects using Hilt, the optional `license-scribe-hilt` plugin generates a Hilt module automatically.
+For projects using `license-scribe-gradle-plugin` with Hilt, the optional `license-scribe-hilt` plugin generates a Hilt module automatically.
 
 ### Setup
 
@@ -439,6 +459,107 @@ class LicenseViewModel @Inject constructor(
     private val licenseProvider: LicenseProvider
 ) : ViewModel() {
     val licenses: List<LicenseInfo> = licenseProvider.all
+}
+```
+
+## Screen Plugin
+
+For developers who want to quickly set up an OSS license display screen without manual implementation, the `license-scribe-screen` plugin automatically generates a ready-to-use license list Activity. Unlike `license-scribe-gradle-plugin`, this plugin does not require YAML file management - license information is extracted directly from your project dependencies.
+
+### Setup
+
+```kotlin
+// app/build.gradle.kts
+plugins {
+    id("net.syarihu.license-scribe-screen") version "0.2.0"
+}
+
+dependencies {
+    // Required: Runtime library
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.2.0")
+
+    // Required: AndroidX dependencies for generated Activity
+    implementation("androidx.core:core-ktx:$latest_version")
+    implementation("androidx.activity:activity:$latest_version")
+    implementation("androidx.appcompat:appcompat:$latest_version")
+    implementation("androidx.recyclerview:recyclerview:$latest_version")
+}
+
+licenseScribeScreen {
+    // Package name for generated code (required)
+    generatedPackageName.set("com.example.app")
+
+    // Class name for licenses object (default: "AppLicenses")
+    // licensesClassName.set("AppLicenses")
+
+    // Class name for generated Activity (default: "OpenSourceLicensesActivity")
+    // activityClassName.set("OpenSourceLicensesActivity")
+}
+```
+
+### Generated Files
+
+The plugin generates the following files per build variant:
+
+1. **`AppLicenses.kt`** - A Kotlin object containing all license information
+2. **`OpenSourceLicensesActivity.kt`** - A ready-to-use Activity displaying the license list
+
+### Usage
+
+Launch the license screen from anywhere in your app:
+
+```kotlin
+import com.example.app.OpenSourceLicensesActivity
+
+// Basic usage - launch with default styling
+OpenSourceLicensesActivity.start(context)
+
+// Customized usage - specify theme color and title
+OpenSourceLicensesActivity.start(
+    context = this,
+    themeColor = Color.parseColor("#6200EE"),  // Toolbar background & accent color
+    toolbarTitleColor = Color.WHITE,            // Toolbar title text color
+    title = "Open Source Licenses"              // Custom title
+)
+```
+
+### Customization Options
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `context` | `Context` | Required. The context to start the activity from |
+| `themeColor` | `Int?` | Optional. Theme color for toolbar background and license text accent |
+| `toolbarTitleColor` | `Int?` | Optional. Toolbar title text color (auto-determined if not specified) |
+| `title` | `String` | Optional. Custom title (default: "Open Source Licenses") |
+
+### Example
+
+See the `example-screen/` directory for a complete example:
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            Button(onClick = {
+                // Default style
+                OpenSourceLicensesActivity.start(this)
+            }) {
+                Text("Show Licenses")
+            }
+
+            Button(onClick = {
+                // Purple theme
+                OpenSourceLicensesActivity.start(
+                    context = this,
+                    themeColor = "#6200EE".toColorInt(),
+                    toolbarTitleColor = Color.WHITE,
+                )
+            }) {
+                Text("Show Licenses (Purple)")
+            }
+        }
+    }
 }
 ```
 
@@ -506,21 +627,27 @@ make check
 ./gradlew :license-scribe-core:publishToMavenLocal
 ./gradlew :license-scribe-gradle-plugin:publishToMavenLocal
 ./gradlew :license-scribe-hilt-plugin:publishToMavenLocal
+./gradlew :license-scribe-screen-plugin:publishToMavenLocal
 
 # Or publish all at once
 ./gradlew publishToMavenLocal
 
 # Build example
 ./gradlew :example:assembleDebug
+
+# Build screen example
+./gradlew :example-screen:assembleDebug
 ```
 
 ### Configuration Cache
 
 This plugin fully supports Gradle's Configuration Cache. If you encounter configuration cache errors, they may be caused by other plugins in your project.
 
-## Example Project
+## Example Projects
 
-The `example/` directory contains a sample Android app demonstrating the plugin usage:
+### example/
+
+The `example/` directory contains a sample Android app demonstrating the main plugin usage:
 
 - Shows how to configure the plugin
 - Displays a license list using Jetpack Compose
@@ -536,6 +663,24 @@ make publish
 
 # Then build the example
 ./gradlew :example:assembleDebug
+```
+
+### example-screen/
+
+The `example-screen/` directory demonstrates the screen plugin:
+
+- Shows how to configure the screen plugin
+- Demonstrates launching `OpenSourceLicensesActivity` with different theme colors
+- No custom UI implementation required - just call `OpenSourceLicensesActivity.start(context)`
+
+To run the screen example:
+
+```bash
+# First, publish the plugin to Maven Local
+make publish
+
+# Then build the example
+./gradlew :example-screen:assembleDebug
 ```
 
 ## Generated Code Structure
