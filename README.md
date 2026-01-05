@@ -1,6 +1,7 @@
 # License Scribe Plugin
 
 [![Build and Test](https://github.com/syarihu/license-scribe-plugin/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/syarihu/license-scribe-plugin/actions/workflows/build-and-test.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/net.syarihu.licensescribe/license-scribe-gradle-plugin)](https://central.sonatype.com/namespace/net.syarihu.licensescribe)
 
 A Gradle plugin that acts as your project's scribe, carefully recording and cataloging license information for Android/Kotlin dependencies into clean, accessible code.
 
@@ -61,8 +62,6 @@ license-scribe-plugin/
 
 ## Installation
 
-[![Maven Central](https://img.shields.io/maven-central/v/net.syarihu.licensescribe/license-scribe-gradle-plugin)](https://central.sonatype.com/namespace/net.syarihu.licensescribe)
-
 This plugin is available on **Maven Central**.
 
 ### settings.gradle.kts
@@ -81,12 +80,12 @@ pluginManagement {
 
 ```kotlin
 plugins {
-    id("net.syarihu.license-scribe") version "0.1.0"
+    id("net.syarihu.license-scribe") version "<latest-version>"
 }
 
 dependencies {
     // Required: Runtime library provides LicenseInfo and LicenseProvider
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:<latest-version>")
 }
 ```
 
@@ -111,12 +110,12 @@ pluginManagement {
 
 ```kotlin
 plugins {
-    id("net.syarihu.license-scribe") version "0.1.0-SNAPSHOT"
+    id("net.syarihu.license-scribe") version "0.2.0-SNAPSHOT"
 }
 
 dependencies {
     // Required: Runtime library provides LicenseInfo and LicenseProvider
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0-SNAPSHOT")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.2.0-SNAPSHOT")
 }
 ```
 
@@ -399,7 +398,7 @@ In your feature module, depend only on `license-scribe-runtime`:
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:<latest-version>")
 }
 ```
 
@@ -427,8 +426,8 @@ For projects using `license-scribe-gradle-plugin` with Hilt, the optional `licen
 ```kotlin
 // app/build.gradle.kts
 plugins {
-    id("net.syarihu.license-scribe") version "0.1.0"
-    id("net.syarihu.license-scribe-hilt") version "0.1.0"
+    id("net.syarihu.license-scribe") version "<latest-version>"
+    id("net.syarihu.license-scribe-hilt") version "<latest-version>"
 }
 ```
 
@@ -451,7 +450,7 @@ object LicenseScribeHiltModule {
 ```kotlin
 // feature/settings/build.gradle.kts
 dependencies {
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.1.0")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:<latest-version>")
 }
 
 // ViewModel in feature module
@@ -472,18 +471,18 @@ For developers who want to quickly set up an OSS license display screen without 
 ```kotlin
 // app/build.gradle.kts
 plugins {
-    id("net.syarihu.license-scribe-screen") version "0.2.0"
+    id("net.syarihu.license-scribe-screen") version "<latest-version>"
 }
 
 dependencies {
     // Required: Runtime library
-    implementation("net.syarihu.licensescribe:license-scribe-runtime:0.2.0")
+    implementation("net.syarihu.licensescribe:license-scribe-runtime:<latest-version>")
 
     // Required: AndroidX dependencies for generated Activity
-    implementation("androidx.core:core-ktx:$latest_version")
-    implementation("androidx.activity:activity:$latest_version")
-    implementation("androidx.appcompat:appcompat:$latest_version")
-    implementation("androidx.recyclerview:recyclerview:$latest_version")
+    implementation("androidx.core:core-ktx:<latest-version>")
+    implementation("androidx.activity:activity:<latest-version>")
+    implementation("androidx.appcompat:appcompat:<latest-version>")
+    implementation("androidx.recyclerview:recyclerview:<latest-version>")
 }
 
 licenseScribeScreen {
