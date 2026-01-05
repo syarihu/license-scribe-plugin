@@ -44,9 +44,9 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 license-scribe-plugin/
 ├── license-scribe-runtime/       # Minimal runtime library (LicenseInfo, LicenseProvider only)
 ├── license-scribe-core/          # Core library (parser, generator - build-time only)
-├── license-scribe-gradle-plugin/ # Main Gradle plugin
-├── license-scribe-hilt-plugin/   # Optional Hilt integration plugin
-├── license-scribe-screen-plugin/ # Optional plugin for auto-generating license screen
+├── license-scribe-gradle-plugin/ # Main Gradle plugin (YAML-based license management, custom UI)
+├── license-scribe-hilt-plugin/   # Optional plugin for gradle-plugin (Hilt DI support)
+├── license-scribe-screen-plugin/ # Standalone plugin (auto-generated license screen)
 ├── example/                      # Example Android app
 ├── example-library/              # Example library module (for transitive dependency testing)
 ├── example-screen/               # Example app for screen plugin
