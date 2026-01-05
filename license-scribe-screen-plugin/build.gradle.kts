@@ -33,7 +33,7 @@ gradlePlugin {
       id = "net.syarihu.license-scribe-screen"
       implementationClass = "net.syarihu.licensescribe.screen.LicenseScribeScreenPlugin"
       displayName = "License Scribe Screen Plugin"
-      description = "A Gradle plugin that auto-generates LicenseListActivity with embedded license data"
+      description = "A Gradle plugin that auto-generates OpenSourceLicensesActivity with embedded license data"
     }
   }
 }
@@ -58,7 +58,7 @@ publishing {
 
       pom {
         name.set("License Scribe Screen Plugin")
-        description.set("A Gradle plugin that auto-generates LicenseListActivity with embedded license data")
+        description.set("A Gradle plugin that auto-generates OpenSourceLicensesActivity with embedded license data")
         url.set("https://github.com/syarihu/license-scribe-plugin")
 
         licenses {
