@@ -32,10 +32,10 @@ jobs:
         run: ./gradlew :license-scribe-core:build -PexcludeExample --no-configuration-cache
 
       - name: Build and test plugin modules
-        run: ./gradlew :license-scribe-gradle-plugin:build :license-scribe-hilt-plugin:build -PexcludeExample --no-configuration-cache
+        run: ./gradlew :license-scribe-gradle-plugin:build :license-scribe-hilt-plugin:build :license-scribe-screen-plugin:build -PexcludeExample --no-configuration-cache
 
       - name: Publish all modules to Maven Local
-        run: ./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal :license-scribe-hilt-plugin:publishToMavenLocal -PexcludeExample --no-configuration-cache
+        run: ./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal :license-scribe-hilt-plugin:publishToMavenLocal :license-scribe-screen-plugin:publishToMavenLocal -PexcludeExample --no-configuration-cache
 
       - name: "Test: checkLicenses passes with valid definitions"
         run: ./scripts/test-check-valid.sh
