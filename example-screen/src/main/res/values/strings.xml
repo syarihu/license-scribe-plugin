@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">License Screen Example</string>
+  <string name="title_license_scribe_screen_example">License Scribe Screen Example</string>
+  <string name="button_show_licenses_default">Show Licenses (Default)</string>
+  <string name="button_show_licenses_purple">Show Licenses (Purple)</string>
+  <string name="button_show_licenses_teal">Show Licenses (Teal)</string>
+</resources>
