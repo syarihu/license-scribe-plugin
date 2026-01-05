@@ -23,4 +23,12 @@ abstract class LicenseScribeScreenExtension {
    * Defaults to "OpenSourceLicensesActivity".
    */
   abstract val activityClassName: Property<String>
+
+  /**
+   * Night mode for the generated Activity.
+   * - "followSystem": Follow system dark mode setting (default)
+   * - "yes": Always use dark mode
+   * - "no": Always use light mode
+   */
+  abstract val nightMode: Property<String>
 }

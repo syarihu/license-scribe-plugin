@@ -33,6 +33,7 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 - **Zero configuration** - automatically generates a complete license screen Activity
 - **No YAML management** - license information is extracted directly from dependencies
 - **Customizable appearance** - theme color, toolbar title, and title text can be customized at runtime
+- **Dark mode support** - follows system theme by default, or can be forced to light/dark mode
 - **Edge-to-edge support** - modern Android UI with proper WindowInsets handling
 - **Material Design** - card-based UI with ripple effects
 
@@ -494,6 +495,12 @@ licenseScribeScreen {
 
     // Class name for generated Activity (default: "OpenSourceLicensesActivity")
     // activityClassName.set("OpenSourceLicensesActivity")
+
+    // Night mode setting (default: "followSystem")
+    // - "followSystem": Follow system dark mode setting
+    // - "yes": Always use dark mode
+    // - "no": Always use light mode
+    // nightMode.set("followSystem")
 }
 ```
 

@@ -58,6 +58,9 @@ abstract class GenerateScreenTask : DefaultTask() {
   @get:Input
   abstract val activityClassName: Property<String>
 
+  @get:Input
+  abstract val nightMode: Property<String>
+
   @get:OutputDirectory
   abstract val outputDirectory: DirectoryProperty
 
@@ -103,6 +106,7 @@ abstract class GenerateScreenTask : DefaultTask() {
     this.generatedPackageName.set(extension.generatedPackageName)
     this.licensesClassName.set(extension.licensesClassName)
     this.activityClassName.set(extension.activityClassName)
+    this.nightMode.set(extension.nightMode)
 
     // Use variant-specific output directory
     val variantDir = if (variantName.isNotEmpty()) {
@@ -142,6 +146,9 @@ abstract class GenerateScreenTask : DefaultTask() {
     val activityClass = activityClassName.get()
     validateClassName(activityClass, "activityClassName")
 
+    val nightModeValue = nightMode.get()
+    validateNightMode(nightModeValue)
+
     // Build dependency info list
     val dependencies = buildDependencyInfoList()
 
@@ -177,6 +184,7 @@ abstract class GenerateScreenTask : DefaultTask() {
       activityClassName = activityClassName.get(),
       outputDir = outputDir,
       resOutputDir = resOutputDir,
+      nightMode = nightMode.get(),
     )
 
     // Generate AndroidManifest.xml
@@ -426,6 +434,24 @@ abstract class GenerateScreenTask : DefaultTask() {
           "  - Start with a letter\n" +
           "  - Contain only letters, digits, and underscores\n\n" +
           "Example: AppLicenses, OpenSourceLicensesActivity",
+      )
+    }
+  }
+
+  private fun validateNightMode(nightMode: String) {
+    val validValues = listOf("followSystem", "yes", "no")
+    if (nightMode !in validValues) {
+      throw GradleException(
+        "Invalid nightMode value: '$nightMode'\n" +
+          "nightMode must be one of: ${validValues.joinToString(", ")}\n\n" +
+          "Example:\n" +
+          "licenseScribeScreen {\n" +
+          "    nightMode.set(\"followSystem\") // Follow system dark mode setting\n" +
+          "    // or\n" +
+          "    nightMode.set(\"yes\") // Always use dark mode\n" +
+          "    // or\n" +
+          "    nightMode.set(\"no\") // Always use light mode\n" +
+          "}",
       )
     }
   }
