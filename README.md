@@ -479,10 +479,10 @@ dependencies {
     implementation("net.syarihu.licensescribe:license-scribe-runtime:0.2.0")
 
     // Required: AndroidX dependencies for generated Activity
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.activity:activity:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("androidx.core:core-ktx:$latest_version")
+    implementation("androidx.activity:activity:$latest_version")
+    implementation("androidx.appcompat:appcompat:$latest_version")
+    implementation("androidx.recyclerview:recyclerview:$latest_version")
 }
 
 licenseScribeScreen {
