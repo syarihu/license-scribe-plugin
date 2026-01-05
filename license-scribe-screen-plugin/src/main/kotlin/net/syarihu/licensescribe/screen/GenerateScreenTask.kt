@@ -146,6 +146,9 @@ abstract class GenerateScreenTask : DefaultTask() {
     val activityClass = activityClassName.get()
     validateClassName(activityClass, "activityClassName")
 
+    val nightModeValue = nightMode.get()
+    validateNightMode(nightModeValue)
+
     // Build dependency info list
     val dependencies = buildDependencyInfoList()
 
@@ -431,6 +434,24 @@ abstract class GenerateScreenTask : DefaultTask() {
           "  - Start with a letter\n" +
           "  - Contain only letters, digits, and underscores\n\n" +
           "Example: AppLicenses, OpenSourceLicensesActivity",
+      )
+    }
+  }
+
+  private fun validateNightMode(nightMode: String) {
+    val validValues = listOf("followSystem", "yes", "no")
+    if (nightMode !in validValues) {
+      throw GradleException(
+        "Invalid nightMode value: '$nightMode'\n" +
+          "nightMode must be one of: ${validValues.joinToString(", ")}\n\n" +
+          "Example:\n" +
+          "licenseScribeScreen {\n" +
+          "    nightMode.set(\"followSystem\") // Follow system dark mode setting\n" +
+          "    // or\n" +
+          "    nightMode.set(\"yes\") // Always use dark mode\n" +
+          "    // or\n" +
+          "    nightMode.set(\"no\") // Always use light mode\n" +
+          "}",
       )
     }
   }
