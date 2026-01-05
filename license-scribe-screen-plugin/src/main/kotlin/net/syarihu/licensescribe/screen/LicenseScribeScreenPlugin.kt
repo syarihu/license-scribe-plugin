@@ -31,6 +31,7 @@ class LicenseScribeScreenPlugin : Plugin<Project> {
     )
     extension.licensesClassName.convention("AppLicenses")
     extension.activityClassName.convention("OpenSourceLicensesActivity")
+    extension.nightMode.convention("followSystem")
 
     // Setup for Android project
     val androidComponentsExtension = project.extensions.findByType(AndroidComponentsExtension::class.java)

@@ -58,6 +58,9 @@ abstract class GenerateScreenTask : DefaultTask() {
   @get:Input
   abstract val activityClassName: Property<String>
 
+  @get:Input
+  abstract val nightMode: Property<String>
+
   @get:OutputDirectory
   abstract val outputDirectory: DirectoryProperty
 
@@ -103,6 +106,7 @@ abstract class GenerateScreenTask : DefaultTask() {
     this.generatedPackageName.set(extension.generatedPackageName)
     this.licensesClassName.set(extension.licensesClassName)
     this.activityClassName.set(extension.activityClassName)
+    this.nightMode.set(extension.nightMode)
 
     // Use variant-specific output directory
     val variantDir = if (variantName.isNotEmpty()) {
@@ -177,6 +181,7 @@ abstract class GenerateScreenTask : DefaultTask() {
       activityClassName = activityClassName.get(),
       outputDir = outputDir,
       resOutputDir = resOutputDir,
+      nightMode = nightMode.get(),
     )
 
     // Generate AndroidManifest.xml
