@@ -2,7 +2,7 @@
 
 # Publish to Maven Local (runtime first, then core, then plugins)
 publish:
-	./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal :license-scribe-hilt-plugin:publishToMavenLocal --no-configuration-cache
+	./gradlew :license-scribe-runtime:publishToMavenLocal :license-scribe-core:publishToMavenLocal :license-scribe-gradle-plugin:publishToMavenLocal :license-scribe-hilt-plugin:publishToMavenLocal :license-scribe-screen-plugin:publishToMavenLocal --no-configuration-cache
 
 # Build all modules (requires publish first)
 build:
