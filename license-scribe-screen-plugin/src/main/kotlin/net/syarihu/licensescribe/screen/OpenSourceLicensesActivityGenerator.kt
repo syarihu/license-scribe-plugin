@@ -51,6 +51,7 @@ class OpenSourceLicensesActivityGenerator {
   ): String = """
 package $packageName
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -68,6 +69,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -152,12 +154,12 @@ class $activityClassName : AppCompatActivity() {
         accentColor = accentColor,
         onItemClick = { license ->
           license.artifactUrl?.let { url ->
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            openUrl(url)
           }
         },
         onLicenseClick = { license ->
           license.licenseUrl?.let { url ->
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            openUrl(url)
           }
         },
       )
@@ -208,6 +210,14 @@ class $activityClassName : AppCompatActivity() {
       dp.toFloat(),
       resources.displayMetrics,
     ).toInt()
+
+  private fun openUrl(url: String) {
+    try {
+      startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    } catch (e: ActivityNotFoundException) {
+      Toast.makeText(this, "No application found to open URL", Toast.LENGTH_SHORT).show()
+    }
+  }
 
   private class LicenseAdapter(
     private val accentColor: Int,
