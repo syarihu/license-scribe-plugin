@@ -44,10 +44,11 @@ A Gradle plugin that acts as your project's scribe, carefully recording and cata
 license-scribe-plugin/
 ├── license-scribe-runtime/       # Minimal runtime library (LicenseInfo, LicenseProvider only)
 ├── license-scribe-core/          # Core library (parser, generator - build-time only)
-├── license-scribe-gradle-plugin/ # Main Gradle plugin
-├── license-scribe-hilt-plugin/   # Optional Hilt integration plugin
-├── license-scribe-screen-plugin/ # Optional plugin for auto-generating license screen
-├── example/                      # Example Android app
+├── license-scribe-gradle-plugin/ # Main Gradle plugin (YAML-based license management, custom UI)
+├── license-scribe-hilt-plugin/   # Optional plugin for gradle-plugin (Hilt DI support)
+├── license-scribe-screen-plugin/ # Standalone plugin (auto-generated license screen)
+├── example/                      # Example Android app using gradle-plugin
+├── example-hilt/                 # Example Android app using hilt-plugin
 ├── example-library/              # Example library module (for transitive dependency testing)
 ├── example-screen/               # Example app for screen plugin
 ├── Makefile                      # Development commands
@@ -659,7 +660,7 @@ The `example/` directory contains a sample Android app demonstrating the main pl
 - Displays a license list using Jetpack Compose
 - Demonstrates the generated `AppLicenses` and `LicenseInfo` classes
 
-<img src="docs/images/example_sample.png" alt="Example App Screenshot" width="300">
+<img src="docs/images/example.png" alt="Example App Screenshot" width="300">
 
 To run the example:
 
@@ -678,6 +679,10 @@ The `example-screen/` directory demonstrates the screen plugin:
 - Shows how to configure the screen plugin
 - Demonstrates launching `OpenSourceLicensesActivity` with different theme colors
 - No custom UI implementation required - just call `OpenSourceLicensesActivity.start(context)`
+
+| Light Mode | Dark Mode |
+|:----------:|:---------:|
+| <img src="docs/images/example_screen_light.png" alt="Screen Plugin Light Mode" width="300"> | <img src="docs/images/example_screen_dark.png" alt="Screen Plugin Dark Mode" width="300"> |
 
 To run the screen example:
 
