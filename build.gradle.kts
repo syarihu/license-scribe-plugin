@@ -21,8 +21,15 @@ nmcpAggregation {
     // AUTOMATIC: Auto-release after validation
     publishingType = "USER_MANAGED"
   }
-  // Include all subprojects that have maven-publish plugin applied
-  publishAllProjectsProbablyBreakingProjectIsolation()
+}
+
+// Explicitly add projects for nmcp aggregation
+dependencies {
+  nmcpAggregation(project(":license-scribe-core"))
+  nmcpAggregation(project(":license-scribe-runtime"))
+  nmcpAggregation(project(":license-scribe-gradle-plugin"))
+  nmcpAggregation(project(":license-scribe-hilt-plugin"))
+  nmcpAggregation(project(":license-scribe-screen-plugin"))
 }
 
 // Check if git repository exists for ratchetFrom
