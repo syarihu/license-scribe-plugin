@@ -15,7 +15,7 @@ androidx-appcompat = "1.7.1"
 androidx-recyclerview = "1.4.0"
 retrofit = "3.0.0"
 hilt = "2.57.2"
-ksp = "2.2.20-2.0.4"
+ksp = "2.3.4"
 
 [libraries]
 # Retrofit (for testing transitive dependencies)
