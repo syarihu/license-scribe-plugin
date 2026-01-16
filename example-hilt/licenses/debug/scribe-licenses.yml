@@ -8,6 +8,14 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/activity
         copyrightHolders:
         - The Android Open Source Project
+      - name: activity-compose
+        url: https://developer.android.com/jetpack/androidx/releases/activity
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: activity-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/activity
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.annotation:
       - name: annotation
         url: https://developer.android.com/jetpack/androidx/releases/annotation
@@ -30,6 +38,11 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/arch-core
         copyrightHolders:
         - The Android Open Source Project
+      androidx.autofill:
+      - name: autofill
+        url: https://developer.android.com/jetpack/androidx
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.collection:
       - name: collection
         url: https://developer.android.com/jetpack/androidx/releases/collection
@@ -37,6 +50,179 @@ licenses:
         - The Android Open Source Project
       - name: collection-jvm
         url: https://developer.android.com/jetpack/androidx/releases/collection
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: collection-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/collection
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.compose:
+      - name: compose-bom
+        url: https://developer.android.com/jetpack
+      androidx.compose.animation:
+      - name: animation
+        url: https://developer.android.com/jetpack/androidx/releases/compose-animation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: animation-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-animation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: animation-core
+        url: https://developer.android.com/jetpack/androidx/releases/compose-animation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: animation-core-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-animation
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.compose.foundation:
+      - name: foundation
+        url: https://developer.android.com/jetpack/androidx/releases/compose-foundation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: foundation-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-foundation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: foundation-layout
+        url: https://developer.android.com/jetpack/androidx/releases/compose-foundation
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: foundation-layout-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-foundation
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.compose.material:
+      - name: material
+        url: https://developer.android.com/jetpack/androidx/releases/compose-material
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: material-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-material
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: material-ripple
+        url: https://developer.android.com/jetpack/androidx/releases/compose-material
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: material-ripple-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-material
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.compose.material3:
+      - name: material3
+        url: https://developer.android.com/jetpack/androidx/releases/compose-material3
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: material3-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-material3
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.compose.runtime:
+      - name: runtime
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-annotation
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-annotation-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-retain
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-retain-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-saveable
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: runtime-saveable-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-runtime
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.compose.ui:
+      - name: ui
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-geometry
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-geometry-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-graphics
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-graphics-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-text
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-text-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-tooling
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-tooling-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-tooling-data
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-tooling-data-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-tooling-preview
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-tooling-preview-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-unit
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-unit-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-util
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: ui-util-android
+        url: https://developer.android.com/jetpack/androidx/releases/compose-ui
         copyrightHolders:
         - The Android Open Source Project
       androidx.concurrent:
@@ -62,9 +248,33 @@ licenses:
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
+      - name: customview-poolingcontainer
+        url: https://developer.android.com/jetpack/androidx/releases/customview
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.documentfile:
+      - name: documentfile
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.dynamicanimation:
+      - name: dynamicanimation
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.emoji2:
+      - name: emoji2
+        url: https://developer.android.com/jetpack/androidx/releases/emoji2
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.fragment:
       - name: fragment
         url: https://developer.android.com/jetpack/androidx/releases/fragment
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.graphics:
+      - name: graphics-path
+        url: https://developer.android.com/jetpack/androidx/releases/graphics
         copyrightHolders:
         - The Android Open Source Project
       androidx.interpolator:
@@ -72,8 +282,21 @@ licenses:
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
+      androidx.legacy:
+      - name: legacy-support-core-utils
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.lifecycle:
       - name: lifecycle-common
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-common-java8
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-common-jvm
         url: https://developer.android.com/jetpack/androidx/releases/lifecycle
         copyrightHolders:
         - The Android Open Source Project
@@ -85,7 +308,35 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/lifecycle
         copyrightHolders:
         - The Android Open Source Project
+      - name: lifecycle-livedata-core-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-process
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
       - name: lifecycle-runtime
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-runtime-android
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-runtime-compose
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-runtime-compose-android
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-runtime-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-runtime-ktx-android
         url: https://developer.android.com/jetpack/androidx/releases/lifecycle
         copyrightHolders:
         - The Android Open Source Project
@@ -93,12 +344,51 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/lifecycle
         copyrightHolders:
         - The Android Open Source Project
+      - name: lifecycle-viewmodel-android
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-viewmodel-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
       - name: lifecycle-viewmodel-savedstate
+        url: https://developer.android.com/jetpack/androidx/releases/lifecycle
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: lifecycle-viewmodel-savedstate-android
         url: https://developer.android.com/jetpack/androidx/releases/lifecycle
         copyrightHolders:
         - The Android Open Source Project
       androidx.loader:
       - name: loader
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.localbroadcastmanager:
+      - name: localbroadcastmanager
+        url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.navigationevent:
+      - name: navigationevent
+        url: https://developer.android.com/jetpack/androidx/releases/navigationevent
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: navigationevent-android
+        url: https://developer.android.com/jetpack/androidx/releases/navigationevent
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: navigationevent-compose
+        url: https://developer.android.com/jetpack/androidx/releases/navigationevent
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: navigationevent-compose-android
+        url: https://developer.android.com/jetpack/androidx/releases/navigationevent
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.print:
+      - name: print
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
@@ -112,6 +402,22 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/savedstate
         copyrightHolders:
         - The Android Open Source Project
+      - name: savedstate-android
+        url: https://developer.android.com/jetpack/androidx/releases/savedstate
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: savedstate-compose
+        url: https://developer.android.com/jetpack/androidx/releases/savedstate
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: savedstate-compose-android
+        url: https://developer.android.com/jetpack/androidx/releases/savedstate
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: savedstate-ktx
+        url: https://developer.android.com/jetpack/androidx/releases/savedstate
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.startup:
       - name: startup-runtime
         url: https://developer.android.com/jetpack/androidx/releases/startup
@@ -122,6 +428,11 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/tracing
         copyrightHolders:
         - The Android Open Source Project
+      androidx.transition:
+      - name: transition
+        url: https://developer.android.com/jetpack/androidx/releases/transition
+        copyrightHolders:
+        - The Android Open Source Project
       androidx.versionedparcelable:
       - name: versionedparcelable
         url: http://developer.android.com/tools/extras/support-library.html
@@ -130,6 +441,19 @@ licenses:
       androidx.viewpager:
       - name: viewpager
         url: http://developer.android.com/tools/extras/support-library.html
+        copyrightHolders:
+        - The Android Open Source Project
+      androidx.window:
+      - name: window
+        url: https://developer.android.com/jetpack/androidx/releases/window
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: window-core
+        url: https://developer.android.com/jetpack/androidx/releases/window
+        copyrightHolders:
+        - The Android Open Source Project
+      - name: window-core-android
+        url: https://developer.android.com/jetpack/androidx/releases/window
         copyrightHolders:
         - The Android Open Source Project
       com.google.code.findbugs:
@@ -190,6 +514,18 @@ licenses:
         - JetBrains Team
       - name: kotlinx-coroutines-core-jvm
         url: https://github.com/Kotlin/kotlinx.coroutines
+        copyrightHolders:
+        - JetBrains Team
+      - name: kotlinx-serialization-bom
+        url: https://github.com/Kotlin/kotlinx.serialization
+        copyrightHolders:
+        - JetBrains Team
+      - name: kotlinx-serialization-core
+        url: https://github.com/Kotlin/kotlinx.serialization
+        copyrightHolders:
+        - JetBrains Team
+      - name: kotlinx-serialization-core-jvm
+        url: https://github.com/Kotlin/kotlinx.serialization
         copyrightHolders:
         - JetBrains Team
       org.jspecify:
