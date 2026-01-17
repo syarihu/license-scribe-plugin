@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.android.application)
+  alias(pluginLibs.plugins.android.application)
   kotlin("android")
   kotlin("plugin.compose")
   id("net.syarihu.license-scribe-screen")
@@ -46,24 +46,24 @@ dependencies {
   implementation("net.syarihu.licensescribe:license-scribe-runtime:$versionName")
 
   // AndroidX (required for generated Activity)
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.activity)
-  implementation(libs.androidx.appcompat)
-  implementation(libs.androidx.recyclerview)
+  implementation(exampleLibs.androidx.core.ktx)
+  implementation(exampleLibs.androidx.activity)
+  implementation(exampleLibs.androidx.appcompat)
+  implementation(exampleLibs.androidx.recyclerview)
 
   // Compose
-  implementation(platform(libs.compose.bom))
-  implementation(libs.compose.ui)
-  implementation(libs.compose.ui.graphics)
-  implementation(libs.compose.ui.tooling.preview)
-  implementation(libs.compose.material3)
-  implementation(libs.androidx.activity.compose)
-  debugImplementation(libs.compose.ui.tooling)
+  implementation(platform(exampleLibs.compose.bom))
+  implementation(exampleLibs.compose.ui)
+  implementation(exampleLibs.compose.ui.graphics)
+  implementation(exampleLibs.compose.ui.tooling.preview)
+  implementation(exampleLibs.compose.material3)
+  implementation(exampleLibs.androidx.activity.compose)
+  debugImplementation(exampleLibs.compose.ui.tooling)
 
   // Example dependencies for license detection
-  implementation("com.squareup.okhttp3:okhttp:5.3.2")
-  implementation("com.google.code.gson:gson:2.13.2")
-  implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+  implementation(exampleLibs.okhttp)
+  implementation(exampleLibs.gson)
+  implementation(exampleLibs.kotlinx.coroutines.core)
 }
 
 licenseScribeScreen {

@@ -14,7 +14,7 @@ cleanup() {
 trap cleanup EXIT
 
 # Add a new dependency
-sed -i.sedbak 's/implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")/implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")\
+sed -i.sedbak 's/implementation(exampleLibs.kotlinx.coroutines.core)/implementation(exampleLibs.kotlinx.coroutines.core)\
     implementation("com.google.code.gson:gson:2.11.0")/' example/build.gradle.kts
 rm -f example/build.gradle.kts.sedbak
 

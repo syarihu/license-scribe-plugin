@@ -1,5 +1,5 @@
 plugins {
-  alias(libs.plugins.android.library)
+  alias(pluginLibs.plugins.android.library)
   kotlin("android")
 }
 
@@ -26,5 +26,5 @@ kotlin {
 dependencies {
   // Retrofit has transitive dependencies on okhttp, okio, etc.
   // This tests that transitive dependencies are included in license detection
-  implementation(libs.retrofit)
+  implementation(exampleLibs.retrofit)
 }
