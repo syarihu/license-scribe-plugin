@@ -30,6 +30,10 @@ dependencyResolutionManagement {
     mavenCentral()
     google()
   }
+  versionCatalogs {
+    create("pluginLibs") { from(files("gradle/plugin.versions.toml")) }
+    create("exampleLibs") { from(files("gradle/example.versions.toml")) }
+  }
 }
 
 rootProject.name = "license-scribe-plugin"

@@ -5,23 +5,14 @@
   ],
   "packageRules": [
     {
-      "description": "Group all example-only dependencies",
-      "matchPackagePatterns": [
-        "^androidx\\.",
-        "^com\\.squareup\\.retrofit2:",
-        "^com\\.google\\.dagger:",
-        "^com\\.google\\.devtools\\.ksp:"
-      ],
+      "description": "Example-only dependencies (gradle/example.versions.toml)",
+      "matchFileNames": ["gradle/example.versions.toml"],
       "groupName": "example dependencies",
       "labels": ["deps:example-only"]
     },
     {
-      "description": "Plugin bundled dependencies",
-      "matchPackagePatterns": [
-        "^org\\.yaml:snakeyaml$",
-        "^com\\.squareup:kotlinpoet$",
-        "^com\\.android\\.tools\\.build:gradle$"
-      ],
+      "description": "Plugin bundled dependencies (gradle/plugin.versions.toml)",
+      "matchFileNames": ["gradle/plugin.versions.toml"],
       "labels": ["deps:plugin-bundled"]
     },
     {
@@ -30,13 +21,8 @@
       "labels": ["deps:plugin-bundled"]
     },
     {
-      "description": "Development tools (testing, formatting, docs, publishing)",
-      "matchPackagePatterns": [
-        "^io\\.kotest:",
-        "^com\\.diffplug\\.spotless$",
-        "^org\\.jetbrains\\.dokka$",
-        "^com\\.gradleup\\.nmcp"
-      ],
+      "description": "Development tools (gradle/libs.versions.toml)",
+      "matchFileNames": ["gradle/libs.versions.toml"],
       "labels": ["deps:dev-tools"]
     }
   ]
