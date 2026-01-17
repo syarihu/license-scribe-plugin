@@ -220,19 +220,31 @@ abstract class GenerateScreenTask : DefaultTask() {
 
   /**
    * Generate AndroidManifest.xml with Activity registration.
+   *
+   * The activity uses Theme.AppCompat.Light.NoActionBar (or DayNight variant) to prevent
+   * conflicts with apps that have windowActionBar=true in their theme.
+   * The generated Activity uses a custom Toolbar with setSupportActionBar(),
+   * which requires windowActionBar=false.
    */
   private fun generateManifest(packageName: String) {
     val manifestFile = generatedManifestFile.get().asFile
     manifestFile.parentFile?.mkdirs()
 
     val activityName = activityClassName.get()
+    // Use DayNight.NoActionBar for dark mode support, Light.NoActionBar otherwise
+    val activityTheme = if (nightMode.get() == "no") {
+      "@style/Theme.AppCompat.Light.NoActionBar"
+    } else {
+      "@style/Theme.AppCompat.DayNight.NoActionBar"
+    }
     val manifest = """
             |<?xml version="1.0" encoding="utf-8"?>
             |<manifest xmlns:android="http://schemas.android.com/apk/res/android">
             |  <application>
             |    <activity
             |      android:name="$packageName.$activityName"
-            |      android:exported="false" />
+            |      android:exported="false"
+            |      android:theme="$activityTheme" />
             |  </application>
             |</manifest>
     """.trimMargin()
