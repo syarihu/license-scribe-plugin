@@ -1,6 +1,5 @@
 plugins {
   alias(pluginLibs.plugins.android.application)
-  kotlin("android")
   kotlin("plugin.compose")
   id("net.syarihu.license-scribe-screen")
 }

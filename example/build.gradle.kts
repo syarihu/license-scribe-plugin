@@ -2,7 +2,6 @@ val versionName = findProperty("VERSION_NAME") as String
 
 plugins {
   alias(pluginLibs.plugins.android.application)
-  kotlin("android")
   kotlin("plugin.compose")
   id("net.syarihu.license-scribe")
 }
