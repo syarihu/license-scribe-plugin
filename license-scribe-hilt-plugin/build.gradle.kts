@@ -1,6 +1,7 @@
 plugins {
   kotlin("jvm")
   alias(libs.plugins.dokka)
+  alias(libs.plugins.nmcp)
   `java-gradle-plugin`
   `maven-publish`
   signing

@@ -5,6 +5,7 @@ plugins {
   alias(pluginLibs.plugins.android.application) apply false
   alias(pluginLibs.plugins.android.library) apply false
   alias(libs.plugins.spotless)
+  alias(libs.plugins.nmcp) apply false
   alias(libs.plugins.nmcp.aggregation)
 }
 
