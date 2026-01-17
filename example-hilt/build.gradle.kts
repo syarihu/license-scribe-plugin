@@ -3,11 +3,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val versionName = findProperty("VERSION_NAME") as String
 
 plugins {
-  alias(libs.plugins.android.application)
+  alias(pluginLibs.plugins.android.application)
   kotlin("android")
   kotlin("plugin.compose")
-  alias(libs.plugins.ksp)
-  alias(libs.plugins.hilt)
+  alias(exampleLibs.plugins.ksp)
+  alias(exampleLibs.plugins.hilt)
   id("net.syarihu.license-scribe")
   id("net.syarihu.license-scribe-hilt")
 }
@@ -55,20 +55,20 @@ dependencies {
   implementation("net.syarihu.licensescribe:license-scribe-runtime:$versionName")
 
   // Hilt
-  implementation(libs.hilt.android)
-  ksp(libs.hilt.compiler)
+  implementation(exampleLibs.hilt.android)
+  ksp(exampleLibs.hilt.compiler)
 
   // Compose
-  implementation(platform(libs.compose.bom))
-  implementation(libs.compose.ui)
-  implementation(libs.compose.ui.graphics)
-  implementation(libs.compose.ui.tooling.preview)
-  implementation(libs.compose.material3)
-  debugImplementation(libs.compose.ui.tooling)
+  implementation(platform(exampleLibs.compose.bom))
+  implementation(exampleLibs.compose.ui)
+  implementation(exampleLibs.compose.ui.graphics)
+  implementation(exampleLibs.compose.ui.tooling.preview)
+  implementation(exampleLibs.compose.material3)
+  debugImplementation(exampleLibs.compose.ui.tooling)
 
   // AndroidX
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.activity.compose)
+  implementation(exampleLibs.androidx.core.ktx)
+  implementation(exampleLibs.androidx.activity.compose)
 }
 
 licenseScribe {

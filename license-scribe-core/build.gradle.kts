@@ -15,8 +15,8 @@ kotlin {
 dependencies {
   compileOnly(kotlin("stdlib"))
   api(project(":license-scribe-runtime"))
-  implementation(libs.snakeyaml)
-  implementation(libs.kotlinpoet)
+  implementation(pluginLibs.snakeyaml)
+  implementation(pluginLibs.kotlinpoet)
 
   testImplementation(libs.kotest.runner.junit5)
   testImplementation(libs.kotest.assertions.core)

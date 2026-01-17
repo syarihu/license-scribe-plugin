@@ -20,7 +20,7 @@ java {
 dependencies {
   implementation(project(":license-scribe-core"))
   implementation(project(":license-scribe-gradle-plugin"))
-  compileOnly(libs.android.gradle.plugin)
+  compileOnly(pluginLibs.android.gradle.plugin)
 
   testImplementation(libs.kotest.runner.junit5)
   testImplementation(libs.kotest.assertions.core)

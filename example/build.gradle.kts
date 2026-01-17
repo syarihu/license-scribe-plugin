@@ -1,7 +1,7 @@
 val versionName = findProperty("VERSION_NAME") as String
 
 plugins {
-  alias(libs.plugins.android.application)
+  alias(pluginLibs.plugins.android.application)
   kotlin("android")
   kotlin("plugin.compose")
   id("net.syarihu.license-scribe")
@@ -49,17 +49,17 @@ dependencies {
   implementation(project(":example-library"))
 
   // AndroidX
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.lifecycle.runtime.ktx)
-  implementation(libs.androidx.activity.compose)
+  implementation(exampleLibs.androidx.core.ktx)
+  implementation(exampleLibs.androidx.lifecycle.runtime.ktx)
+  implementation(exampleLibs.androidx.activity.compose)
 
   // Compose
-  implementation(platform(libs.compose.bom))
-  implementation(libs.compose.ui)
-  implementation(libs.compose.ui.graphics)
-  implementation(libs.compose.ui.tooling.preview)
-  implementation(libs.compose.material3)
-  debugImplementation(libs.compose.ui.tooling)
+  implementation(platform(exampleLibs.compose.bom))
+  implementation(exampleLibs.compose.ui)
+  implementation(exampleLibs.compose.ui.graphics)
+  implementation(exampleLibs.compose.ui.tooling.preview)
+  implementation(exampleLibs.compose.material3)
+  debugImplementation(exampleLibs.compose.ui.tooling)
 
   // Example dependencies for license detection
   implementation("com.squareup.okhttp3:okhttp:5.3.2")
