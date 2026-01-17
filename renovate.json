@@ -2,5 +2,42 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "Group all example-only dependencies",
+      "matchPackagePatterns": [
+        "^androidx\\.",
+        "^com\\.squareup\\.retrofit2:",
+        "^com\\.google\\.dagger:",
+        "^com\\.google\\.devtools\\.ksp:"
+      ],
+      "groupName": "example dependencies",
+      "labels": ["deps:example-only"]
+    },
+    {
+      "description": "Plugin bundled dependencies",
+      "matchPackagePatterns": [
+        "^org\\.yaml:snakeyaml$",
+        "^com\\.squareup:kotlinpoet$",
+        "^com\\.android\\.tools\\.build:gradle$"
+      ],
+      "labels": ["deps:plugin-bundled"]
+    },
+    {
+      "description": "Gradle Wrapper updates",
+      "matchManagers": ["gradle-wrapper"],
+      "labels": ["deps:plugin-bundled"]
+    },
+    {
+      "description": "Development tools (testing, formatting, docs, publishing)",
+      "matchPackagePatterns": [
+        "^io\\.kotest:",
+        "^com\\.diffplug\\.spotless$",
+        "^org\\.jetbrains\\.dokka$",
+        "^com\\.gradleup\\.nmcp"
+      ],
+      "labels": ["deps:dev-tools"]
+    }
   ]
 }
