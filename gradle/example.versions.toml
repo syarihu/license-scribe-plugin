@@ -8,8 +8,19 @@ androidx-recyclerview = "1.4.0"
 retrofit = "3.0.0"
 hilt = "2.58"
 ksp = "2.3.4"
+okhttp = "5.3.2"
+gson = "2.13.2"
+kotlinx-coroutines = "1.10.2"
+firebase-bom = "34.8.0"
 
 [libraries]
+# Example dependencies for license detection
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+
 # Retrofit (for testing transitive dependencies)
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
