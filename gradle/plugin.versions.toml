@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.0"
+agp = "9.0.1"
 snakeyaml = "2.5"
 kotlinpoet = "2.2.0"
 
