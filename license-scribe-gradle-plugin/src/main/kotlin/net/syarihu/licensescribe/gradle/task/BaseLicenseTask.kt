@@ -13,20 +13,20 @@ import net.syarihu.licensescribe.parser.PomParser
 import net.syarihu.licensescribe.util.LicenseNormalizer
 import net.syarihu.licensescribe.util.WellKnownLicenses
 import org.gradle.api.DefaultTask
-import org.gradle.work.DisableCachingByDefault
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
-import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
+import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 import net.syarihu.licensescribe.model.PomInfo as CorePomInfo
 

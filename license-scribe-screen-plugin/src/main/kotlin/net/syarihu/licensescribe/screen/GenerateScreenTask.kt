@@ -9,16 +9,14 @@ import net.syarihu.licensescribe.resolver.DependencyInfo
 import net.syarihu.licensescribe.resolver.LicenseCatalogBuilder
 import net.syarihu.licensescribe.resolver.LicenseCatalogResolver
 import org.gradle.api.DefaultTask
-import org.gradle.work.DisableCachingByDefault
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
-import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.internal.artifacts.DefaultModuleIdentifier
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
@@ -27,8 +25,10 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.component.external.model.DefaultModuleComponentIdentifier
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 
 /**
