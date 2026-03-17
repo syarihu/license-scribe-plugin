@@ -21,6 +21,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 import java.time.Instant
 
@@ -28,6 +29,7 @@ import java.time.Instant
  * Task to generate a visual diff report comparing Gradle dependencies
  * with YAML-defined license catalog in tree format.
  */
+@DisableCachingByDefault(because = "Depends on resolved dependencies from external repositories")
 abstract class ReportLicensesTask : BaseLicenseTask() {
   /**
    * Directory where reports will be generated

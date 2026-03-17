@@ -6,11 +6,13 @@ import net.syarihu.licensescribe.model.LicenseCatalog
 import net.syarihu.licensescribe.model.LicenseEntry
 import net.syarihu.licensescribe.parser.LicenseCatalogParser
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Task to initialize license management files.
  * Creates scribe-licenses.yml and .scribeignore if they don't exist.
  */
+@DisableCachingByDefault(because = "Produces initial files that should reflect current project state")
 abstract class InitLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {

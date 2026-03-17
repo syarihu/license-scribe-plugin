@@ -13,10 +13,12 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Task to generate Kotlin code for license information.
  */
+@DisableCachingByDefault(because = "Depends on resolved dependencies from external repositories")
 abstract class GenerateLicenseCodeTask : BaseLicenseTask() {
   @get:Input
   abstract val generatedPackageName: Property<String>

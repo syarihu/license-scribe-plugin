@@ -2,11 +2,13 @@ package net.syarihu.licensescribe.gradle.task
 
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Task to check license records for correctness.
  * Combines validation against current dependencies and inspection of record quality.
  */
+@DisableCachingByDefault(because = "Verification task that produces no cacheable output")
 abstract class CheckLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {
