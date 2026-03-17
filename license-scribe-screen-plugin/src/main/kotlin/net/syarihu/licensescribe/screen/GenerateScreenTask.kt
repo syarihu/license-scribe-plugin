@@ -9,6 +9,7 @@ import net.syarihu.licensescribe.resolver.DependencyInfo
 import net.syarihu.licensescribe.resolver.LicenseCatalogBuilder
 import net.syarihu.licensescribe.resolver.LicenseCatalogResolver
 import org.gradle.api.DefaultTask
+import org.gradle.work.DisableCachingByDefault
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -33,6 +34,7 @@ import java.io.File
 /**
  * Task to generate OpenSourceLicensesActivity, AppLicenses, and AndroidManifest.
  */
+@DisableCachingByDefault(because = "Depends on resolved dependencies from external repositories")
 abstract class GenerateScreenTask : DefaultTask() {
   @get:Internal
   abstract val baseDir: DirectoryProperty

@@ -13,6 +13,7 @@ import net.syarihu.licensescribe.parser.PomParser
 import net.syarihu.licensescribe.util.LicenseNormalizer
 import net.syarihu.licensescribe.util.WellKnownLicenses
 import org.gradle.api.DefaultTask
+import org.gradle.work.DisableCachingByDefault
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
@@ -32,6 +33,7 @@ import net.syarihu.licensescribe.model.PomInfo as CorePomInfo
 /**
  * Base class for license-related tasks.
  */
+@DisableCachingByDefault(because = "Depends on resolved dependencies from external repositories")
 abstract class BaseLicenseTask : DefaultTask() {
   @get:Internal
   abstract val baseDir: DirectoryProperty

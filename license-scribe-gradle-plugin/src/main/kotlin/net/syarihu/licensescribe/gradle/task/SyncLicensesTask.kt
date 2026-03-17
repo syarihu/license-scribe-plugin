@@ -6,11 +6,13 @@ import net.syarihu.licensescribe.model.LicenseCatalog
 import net.syarihu.licensescribe.model.LicenseEntry
 import net.syarihu.licensescribe.parser.LicenseCatalogParser
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * Task to sync license records with current dependencies.
  * Adds new dependencies and removes ones no longer present.
  */
+@DisableCachingByDefault(because = "Depends on resolved dependencies from external repositories")
 abstract class SyncLicensesTask : BaseLicenseTask() {
   @TaskAction
   fun execute() {
