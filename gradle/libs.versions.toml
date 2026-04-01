@@ -2,7 +2,7 @@
 kotest = "6.1.9"
 spotless = "8.4.0"
 ktlint = "1.0.1"
-dokka = "2.1.0"
+dokka = "2.2.0"
 nmcp = "1.4.4"
 
 [libraries]
