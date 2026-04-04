@@ -1,5 +1,5 @@
 [versions]
-kotest = "6.1.9"
+kotest = "6.1.11"
 spotless = "8.4.0"
 ktlint = "1.0.1"
 dokka = "2.1.0"
