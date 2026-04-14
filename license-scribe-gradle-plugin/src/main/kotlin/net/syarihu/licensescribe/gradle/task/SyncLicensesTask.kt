@@ -107,11 +107,8 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
 
     // Count removed artifacts
     val currentCoordinates = currentDependencies.map { "${it.group}:${it.name}" }.toSet()
-    existingMap.keys.forEach { coordinate ->
-      if (coordinate !in currentCoordinates) {
-        removedCount++
-      }
-    }
+    val removedArtifacts = existingMap.keys.filter { it !in currentCoordinates }
+    removedCount = removedArtifacts.size
 
     // Supplement license info with well-known defaults (name/URL only)
     supplementLicenseInfo(licenseInfoMap)
@@ -144,6 +141,14 @@ abstract class SyncLicensesTask : BaseLicenseTask() {
     logger.lifecycle(
       "Sync completed: $addedCount added, $removedCount removed",
     )
+
+    // Log removed artifact coordinates for traceability
+    if (removedArtifacts.isNotEmpty()) {
+      logger.lifecycle("Removed artifacts:")
+      removedArtifacts.sorted().forEach { coordinate ->
+        logger.lifecycle("  - $coordinate")
+      }
+    }
 
     // Warn about ambiguous licenses for newly added artifacts
     if (ambiguousLicenseArtifacts.isNotEmpty()) {
