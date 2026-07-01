@@ -139,14 +139,6 @@ licenses:
         copyrightHolders:
         - The Android Open Source Project
       androidx.compose.material:
-      - name: material
-        url: https://developer.android.com/jetpack/androidx/releases/compose-material
-        copyrightHolders:
-        - The Android Open Source Project
-      - name: material-android
-        url: https://developer.android.com/jetpack/androidx/releases/compose-material
-        copyrightHolders:
-        - The Android Open Source Project
       - name: material-ripple
         url: https://developer.android.com/jetpack/androidx/releases/compose-material
         copyrightHolders:
