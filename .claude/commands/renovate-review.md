@@ -176,6 +176,11 @@ Create a single PR comment with the structure below. Write the review body to a 
 - When referencing an external library's Issue or PR, always use the full URL rather than a shorthand like `#number`
   (e.g. `https://github.com/<libOwner>/<libRepo>/issues/1234`), because the shorthand would be mistakenly linked as an Issue/PR
   of this repository.
+- **Never emit live GitHub @mentions in the comment.** Release notes and changelogs often contain contributor handles like
+  `@someuser`, and pasting them verbatim into a PR comment sends real notifications to those people (this is an OSS repo, so the
+  pings actually reach them). Whenever you would write an `@handle`, neutralize it so it does not auto-link — wrap it in inline
+  code (`` `@someuser` ``) or drop the leading `@` (e.g. `someuser`). Apply this to every username taken from release notes,
+  changelogs, commit authors, or "thanks to ..." credits. The same applies to team mentions like `@org/team`.
 - **Always put a space before and after a URL.** If a full-width parenthesis or text follows a URL directly, the auto-link swallows it
   and the link breaks (e.g. `...2.3.9(the corresponding tag...` is bad -> put a space after the URL like `...2.3.9 (the corresponding tag...`).
 - This project manages dependency versions with version catalogs (`gradle/libs.versions.toml`, `gradle/plugin.versions.toml`, `gradle/example.versions.toml`),
