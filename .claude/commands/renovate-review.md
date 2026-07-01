@@ -45,20 +45,22 @@ If the PR's CI is failing, you will analyze in a later step whether the failure 
 1. Check the CI status. Run `gh pr checks <PR number> --repo <owner>/<repo>`.
     - If there are no failing checks, skip this step and go to Step 2 (omit the "CI failure cause and remediation" section from the review).
     - `gh pr checks` returns **exit code 8 when checks are pending or in progress**. In that case treat it as "not determined because CI is still running" and skip log fetching.
-2. Get the **numeric job ID** of the failing job. Since `gh pr checks` output has no job ID, get it directly from the check-runs API:
+2. Get the **run ID and job ID** of the failing job. Since `gh pr checks` output has no job ID, get it from the check-runs API. **Note: the check-run `id` is not necessarily the GitHub Actions job ID**, so do not use it directly — parse the `run_id` and `job_id` out of the `html_url` (`/actions/runs/<run_id>/job/<job_id>`) instead:
     ```bash
     SHA=$(gh pr view <PR number> --repo <owner>/<repo> --json headRefOid --jq .headRefOid)
     gh api "repos/<owner>/<repo>/commits/$SHA/check-runs" \
-      --jq '.check_runs[] | select(.conclusion=="failure" and (.html_url|contains("/actions/runs/"))) | {id, name, html_url}'
+      --jq '.check_runs[]
+            | select(.conclusion=="failure" and (.html_url|contains("/actions/runs/")))
+            | (.html_url | capture("/actions/runs/(?<run_id>[0-9]+)/job/(?<job_id>[0-9]+)")) + {name, html_url}'
     ```
-    - GitHub Actions jobs appear as check-runs, and **this `id` is the job ID itself (the `/job/<id>` value in `html_url`)** (which is different from the run ID in `/actions/runs/<id>`). You can pass this `id` directly to `gh run view --job=<id>` in the next step.
+    - GitHub Actions jobs appear as check-runs, but the check-run `id` and the Actions job ID are **different values**, so extracting the IDs from `html_url` (`/actions/runs/<run_id>/job/<job_id>`) is the reliable way. Pass both the `run_id` and `job_id` to `gh run view` in the next step.
     - This project's CI runs on GitHub Actions (`.github/workflows/build-and-test.yml`, etc.), so checks whose `html_url` contains `/actions/runs/` are the targets. If a non-Actions check happens to be mixed in, `gh run view` cannot fetch it, so treat it as "logs not fetched / needs manual review" and do not assert a cause.
     - If there are many failing Actions jobs, you may **narrow to the main failing jobs** so the number of log fetches does not explode (one representative is enough for derived jobs with the same cause). If you narrow, note that in the review.
 3. For each failing job, **save the log to a temporary file** (do not load the full huge log into context as-is):
     ```bash
-    gh run view --log-failed --job=<job ID> --repo <owner>/<repo> > <temp file>
+    gh run view <run_id> --log-failed --job=<job_id> --repo <owner>/<repo> > <temp file>
     ```
-    (`--log-failed` works with just the job ID and does not need the run ID. Logs can exceed hundreds of lines / 100KB.)
+    (Pass the `run_id` explicitly so resolving the job is unambiguous across `gh` versions. Logs can exceed hundreds of lines / 100KB.)
 4. From the saved log, use the **Grep tool** to extract only the actionable lines (do not read the whole thing). Signatures to prioritize:
     - `What went wrong` block / `BUILD FAILED`
     - task lines ending in `FAILED` (e.g. `> Task :license-scribe-core:compileKotlin FAILED`)
