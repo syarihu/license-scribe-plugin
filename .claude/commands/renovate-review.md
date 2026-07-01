@@ -20,6 +20,7 @@ Argument: $ARGUMENTS
 - Extract **owner/repo** and the **PR number** from the URL. If only a PR number is given, treat the current repository (`syarihu/license-scribe-plugin`) as owner/repo.
 - Use the extracted owner/repo and PR number in all subsequent steps. Pass `--repo <owner>/<repo>` explicitly to `gh pr` commands.
   `gh api` does not accept a `--repo` flag, so include owner/repo in the endpoint path like `repos/<owner>/<repo>/...`.
+- **This command must be run from a local checkout of the target repository.** Step 3's code-base search operates on the current working tree, so if the extracted owner/repo does not match the repository you are currently in, the impact analysis would be run against the wrong code. Before proceeding, confirm that the current working tree corresponds to `<owner>/<repo>` (e.g. compare `gh repo view --json nameWithOwner --jq .nameWithOwner` with the extracted owner/repo); if it does not match, stop and ask the user to run the command from the target repository's checkout.
 
 **Important: write all comments and the review in English.** Technical terms such as library names, version numbers, and file paths may stay as-is, but all explanations, descriptions, and recommendations must be in English.
 
