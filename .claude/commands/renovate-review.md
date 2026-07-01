@@ -84,14 +84,32 @@ For each updated dependency:
       Get the old and new release bodies with `gh api repos/<libOwner>/<libRepo>/releases/tags/<tag> --jq '{name, published_at, body}'` and summarize based on that `body`.
       Web search + WebFetch can mix guesses (wrong dates, non-existent changes) into the summary, so for GitHub libraries prefer the primary source from `gh api`.
     - Only when the library is not on GitHub, or `gh api` cannot fetch it, use **web search / WebFetch** to find the official release notes, changelog, or migration guide. In that case do not take the content at face value, and back it up with a primary source (official site) when possible.
-2. Based on the fetched body, summarize the important changes. Pay particular attention to:
+2. **Do not stop at a thin release body — follow it to the real content.** Some projects (e.g. Gradle) publish a GitHub release body that is
+   just a highlights blurb plus a "Read the Release Notes" / changelog link, with **no breaking-changes or deprecation detail**. When the
+   body is that thin (only highlights + a link, no explicit "Breaking changes" / "Deprecations" section), **WebFetch the linked release-notes /
+   changelog page** and summarize from there instead of the stub. Treating the highlights blurb as the full picture is how real breaking
+   changes get missed.
+3. **Also fetch the dedicated upgrade / migration guide, not just the release notes.** For many Android/Kotlin-ecosystem tools, breaking
+   changes and deprecations live in a **separate upgrade guide**, not the per-release notes page. Always look for and read it in addition to
+   the release notes. Known locations:
+    - Gradle: `https://docs.gradle.org/<version>/userguide/upgrading_version_<major>.html` (the "Breaking changes" / "Deprecations" sections here are the authoritative source — the release-notes highlights are not)
+    - Android Gradle Plugin: `https://developer.android.com/build/releases/gradle-plugin` and the AGP API/behavior-change notes
+    - Kotlin / KSP / Compose: the "What's new" / compatibility / migration pages for the corresponding version
+   If a comparable upgrade guide exists for the library, read it before writing the "Breaking changes" field. If none exists, state that the
+   assessment is based on the release notes only.
+4. **When the update spans multiple minor/major versions, cover the whole range, not just the two endpoints.** For a jump like `9.4.1 -> 9.6.1`,
+   breaking changes may have been introduced in an intermediate release (`9.5.0`, `9.6.0`). Enumerate the intermediate versions and read each
+   one's release notes / upgrade guide (or the upgrade guide's full range) so nothing in between is skipped.
+5. Based on the fetched body, summarize the important changes. Pay particular attention to:
     - Breaking changes
     - Deprecated APIs / features
     - New features / behavior changes
     - Security fixes
     - Bug fixes
-3. If migration steps are required, note them clearly.
-4. **Do not guess the release-note URL you put in the review — always confirm it exists.** For a GitHub release,
+   Anchor the **Breaking changes** and **Deprecations** you report to the upgrade/migration guide or an explicit breaking-changes/deprecations
+   section (from items 3–4), not to the marketing highlights blurb.
+6. If migration steps are required, note them clearly.
+7. **Do not guess the release-note URL you put in the review — always confirm it exists.** For a GitHub release,
    confirm that `gh api repos/<libOwner>/<libRepo>/releases/tags/<tag>` returns 200 (a 404 means the tag name is wrong).
    Tag naming differs per library (`2.3.9` / `v2.3.9` / `2.2.10-2.3.9`, etc.), so after building a URL from the version number in
    search results or the diff, always verify it exists before writing it. If you cannot confirm it, fall back to the release list
@@ -187,6 +205,10 @@ Create a single PR comment with the structure below. Write the review body to a 
 - When unsure about the impact level, err on the safe side (the higher impact level).
 - Keep the summary's "Merge verdict" consistent with the overall impact: **Low -> Safe to merge** / **Medium -> Merge with caution** / **High -> Code changes required**.
 - For Android/Kotlin dependencies, pay special attention to Gradle plugin compatibility and Kotlin version requirements.
+- **Do not overstate a deprecation's removal timeline.** A "deprecated" API is not automatically "removed in the next major". Only state a
+  concrete removal version (e.g. "removed in Gradle 10") if the release notes / upgrade guide explicitly say so. If the source only says
+  "deprecated" without a removal version, write it as "deprecated (removal timeline unconfirmed — verify before the next major upgrade)"
+  rather than asserting when it breaks.
 - When referencing an external library's Issue or PR, always use the full URL rather than a shorthand like `#number`
   (e.g. `https://github.com/<libOwner>/<libRepo>/issues/1234`), because the shorthand would be mistakenly linked as an Issue/PR
   of this repository.
