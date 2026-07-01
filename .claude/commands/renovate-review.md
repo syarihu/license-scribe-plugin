@@ -100,7 +100,7 @@ For each updated dependency:
 4. **When the update spans multiple minor/major versions, cover the whole range, not just the two endpoints.** For a jump like `9.4.1 -> 9.6.1`,
    breaking changes may have been introduced in an intermediate release (`9.5.0`, `9.6.0`). Enumerate the intermediate versions and read each
    one's release notes / upgrade guide (or the upgrade guide's full range) so nothing in between is skipped.
-5. Based on the fetched body, summarize the important changes. Pay particular attention to:
+5. Based on all the sources gathered above (the release body, the linked release notes/changelog, and the upgrade/migration guide across the full version range), summarize the important changes. Pay particular attention to:
     - Breaking changes
     - Deprecated APIs / features
     - New features / behavior changes
