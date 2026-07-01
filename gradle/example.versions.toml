@@ -1,5 +1,5 @@
 [versions]
-compose-bom = "2026.06.00"
+compose-bom = "2026.06.01"
 androidx-core = "1.19.0"
 androidx-lifecycle = "2.11.0"
 androidx-activity = "1.13.0"
