@@ -8,7 +8,7 @@ plugins {
 
 android {
   namespace = "net.syarihu.licensescribe.example"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     applicationId = "net.syarihu.licensescribe.example"

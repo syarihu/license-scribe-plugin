@@ -4,7 +4,7 @@ plugins {
 
 android {
   namespace = "net.syarihu.licensescribe.example.library"
-  compileSdk = 36
+  compileSdk = 37
 
   defaultConfig {
     minSdk = 24
