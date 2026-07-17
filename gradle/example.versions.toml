@@ -6,12 +6,12 @@ androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-recyclerview = "1.4.0"
 retrofit = "3.0.0"
-hilt = "2.60"
-ksp = "2.3.9"
+hilt = "2.60.1"
+ksp = "2.3.10"
 okhttp = "5.4.0"
 gson = "2.14.0"
 kotlinx-coroutines = "1.11.0"
-firebase-bom = "34.15.0"
+firebase-bom = "34.16.0"
 
 [libraries]
 # Example dependencies for license detection
