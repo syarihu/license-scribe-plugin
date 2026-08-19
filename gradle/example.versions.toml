@@ -1,17 +1,17 @@
 [versions]
-compose-bom = "2026.06.01"
+compose-bom = "2026.08.00"
 androidx-core = "1.19.0"
 androidx-lifecycle = "2.11.0"
 androidx-activity = "1.13.0"
-androidx-appcompat = "1.7.1"
+androidx-appcompat = "1.8.0"
 androidx-recyclerview = "1.4.0"
 retrofit = "3.0.0"
-hilt = "2.60"
-ksp = "2.3.9"
-okhttp = "5.4.0"
+hilt = "2.60.1"
+ksp = "2.3.11"
+okhttp = "5.5.0"
 gson = "2.14.0"
 kotlinx-coroutines = "1.11.0"
-firebase-bom = "34.15.0"
+firebase-bom = "34.18.0"
 
 [libraries]
 # Example dependencies for license detection
