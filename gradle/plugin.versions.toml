@@ -1,6 +1,6 @@
 [versions]
 agp = "9.2.1"
-snakeyaml = "2.6"
+snakeyaml = "2.7"
 kotlinpoet = "2.3.0"
 
 [libraries]
