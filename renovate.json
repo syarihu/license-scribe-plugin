@@ -24,6 +24,13 @@
       "description": "Development tools (gradle/libs.versions.toml)",
       "matchFileNames": ["gradle/libs.versions.toml"],
       "labels": ["deps:dev-tools"]
+    },
+    {
+      "description": "Ignore major JDK updates for CI (setup-java). Artifacts target Java 17 via jvmToolchain(17)",
+      "matchDatasources": ["java-version"],
+      "matchPackageNames": ["java-jdk"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
