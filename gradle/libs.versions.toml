@@ -3,7 +3,7 @@ kotest = "6.2.6"
 spotless = "8.10.4"
 ktlint = "1.0.1"
 dokka = "2.2.0"
-nmcp = "1.6.1"
+nmcp = "1.6.2"
 
 [libraries]
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
