@@ -1,7 +1,7 @@
 [versions]
 agp = "9.4.1"
 snakeyaml = "2.7"
-kotlinpoet = "2.3.0"
+kotlinpoet = "2.4.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
