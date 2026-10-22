@@ -339,11 +339,6 @@ licenses:
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
-      androidx.dynamicanimation:
-      - name: dynamicanimation
-        url: http://developer.android.com/tools/extras/support-library.html
-        copyrightHolders:
-        - The Android Open Source Project
       androidx.emoji2:
       - name: emoji2
         url: https://developer.android.com/jetpack/androidx/releases/emoji2
@@ -517,11 +512,6 @@ licenses:
       androidx.tracing:
       - name: tracing
         url: https://developer.android.com/jetpack/androidx/releases/tracing
-        copyrightHolders:
-        - The Android Open Source Project
-      androidx.transition:
-      - name: transition
-        url: https://developer.android.com/jetpack/androidx/releases/transition
         copyrightHolders:
         - The Android Open Source Project
       androidx.versionedparcelable:
