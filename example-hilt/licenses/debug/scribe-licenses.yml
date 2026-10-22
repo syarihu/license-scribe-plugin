@@ -252,16 +252,6 @@ licenses:
         url: https://developer.android.com/jetpack/androidx/releases/customview
         copyrightHolders:
         - The Android Open Source Project
-      androidx.documentfile:
-      - name: documentfile
-        url: http://developer.android.com/tools/extras/support-library.html
-        copyrightHolders:
-        - The Android Open Source Project
-      androidx.dynamicanimation:
-      - name: dynamicanimation
-        url: http://developer.android.com/tools/extras/support-library.html
-        copyrightHolders:
-        - The Android Open Source Project
       androidx.emoji2:
       - name: emoji2
         url: https://developer.android.com/jetpack/androidx/releases/emoji2
@@ -279,11 +269,6 @@ licenses:
         - The Android Open Source Project
       androidx.interpolator:
       - name: interpolator
-        url: http://developer.android.com/tools/extras/support-library.html
-        copyrightHolders:
-        - The Android Open Source Project
-      androidx.legacy:
-      - name: legacy-support-core-utils
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
@@ -365,11 +350,6 @@ licenses:
         url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
-      androidx.localbroadcastmanager:
-      - name: localbroadcastmanager
-        url: http://developer.android.com/tools/extras/support-library.html
-        copyrightHolders:
-        - The Android Open Source Project
       androidx.navigationevent:
       - name: navigationevent
         url: https://developer.android.com/jetpack/androidx/releases/navigationevent
@@ -385,11 +365,6 @@ licenses:
         - The Android Open Source Project
       - name: navigationevent-compose-android
         url: https://developer.android.com/jetpack/androidx/releases/navigationevent
-        copyrightHolders:
-        - The Android Open Source Project
-      androidx.print:
-      - name: print
-        url: http://developer.android.com/tools/extras/support-library.html
         copyrightHolders:
         - The Android Open Source Project
       androidx.profileinstaller:
@@ -426,11 +401,6 @@ licenses:
       androidx.tracing:
       - name: tracing
         url: https://developer.android.com/jetpack/androidx/releases/tracing
-        copyrightHolders:
-        - The Android Open Source Project
-      androidx.transition:
-      - name: transition
-        url: https://developer.android.com/jetpack/androidx/releases/transition
         copyrightHolders:
         - The Android Open Source Project
       androidx.versionedparcelable:
